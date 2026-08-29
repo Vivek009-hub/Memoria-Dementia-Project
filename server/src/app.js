@@ -1,6 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import { env } from './config/env.js';
 import { buildCorsOptions } from './config/cors.js';
@@ -15,6 +16,7 @@ const app = express();
 app.use(helmet());
 
 // CORS — origin controlled by CLIENT_URL env variable
+// credentials:true is required for cross-origin cookie support
 app.use(cors(buildCorsOptions(env.clientUrl)));
 
 // Request logging — must come before routes
@@ -22,6 +24,9 @@ app.use(requestLogger);
 
 // Body parsing
 app.use(express.json());
+
+// Cookie parsing — required for session cookie authentication
+app.use(cookieParser());
 
 // API routes
 app.use('/api/v1', v1Router);
