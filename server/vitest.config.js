@@ -12,5 +12,11 @@ export default defineConfig({
 
     // Per-test timeout
     testTimeout: 30_000,
+
+    // Run test files sequentially — all files share a single MongoMemoryServer
+    // instance, and parallel afterEach teardowns (in different workers) delete
+    // sessions/users that other workers' in-flight tests still depend on.
+    // fileParallelism: false serialises all files through a single runner.
+    fileParallelism: false,
   },
 });

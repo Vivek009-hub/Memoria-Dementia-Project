@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import authRouter from '../modules/auth/auth.routes.js';
+import usersRouter from '../modules/users/users.routes.js';
+import patientsRouter from '../modules/patients/patients.routes.js';
+import caregiversRouter from '../modules/caregivers/caregivers.routes.js';
 
 const router = Router();
 
@@ -12,7 +15,12 @@ router.get('/health', (_req, res) => {
   });
 });
 
-// Authentication — /api/v1/auth/*
+// B2 — Authentication
 router.use('/auth', authRouter);
+
+// B3 — Users / Patients / Caregivers
+router.use('/users', usersRouter);
+router.use('/patients', patientsRouter);
+router.use('/caregivers', caregiversRouter);
 
 export default router;
