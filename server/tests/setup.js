@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { beforeAll, afterAll, afterEach } from 'vitest';
 
-let mongoServer;
-
+/**
+ * Connect to the shared MongoMemoryServer started by tests/globalSetup.js.
+ * The URI is passed via process.env.MONGO_TEST_URI.
+ */
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-  await mongoose.connect(uri);
+  const uri = process.env.MONGO_TEST_URI;
+  if (!uri) {
+    throw new Error('MONGO_TEST_URI is not set — ensure globalSetup ran correctly');
+  }
+  // Only connect if not already connected (supports multiple test files reusing state)
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(uri);
+  }
 });
 
 afterEach(async () => {
@@ -18,6 +24,8 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  // Only disconnect if we're the last consumer — globalSetup handles server teardown
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.disconnect();
+  }
 });

@@ -9,6 +9,9 @@ vi.mock('../src/config/env.js', () => ({
     mongoUri: 'mongodb://localhost:27017/memora-test',
     clientUrl: 'http://localhost:5173',
     logLevel: 'silent',
+    sessionSecret: 'test-secret-for-health-test',
+    sessionTtlMs: 604800000,
+    cookieName: 'memora_session',
   },
 }));
 
