@@ -1,0 +1,35 @@
+import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+
+import { env } from './config/env.js';
+import { buildCorsOptions } from './config/cors.js';
+import { requestLogger } from './middleware/requestLogger.middleware.js';
+import { notFound } from './middleware/notFound.middleware.js';
+import { errorHandler } from './middleware/error.middleware.js';
+import v1Router from './routes/index.js';
+
+const app = express();
+
+// Security headers
+app.use(helmet());
+
+// CORS — origin controlled by CLIENT_URL env variable
+app.use(cors(buildCorsOptions(env.clientUrl)));
+
+// Request logging — must come before routes
+app.use(requestLogger);
+
+// Body parsing
+app.use(express.json());
+
+// API routes
+app.use('/api/v1', v1Router);
+
+// 404 handler — must come after routes
+app.use(notFound);
+
+// Central error handler — must be last middleware (4 args)
+app.use(errorHandler);
+
+export default app;
