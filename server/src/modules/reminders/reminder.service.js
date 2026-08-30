@@ -19,6 +19,7 @@ import mongoose from 'mongoose';
 import Reminder from './reminder.model.js';
 import ReminderLog, { LOG_STATUSES } from './reminderLog.model.js';
 import { AppError } from '../../utils/AppError.js';
+import { emitNotificationEvent } from '../notifications/notification.events.js';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -730,6 +731,18 @@ export async function generatePendingOccurrences() {
         status: 'SCHEDULED',
       });
       created++;
+
+      // B9 — Emit ReminderDue event if the occurrence is due now or in the past
+      // (i.e. the scheduled time is within the next minute or already passed).
+      // This handles cases where the scheduler runs frequently and the
+      // occurrence is imminent.
+      if (nextOcc <= new Date(now.getTime() + 60 * 1000)) {
+        emitNotificationEvent('ReminderDue', {
+          patientUserId: reminder.patientId.toString(),
+          reminderId: reminder._id.toString(),
+          reminderTitle: reminder.title,
+        });
+      }
     } catch (err) {
       if (err.code === 11000) {
         skipped++; // Already exists — idempotent
@@ -751,6 +764,14 @@ export async function generatePendingOccurrences() {
 export async function markMissedOccurrences() {
   const cutoff = new Date(Date.now() - MISSED_GRACE_PERIOD_MINUTES * 60 * 1000);
 
+  // Fetch the logs that will be marked MISSED so we can emit events per patient
+  const logsToMiss = await ReminderLog.find({
+    status: 'SCHEDULED',
+    scheduledAt: { $lt: cutoff },
+  })
+    .populate('reminderId', 'title')
+    .lean();
+
   const result = await ReminderLog.updateMany(
     {
       status: 'SCHEDULED',
@@ -758,6 +779,15 @@ export async function markMissedOccurrences() {
     },
     { $set: { status: 'MISSED' } }
   );
+
+  // B9 — Emit ReminderMissed event for each affected patient
+  for (const log of logsToMiss) {
+    emitNotificationEvent('ReminderMissed', {
+      patientUserId: log.patientId.toString(),
+      reminderId: log.reminderId?._id?.toString() ?? log.reminderId?.toString(),
+      reminderTitle: log.reminderId?.title ?? 'Reminder',
+    });
+  }
 
   return result.modifiedCount;
 }
