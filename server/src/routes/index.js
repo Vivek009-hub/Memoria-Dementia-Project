@@ -49,5 +49,4 @@ router.use('/meetings', meetingsRouter);
 // B10 — Analytics & Progress Tracking
 router.use('/analytics', analyticsRouter);
 router.use('/admin/analytics', adminAnalyticsRouter);
-
 export default router;

@@ -7,6 +7,7 @@ import CommunityVote from './communityVote.model.js';
 import CommunitySession from './communitySession.model.js';
 import SessionRegistration from './sessionRegistration.model.js';
 import { AppError } from '../../utils/AppError.js';
+import { emitNotificationEvent } from '../notifications/notification.events.js';
 
 // ── PROPOSAL & VOTING SERVICES ───────────────────────────────────────────────
 
@@ -236,6 +237,18 @@ export async function approveProposal(ideaId, adminId) {
   proposal.approvedAt = new Date();
 
   await proposal.save();
+
+  // B9 — Notify all patients who voted for this proposal
+  const votes = await CommunityVote.find({ proposalId: proposal._id }).lean();
+  if (votes.length > 0) {
+    const voterUserIds = votes.map((v) => v.patientId.toString());
+    emitNotificationEvent('CommunitySessionApproved', {
+      proposalId: proposal._id.toString(),
+      sessionTitle: proposal.title,
+      voterUserIds,
+    });
+  }
+
   return proposal;
 }
 
@@ -290,6 +303,18 @@ export async function scheduleSession(ideaId, adminId, data) {
     proposal.status = 'CONVERTED_TO_SESSION';
     proposal.communitySessionId = session._id;
     await proposal.save();
+
+    // B9 — Notify voters who voted for the original proposal
+    const votes = await CommunityVote.find({ proposalId: proposal._id }).lean();
+    if (votes.length > 0) {
+      const voterUserIds = votes.map((v) => v.patientId.toString());
+      emitNotificationEvent('CommunitySessionScheduled', {
+        sessionId: session._id.toString(),
+        sessionTitle: session.title,
+        sessionDate: session.date ? session.date.toISOString().split('T')[0] : null,
+        targetUserIds: voterUserIds,
+      });
+    }
   }
 
   return session;
@@ -555,6 +580,21 @@ export async function adminCancelSession(sessionId) {
   session.status = 'CANCELLED';
   session.registrationStatus = 'CLOSED';
   await session.save();
+
+  // B9 — Notify all REGISTERED participants about cancellation
+  const registrations = await SessionRegistration.find({
+    sessionId: session._id,
+    status: 'REGISTERED',
+  }).lean();
+
+  if (registrations.length > 0) {
+    const targetUserIds = registrations.map((r) => r.patientId.toString());
+    emitNotificationEvent('CommunitySessionCancelled', {
+      sessionId: session._id.toString(),
+      sessionTitle: session.title,
+      targetUserIds,
+    });
+  }
 
   return session;
 }
