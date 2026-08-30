@@ -156,8 +156,15 @@ notificationSchema.index({ expiresAt: 1 }, { sparse: true });
  * Prevents two notifications of the same type for the same resource+recipient
  * from being created (e.g. if an event is emitted twice by accident).
  *
- * sparse: true means documents where relatedResourceId is null are NOT indexed,
- * which allows multiple SYSTEM notifications without dedup constraints.
+ * partialFilterExpression: only enforce uniqueness when relatedResourceId is
+ * an actual ObjectId. Documents where relatedResourceId is null/undefined are
+ * NOT indexed, so multiple system/manual notifications without a resource
+ * reference are allowed without deduplication constraints.
+ *
+ * WHY NOT sparse:true?
+ *   sparse:true skips documents where the field is *missing*, but still indexes
+ *   documents that explicitly set the field to null. Using partialFilterExpression
+ *   with $type:'objectId' is the correct way to exclude null values from the index.
  */
 notificationSchema.index(
   {
@@ -166,7 +173,11 @@ notificationSchema.index(
     type: 1,
     recipientUserId: 1,
   },
-  { unique: true, sparse: true, name: 'idx_notification_dedup' }
+  {
+    unique: true,
+    partialFilterExpression: { relatedResourceId: { $type: 'objectId' } },
+    name: 'idx_notification_dedup',
+  }
 );
 
 // ── Model ─────────────────────────────────────────────────────────────────────
