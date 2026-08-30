@@ -8,6 +8,7 @@ import memoriesRouter from '../modules/memories/memory.routes.js';
 import remindersRouter from '../modules/reminders/reminder.routes.js';
 import { communityRouter, adminCommunityRouter } from '../modules/community/community.routes.js';
 import meetingsRouter from '../modules/meetings/meeting.routes.js';
+import { analyticsRouter, adminAnalyticsRouter } from '../modules/analytics/analytics.routes.js';
 
 const router = Router();
 
@@ -44,5 +45,9 @@ router.use('/admin/community', adminCommunityRouter);
 // B8 — Memora Meeting Circle
 router.use('/community', meetingsRouter);
 router.use('/meetings', meetingsRouter);
+
+// B10 — Analytics & Progress Tracking
+router.use('/analytics', analyticsRouter);
+router.use('/admin/analytics', adminAnalyticsRouter);
 
 export default router;
