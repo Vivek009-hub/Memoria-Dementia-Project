@@ -58,11 +58,9 @@ const notificationPreferenceSchema = new mongoose.Schema(
   }
 );
 
-// ── Index ─────────────────────────────────────────────────────────────────────
-
-// Already covered by the unique: true on userId field definition, but being
-// explicit for clarity.
-notificationPreferenceSchema.index({ userId: 1 }, { unique: true });
+// Note: the unique index on userId is already created by the
+// unique: true option on the field definition above.
+// No explicit index call needed.
 
 // ── Model ─────────────────────────────────────────────────────────────────────
 

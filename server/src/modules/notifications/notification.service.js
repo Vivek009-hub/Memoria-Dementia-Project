@@ -41,7 +41,7 @@ import NotificationPreference from './notificationPreference.model.js';
 import { dispatchDelivery } from './notification.worker.js';
 import { buildTemplate } from './notification.templates.js';
 import { AppError } from '../../utils/AppError.js';
-import logger from '../../utils/logger.js';
+import { logger } from '../../utils/logger.js';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

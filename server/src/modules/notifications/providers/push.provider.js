@@ -16,7 +16,7 @@
  *   PUSH_PROVIDER_API_KEY= (never commit the real value)
  */
 
-import logger from '../../../utils/logger.js';
+import { logger } from '../../../utils/logger.js';
 
 /**
  * Deliver a push notification to a device token.

@@ -43,7 +43,7 @@
  */
 
 import EventEmitter from 'events';
-import logger from '../../utils/logger.js';
+import { logger } from '../../utils/logger.js';
 
 // ── Internal event emitter ────────────────────────────────────────────────────
 

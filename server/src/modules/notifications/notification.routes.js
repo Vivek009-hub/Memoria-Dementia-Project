@@ -30,7 +30,10 @@ const mutateLimiter = rateLimit({
   max: 60,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.user?.id || req.ip,
+  // All routes using this limiter are behind requireAuth, so req.user.id is
+  // always defined here. We do NOT fall back to req.ip to avoid the
+  // express-rate-limit IPv6 validation warning.
+  keyGenerator: (req) => req.user.id,
   message: {
     success: false,
     error: {

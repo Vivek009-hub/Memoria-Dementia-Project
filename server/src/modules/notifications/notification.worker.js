@@ -30,7 +30,7 @@
  *   implementing a real provider.
  */
 
-import logger from '../../utils/logger.js';
+import { logger } from '../../utils/logger.js';
 import NotificationPreference from './notificationPreference.model.js';
 import { deliverInApp } from './providers/inApp.provider.js';
 import { deliverPush } from './providers/push.provider.js';
