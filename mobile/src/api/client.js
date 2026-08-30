@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD
  * client.js — Centralized Mobile API Client
  *
  * Responsibilities:
@@ -71,8 +70,9 @@ export class ApiClient {
       const response = await fetch(url, {
         method: options.method || 'GET',
         headers: this.getHeaders(options.headers),
-        body: options.body ? JSON.stringify(options.body) : undefined,
+        body: options.body ? (typeof options.body === 'string' ? options.body : JSON.stringify(options.body)) : undefined,
         signal: controller.signal,
+        credentials: 'include',
         ...options.fetchOptions,
       });
 
@@ -122,49 +122,7 @@ export class ApiClient {
 }
 
 export const defaultApiClient = new ApiClient();
-=======
- * client.js — Mobile API Client wrapper
- */
-
-const BASE_URL = '/api/v1';
 
 export async function request(endpoint, options = {}) {
-  const url = `${BASE_URL}${endpoint}`;
-  
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(options.headers || {}),
-  };
-
-  const config = {
-    method: options.method || 'GET',
-    headers,
-    credentials: 'include', // Sends cookie authentication
-    ...options,
-  };
-
-  if (options.body && typeof options.body === 'object') {
-    config.body = JSON.stringify(options.body);
-  }
-
-  try {
-    const response = await fetch(url, config);
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      const error = new Error(data.error?.message || `HTTP ${response.status}`);
-      error.status = response.status;
-      error.code = data.error?.code || 'API_ERROR';
-      error.data = data;
-      throw error;
-    }
-
-    return data;
-  } catch (err) {
-    if (!err.status) {
-      err.isNetworkError = true;
-    }
-    throw err;
-  }
+  return defaultApiClient.request(endpoint, options);
 }
->>>>>>> 7c9965d9590bdc0c5177cb353c60eab343a31e8b

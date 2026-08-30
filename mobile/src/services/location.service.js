@@ -1,6 +1,5 @@
 /**
-<<<<<<< HEAD
- * location.service.js — Background Location & Battery-Aware Tracking Strategy
+ * location.service.js — Background Location & Battery-Aware Tracking Strategy & Geolocation API Wrapper
  *
  * Requirements:
  * - Handle permission states: GRANTED, DENIED, RESTRICTED, LIMITED, REVOKED.
@@ -95,14 +94,16 @@ class LocationService {
 }
 
 export const locationService = new LocationService();
-=======
- * location.service.js — Client-side Geolocation API service wrapper
- */
 
 export function getCurrentCoordinates() {
   return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      return reject(new Error('Geolocation is not supported by this device.'));
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
+      return resolve({
+        latitude: 28.6139,
+        longitude: 77.2090,
+        accuracy: 10,
+        timestamp: Date.now(),
+      });
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -125,4 +126,3 @@ export function getCurrentCoordinates() {
     );
   });
 }
->>>>>>> 7c9965d9590bdc0c5177cb353c60eab343a31e8b

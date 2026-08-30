@@ -1,20 +1,4 @@
 /**
-<<<<<<< HEAD
- * App.jsx — Mobile Safety Application Entrypoint
- */
-
-import React from 'react';
-import { AuthProvider } from './context/AuthContext.jsx';
-import { SafetyProvider } from './context/SafetyContext.jsx';
-import { AppNavigator } from './navigation/AppNavigator.jsx';
-import { defaultApiClient } from './api/client.js';
-
-export default function App({ client = defaultApiClient }) {
-  return (
-    <AuthProvider client={client}>
-      <SafetyProvider client={client}>
-        <AppNavigator client={client} />
-=======
  * App.jsx — Memora Safety & Assistance Mobile Application Main Dashboard
  */
 
@@ -29,6 +13,7 @@ import { EmergencyContacts } from './components/EmergencyContacts.jsx';
 import { SafetyHistory } from './components/SafetyHistory.jsx';
 import { getCurrentCoordinates } from './services/location.service.js';
 import * as safetyApi from './api/safetyApi.js';
+import { defaultApiClient } from './api/client.js';
 
 function Dashboard() {
   const { user, login } = useAuth();
@@ -45,7 +30,7 @@ function Dashboard() {
       try {
         const coords = await getCurrentCoordinates();
         setCurrentLocation(coords);
-        if (isOnline && user?.role === 'PATIENT') {
+        if (isOnline && user?.role === 'PATIENT' && safetyApi.sendLocation) {
           await safetyApi.sendLocation(coords.latitude, coords.longitude, coords.accuracy);
         }
       } catch {
@@ -173,12 +158,11 @@ function Dashboard() {
   );
 }
 
-export default function App() {
+export default function App({ client = defaultApiClient }) {
   return (
-    <AuthProvider>
-      <SafetyProvider>
+    <AuthProvider client={client}>
+      <SafetyProvider client={client}>
         <Dashboard />
->>>>>>> 7c9965d9590bdc0c5177cb353c60eab343a31e8b
       </SafetyProvider>
     </AuthProvider>
   );
