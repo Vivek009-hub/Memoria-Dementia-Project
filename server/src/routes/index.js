@@ -10,6 +10,8 @@ import { communityRouter, adminCommunityRouter } from '../modules/community/comm
 import meetingsRouter from '../modules/meetings/meeting.routes.js';
 import aiRouter from '../modules/ai/ai.routes.js';
 import { analyticsRouter, adminAnalyticsRouter } from '../modules/analytics/analytics.routes.js';
+import safetyRouter from '../modules/safety/safety.routes.js';
+import notificationsRouter from '../modules/notifications/notification.routes.js';
 
 const router = Router();
 
@@ -47,10 +49,17 @@ router.use('/admin/community', adminCommunityRouter);
 router.use('/community', meetingsRouter);
 router.use('/meetings', meetingsRouter);
 
+// B9 — Notifications & Alerts Infrastructure
+router.use('/notifications', notificationsRouter);
+
 // B11 — AI Cognitive & Memory Assistance
 router.use('/ai', aiRouter);
 
 // B10 — Analytics & Progress Tracking
 router.use('/analytics', analyticsRouter);
 router.use('/admin/analytics', adminAnalyticsRouter);
+
+// B12 — Safety, Emergency & Location Backend
+router.use('/safety', safetyRouter);
+
 export default router;
