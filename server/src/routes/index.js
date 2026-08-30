@@ -7,6 +7,7 @@ import gamesRouter from '../modules/games/game.routes.js';
 import memoriesRouter from '../modules/memories/memory.routes.js';
 import remindersRouter from '../modules/reminders/reminder.routes.js';
 import { communityRouter, adminCommunityRouter } from '../modules/community/community.routes.js';
+import notificationsRouter from '../modules/notifications/notification.routes.js';
 
 const router = Router();
 
@@ -39,5 +40,8 @@ router.use('/reminders', remindersRouter);
 // B7 — Community Sessions & Proposals
 router.use('/community', communityRouter);
 router.use('/admin/community', adminCommunityRouter);
+
+// B9 — Notifications
+router.use('/notifications', notificationsRouter);
 
 export default router;
