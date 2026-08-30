@@ -479,9 +479,11 @@ export async function handleWebhook(providerName, payload = {}, headers = {}) {
   processedWebhookEvents.add(eventId);
 
   const { eventType, providerMeetingId, userId } = payload;
+  const safeProviderMeetingId =
+    typeof providerMeetingId === 'string' ? providerMeetingId.trim() : null;
 
-  if (providerMeetingId) {
-    const meeting = await Meeting.findOne({ providerMeetingId });
+  if (safeProviderMeetingId) {
+    const meeting = await Meeting.findOne({ providerMeetingId: safeProviderMeetingId });
     if (meeting) {
       if (eventType === 'participant.joined' && userId) {
         // Safe idempotent join update
