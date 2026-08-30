@@ -6,6 +6,7 @@ import caregiversRouter from '../modules/caregivers/caregivers.routes.js';
 import gamesRouter from '../modules/games/game.routes.js';
 import memoriesRouter from '../modules/memories/memory.routes.js';
 import remindersRouter from '../modules/reminders/reminder.routes.js';
+import { communityRouter, adminCommunityRouter } from '../modules/community/community.routes.js';
 
 const router = Router();
 
@@ -34,5 +35,9 @@ router.use('/memories', memoriesRouter);
 
 // B6 — Reminders & Daily Routines
 router.use('/reminders', remindersRouter);
+
+// B7 — Community Sessions & Proposals
+router.use('/community', communityRouter);
+router.use('/admin/community', adminCommunityRouter);
 
 export default router;
