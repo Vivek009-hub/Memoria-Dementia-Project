@@ -1,0 +1,17 @@
+{
+  "name": "memora-mobile-safety",
+  "version": "1.0.0",
+  "description": "Memora Elder Safety & Assistance Mobile Application",
+  "main": "src/App.jsx",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "vitest": "^1.2.0"
+  }
+}

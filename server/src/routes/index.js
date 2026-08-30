@@ -8,6 +8,7 @@ import memoriesRouter from '../modules/memories/memory.routes.js';
 import remindersRouter from '../modules/reminders/reminder.routes.js';
 import { communityRouter, adminCommunityRouter } from '../modules/community/community.routes.js';
 import meetingsRouter from '../modules/meetings/meeting.routes.js';
+import notificationsRouter from '../modules/notifications/notification.routes.js';
 import aiRouter from '../modules/ai/ai.routes.js';
 import { analyticsRouter, adminAnalyticsRouter } from '../modules/analytics/analytics.routes.js';
 
@@ -47,10 +48,14 @@ router.use('/admin/community', adminCommunityRouter);
 router.use('/community', meetingsRouter);
 router.use('/meetings', meetingsRouter);
 
+// B9 — Notifications
+router.use('/notifications', notificationsRouter);
+
 // B11 — AI Cognitive & Memory Assistance
 router.use('/ai', aiRouter);
 
 // B10 — Analytics & Progress Tracking
 router.use('/analytics', analyticsRouter);
 router.use('/admin/analytics', adminAnalyticsRouter);
+
 export default router;
