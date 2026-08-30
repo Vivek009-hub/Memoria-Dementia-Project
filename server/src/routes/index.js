@@ -4,6 +4,8 @@ import usersRouter from '../modules/users/users.routes.js';
 import patientsRouter from '../modules/patients/patients.routes.js';
 import caregiversRouter from '../modules/caregivers/caregivers.routes.js';
 import gamesRouter from '../modules/games/game.routes.js';
+import memoriesRouter from '../modules/memories/memory.routes.js';
+import remindersRouter from '../modules/reminders/reminder.routes.js';
 
 const router = Router();
 
@@ -27,5 +29,10 @@ router.use('/caregivers', caregiversRouter);
 // B4 — Cognitive Games
 router.use('/games', gamesRouter);
 
-export default router;
+// B5 — Memory Assistance
+router.use('/memories', memoriesRouter);
 
+// B6 — Reminders & Daily Routines
+router.use('/reminders', remindersRouter);
+
+export default router;
