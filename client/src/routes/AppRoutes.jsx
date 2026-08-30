@@ -15,7 +15,8 @@ import { RegisterPage } from '../pages/RegisterPage.jsx';
 import { UnauthorizedPage } from '../pages/UnauthorizedPage.jsx';
 import { NotFoundPage } from '../pages/NotFoundPage.jsx';
 import { DashboardPlaceholder } from '../pages/DashboardPlaceholder.jsx';
-import { DesignSystemShowcase } from '../pages/DesignSystemShowcase.jsx';
+import { GameLibraryPage } from '../pages/games/GameLibraryPage.jsx';
+import { GamePlayPage } from '../pages/games/GamePlayPage.jsx';
 
 export function AppRoutes() {
   const { role } = useAuth();
@@ -43,7 +44,8 @@ export function AppRoutes() {
         }
       >
         <Route index element={<DashboardPlaceholder title="Overview Dashboard" />} />
-        <Route path="games" element={<DashboardPlaceholder title="Cognitive Games" module="F4 Module" />} />
+        <Route path="games" element={<GameLibraryPage />} />
+        <Route path="games/:gameId" element={<GamePlayPage />} />
         <Route path="memories" element={<DashboardPlaceholder title="Memory Assistance" module="F5 Module" />} />
         <Route path="reminders" element={<DashboardPlaceholder title="Smart Reminders" module="F6 Module" />} />
         <Route path="community" element={<DashboardPlaceholder title="Community Sessions" module="F7 Module" />} />
