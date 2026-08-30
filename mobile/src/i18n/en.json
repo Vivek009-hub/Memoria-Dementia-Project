@@ -1,0 +1,36 @@
+{
+  "app": {
+    "name": "Memora",
+    "greeting": "Good Morning"
+  },
+  "home": {
+    "playGame": "Play Game",
+    "myMemories": "My Memories",
+    "myReminders": "My Reminders",
+    "community": "Community",
+    "sos": "SOS Emergency"
+  },
+  "sos": {
+    "button": "SOS",
+    "title": "Do you need help?",
+    "yesSend": "YES, SEND SOS",
+    "cancel": "CANCEL",
+    "sentSuccess": "SOS sent. Your emergency contacts have been notified.",
+    "sentFailed": "We could not send the SOS. Please try again or contact someone nearby.",
+    "waitingToSend": "SOS waiting to send (offline)."
+  },
+  "fall": {
+    "title": "Are you okay?",
+    "detected": "Fall may have occurred",
+    "imOkay": "YES, I'M OKAY",
+    "needHelp": "I NEED HELP"
+  },
+  "contacts": {
+    "title": "Emergency Contacts",
+    "call": "Call"
+  },
+  "status": {
+    "offline": "No internet connection",
+    "online": "Connected"
+  }
+}

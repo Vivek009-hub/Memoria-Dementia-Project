@@ -1,0 +1,41 @@
+{
+  "name": "memora-mobile-safety",
+<<<<<<< HEAD
+  "version": "1.0.0",
+  "description": "Memora Elder Safety & Assistance Mobile Application",
+  "main": "src/App.jsx",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "vitest": "^1.2.0"
+=======
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "lucide-react": "^0.344.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "jsdom": "^24.0.0",
+    "vite": "^5.1.4",
+    "vitest": "^1.3.1"
+>>>>>>> 7c9965d9590bdc0c5177cb353c60eab343a31e8b
+  }
+}

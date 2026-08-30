@@ -1,0 +1,45 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #090d16;
+  color: #f8fafc;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Elder-friendly Touch Target Utility */
+.touch-target-xl {
+  min-height: 64px;
+  min-width: 64px;
+}
+
+.touch-target-2xl {
+  min-height: 80px;
+  min-width: 80px;
+}
+
+/* High Contrast Glow Animations */
+@keyframes sosPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 24px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.sos-pulse-animation {
+  animation: sosPulse 2s infinite;
+}
