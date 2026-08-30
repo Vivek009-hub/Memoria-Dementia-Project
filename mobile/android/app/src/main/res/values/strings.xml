@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Memora Mobile</string>
+    <string name="title_activity_main">Memora Mobile</string>
+    <string name="package_name">com.memora.safety</string>
+    <string name="custom_url_scheme">com.memora.safety</string>
+</resources>
