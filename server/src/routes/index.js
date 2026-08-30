@@ -11,6 +11,8 @@ import meetingsRouter from '../modules/meetings/meeting.routes.js';
 import notificationsRouter from '../modules/notifications/notification.routes.js';
 import aiRouter from '../modules/ai/ai.routes.js';
 import { analyticsRouter, adminAnalyticsRouter } from '../modules/analytics/analytics.routes.js';
+import safetyRouter from '../modules/safety/safety.routes.js';
+import notificationsRouter from '../modules/notifications/notification.routes.js';
 
 const router = Router();
 
@@ -48,7 +50,11 @@ router.use('/admin/community', adminCommunityRouter);
 router.use('/community', meetingsRouter);
 router.use('/meetings', meetingsRouter);
 
+<<<<<<< HEAD
 // B9 — Notifications
+=======
+// B9 — Notifications & Alerts Infrastructure
+>>>>>>> 7c9965d9590bdc0c5177cb353c60eab343a31e8b
 router.use('/notifications', notificationsRouter);
 
 // B11 — AI Cognitive & Memory Assistance
@@ -58,4 +64,10 @@ router.use('/ai', aiRouter);
 router.use('/analytics', analyticsRouter);
 router.use('/admin/analytics', adminAnalyticsRouter);
 
+<<<<<<< HEAD
+=======
+// B12 — Safety, Emergency & Location Backend
+router.use('/safety', safetyRouter);
+
+>>>>>>> 7c9965d9590bdc0c5177cb353c60eab343a31e8b
 export default router;
