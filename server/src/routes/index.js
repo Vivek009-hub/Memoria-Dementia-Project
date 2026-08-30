@@ -3,6 +3,7 @@ import authRouter from '../modules/auth/auth.routes.js';
 import usersRouter from '../modules/users/users.routes.js';
 import patientsRouter from '../modules/patients/patients.routes.js';
 import caregiversRouter from '../modules/caregivers/caregivers.routes.js';
+import gamesRouter from '../modules/games/game.routes.js';
 
 const router = Router();
 
@@ -23,4 +24,8 @@ router.use('/users', usersRouter);
 router.use('/patients', patientsRouter);
 router.use('/caregivers', caregiversRouter);
 
+// B4 — Cognitive Games
+router.use('/games', gamesRouter);
+
 export default router;
+
