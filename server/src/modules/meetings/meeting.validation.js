@@ -51,11 +51,7 @@ export function validateCreateMeeting(body) {
 
   if (maximumParticipants !== undefined && maximumParticipants !== null) {
     if (typeof maximumParticipants !== 'number' || maximumParticipants < 1) {
-      throw new AppError(
-        'maximumParticipants must be an integer >= 1',
-        422,
-        'VALIDATION_ERROR'
-      );
+      throw new AppError('maximumParticipants must be an integer >= 1', 422, 'VALIDATION_ERROR');
     }
   }
 

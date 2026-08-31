@@ -97,13 +97,7 @@ export function validateListQuery(query) {
 // ── Preference update validation ──────────────────────────────────────────────
 
 const ALLOWED_CHANNELS = ['inApp', 'push', 'email', 'sms'];
-const ALLOWED_CATEGORIES = [
-  'reminders',
-  'communitySessions',
-  'meetings',
-  'safetyAlerts',
-  'system',
-];
+const ALLOWED_CATEGORIES = ['reminders', 'communitySessions', 'meetings', 'safetyAlerts', 'system'];
 
 /**
  * Validate the body for PATCH /notifications/preferences.

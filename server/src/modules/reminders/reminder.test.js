@@ -320,7 +320,7 @@ describe('computeNextOccurrence â€” scheduling logic', () => {
     expect(next.toISOString()).toBe('2026-09-01T08:00:00.000Z');
   });
 
-  it('advances to next day when today\'s time has passed', () => {
+  it("advances to next day when today's time has passed", () => {
     // Reference: 2026-09-01T10:00:00Z â€” 08:00 UTC already passed, next is 09-02
     const now = new Date('2026-09-01T10:00:00Z');
     const reminder = {
@@ -510,9 +510,7 @@ describe('POST /api/v1/reminders', () => {
   });
 
   it('rejects unauthenticated request with 401', async () => {
-    const res = await request(app)
-      .post('/api/v1/reminders')
-      .send(buildReminderBody());
+    const res = await request(app).post('/api/v1/reminders').send(buildReminderBody());
 
     expect(res.status).toBe(401);
   });
@@ -537,9 +535,8 @@ describe('POST /api/v1/reminders', () => {
 
     // The register endpoint creates CAREGIVER role by default
     // Create an ACTIVE relationship with manageReminders
-    const CaregiverRelationship = (
-      await import('../caregivers/caregiverRelationship.model.js')
-    ).default;
+    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+      .default;
     await CaregiverRelationship.create({
       caregiverId: new mongoose.Types.ObjectId(caregiver.id),
       patientId: new mongoose.Types.ObjectId(patient.id),
@@ -562,9 +559,8 @@ describe('POST /api/v1/reminders', () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const caregiver = await registerAndLogin('caregiver');
 
-    const CaregiverRelationship = (
-      await import('../caregivers/caregiverRelationship.model.js')
-    ).default;
+    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+      .default;
     await CaregiverRelationship.create({
       caregiverId: new mongoose.Types.ObjectId(caregiver.id),
       patientId: new mongoose.Types.ObjectId(patient.id),
@@ -586,9 +582,8 @@ describe('POST /api/v1/reminders', () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const caregiver = await registerAndLogin('caregiver');
 
-    const CaregiverRelationship = (
-      await import('../caregivers/caregiverRelationship.model.js')
-    ).default;
+    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+      .default;
     await CaregiverRelationship.create({
       caregiverId: new mongoose.Types.ObjectId(caregiver.id),
       patientId: new mongoose.Types.ObjectId(patient.id),
@@ -635,9 +630,7 @@ describe('GET /api/v1/reminders', () => {
       .set('Cookie', patientB.cookie)
       .send(buildReminderBody({ title: 'B reminder' }));
 
-    const res = await request(app)
-      .get('/api/v1/reminders')
-      .set('Cookie', patientA.cookie);
+    const res = await request(app).get('/api/v1/reminders').set('Cookie', patientA.cookie);
 
     expect(res.status).toBe(200);
     expect(res.body.data.length).toBe(1);
@@ -709,9 +702,8 @@ describe('GET /api/v1/reminders', () => {
       .set('Cookie', patient.cookie)
       .send(buildReminderBody({ title: 'Patient reminder' }));
 
-    const CaregiverRelationship = (
-      await import('../caregivers/caregiverRelationship.model.js')
-    ).default;
+    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+      .default;
     await CaregiverRelationship.create({
       caregiverId: new mongoose.Types.ObjectId(caregiver.id),
       patientId: new mongoose.Types.ObjectId(patient.id),
@@ -750,7 +742,7 @@ describe('GET /api/v1/reminders/:reminderId', () => {
     expect(res.body.data.id).toBe(reminderId);
   });
 
-  it('patient cannot access another patient\'s reminder (404)', async () => {
+  it("patient cannot access another patient's reminder (404)", async () => {
     const patientA = await registerAndLogin('patientA', 'PATIENT');
     const patientB = await registerAndLogin('patientB', 'PATIENT');
 
@@ -837,7 +829,7 @@ describe('PATCH /api/v1/reminders/:reminderId', () => {
     expect(res.status).toBe(422);
   });
 
-  it('patient cannot update another patient\'s reminder (404)', async () => {
+  it("patient cannot update another patient's reminder (404)", async () => {
     const patientA = await registerAndLogin('patientA', 'PATIENT');
     const patientB = await registerAndLogin('patientB', 'PATIENT');
 
@@ -901,15 +893,13 @@ describe('DELETE /api/v1/reminders/:reminderId', () => {
       status: 'SCHEDULED',
     });
 
-    await request(app)
-      .delete(`/api/v1/reminders/${reminderId}`)
-      .set('Cookie', patient.cookie);
+    await request(app).delete(`/api/v1/reminders/${reminderId}`).set('Cookie', patient.cookie);
 
     const logs = await ReminderLog.find({ reminderId: reminder._id }).lean();
     expect(logs.every((l) => l.status === 'CANCELLED')).toBe(true);
   });
 
-  it('patient cannot delete another patient\'s reminder (404)', async () => {
+  it("patient cannot delete another patient's reminder (404)", async () => {
     const patientA = await registerAndLogin('patientA', 'PATIENT');
     const patientB = await registerAndLogin('patientB', 'PATIENT');
 
@@ -1010,7 +1000,7 @@ describe('POST /api/v1/reminders/:reminderId/complete', () => {
     expect(res.status).toBe(404);
   });
 
-  it('patient cannot complete another patient\'s reminder (404)', async () => {
+  it("patient cannot complete another patient's reminder (404)", async () => {
     const patientA = await registerAndLogin('patientA', 'PATIENT');
     const patientB = await registerAndLogin('patientB', 'PATIENT');
 
@@ -1029,7 +1019,7 @@ describe('POST /api/v1/reminders/:reminderId/complete', () => {
     expect(res.status).toBe(404);
   });
 
-  it('authorized caregiver can complete patient\'s reminder', async () => {
+  it("authorized caregiver can complete patient's reminder", async () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const caregiver = await registerAndLogin('caregiver');
 
@@ -1042,9 +1032,8 @@ describe('POST /api/v1/reminders/:reminderId/complete', () => {
 
     const Reminder = (await import('./reminder.model.js')).default;
     const ReminderLog = (await import('./reminderLog.model.js')).default;
-    const CaregiverRelationship = (
-      await import('../caregivers/caregiverRelationship.model.js')
-    ).default;
+    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+      .default;
 
     const reminder = await Reminder.findById(reminderId).lean();
     await ReminderLog.create({
@@ -1150,9 +1139,7 @@ describe('GET /api/v1/reminders/history', () => {
       completedAt: new Date(),
     });
 
-    const res = await request(app)
-      .get('/api/v1/reminders/history')
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get('/api/v1/reminders/history').set('Cookie', patient.cookie);
 
     expect(res.status).toBe(200);
     expect(res.body.data.length).toBe(1);
@@ -1160,7 +1147,7 @@ describe('GET /api/v1/reminders/history', () => {
     expect(res.body.pagination).toBeDefined();
   });
 
-  it('patient does not see another patient\'s history', async () => {
+  it("patient does not see another patient's history", async () => {
     const patientA = await registerAndLogin('patientA', 'PATIENT');
     const patientB = await registerAndLogin('patientB', 'PATIENT');
 
@@ -1182,9 +1169,7 @@ describe('GET /api/v1/reminders/history', () => {
       completedAt: new Date(),
     });
 
-    const res = await request(app)
-      .get('/api/v1/reminders/history')
-      .set('Cookie', patientA.cookie);
+    const res = await request(app).get('/api/v1/reminders/history').set('Cookie', patientA.cookie);
 
     expect(res.status).toBe(200);
     expect(res.body.data.length).toBe(0);
@@ -1210,9 +1195,7 @@ describe('GET /api/v1/reminders/history', () => {
       status: 'SCHEDULED',
     });
 
-    const res = await request(app)
-      .get('/api/v1/reminders/history')
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get('/api/v1/reminders/history').set('Cookie', patient.cookie);
 
     expect(res.status).toBe(200);
     expect(res.body.data[0].effectiveStatus).toBe('UPCOMING');
@@ -1310,9 +1293,7 @@ describe('End-to-end flow: patient creates â†’ lists â†’ gets â†’
     const reminderId = createRes.body.data.id;
 
     // 2. List
-    const listRes = await request(app)
-      .get('/api/v1/reminders')
-      .set('Cookie', patient.cookie);
+    const listRes = await request(app).get('/api/v1/reminders').set('Cookie', patient.cookie);
     expect(listRes.status).toBe(200);
     expect(listRes.body.data.some((r) => r.id === reminderId)).toBe(true);
 
@@ -1358,6 +1339,3 @@ describe('End-to-end flow: patient creates â†’ lists â†’ gets â†’
     expect(crossRes.status).toBe(404);
   });
 });
-
-
-

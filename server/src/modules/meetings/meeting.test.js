@@ -142,7 +142,8 @@ describe('Phase B8 — Memora Meeting Circle', () => {
 
     it('allows pre-registered patient to join meeting and tracks participant state', async () => {
       // Register patient for community session first
-      const SessionRegistration = (await import('../community/sessionRegistration.model.js')).default;
+      const SessionRegistration = (await import('../community/sessionRegistration.model.js'))
+        .default;
       await SessionRegistration.create({
         sessionId: sessionData._id,
         patientId: patientUser.userId,
@@ -174,7 +175,8 @@ describe('Phase B8 — Memora Meeting Circle', () => {
     });
 
     it('enforces active meeting participant capacity', async () => {
-      const SessionRegistration = (await import('../community/sessionRegistration.model.js')).default;
+      const SessionRegistration = (await import('../community/sessionRegistration.model.js'))
+        .default;
 
       // Register patientUser and strangerUser
       await SessionRegistration.create({
@@ -270,13 +272,11 @@ describe('Phase B8 — Memora Meeting Circle', () => {
     });
 
     it('processes provider webhooks idempotently', async () => {
-      const res = await request(app)
-        .post('/api/v1/meetings/webhooks/mock')
-        .send({
-          eventId: 'evt_12345',
-          eventType: 'meeting.ended',
-          providerMeetingId: 'mock_room_1',
-        });
+      const res = await request(app).post('/api/v1/meetings/webhooks/mock').send({
+        eventId: 'evt_12345',
+        eventType: 'meeting.ended',
+        providerMeetingId: 'mock_room_1',
+      });
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);

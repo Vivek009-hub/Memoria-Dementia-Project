@@ -120,9 +120,7 @@ export async function createNotification(data) {
       message,
       priority,
       relatedResourceType,
-      relatedResourceId: relatedResourceId
-        ? new mongoose.Types.ObjectId(relatedResourceId)
-        : null,
+      relatedResourceId: relatedResourceId ? new mongoose.Types.ObjectId(relatedResourceId) : null,
       expiresAt,
     });
 
@@ -462,11 +460,7 @@ export async function updatePreferences(userId, updates) {
         throw new AppError(`Invalid preference category: ${key}`, 400, 'INVALID_INPUT');
       }
       if (typeof value !== 'boolean') {
-        throw new AppError(
-          `Category preference "${key}" must be a boolean`,
-          400,
-          'INVALID_INPUT'
-        );
+        throw new AppError(`Category preference "${key}" must be a boolean`, 400, 'INVALID_INPUT');
       }
       setFields[`categories.${key}`] = value;
     }

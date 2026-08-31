@@ -84,22 +84,16 @@ describe('Phase B14 — Full System Integration & Hardening (E2E Workflows)', ()
       const cookie = loginRes.headers['set-cookie'];
 
       // 3. User Profile
-      const meRes = await request(app)
-        .get('/api/v1/users/me')
-        .set('Cookie', cookie);
+      const meRes = await request(app).get('/api/v1/users/me').set('Cookie', cookie);
       expect(meRes.status).toBe(200);
       expect(meRes.body.data.user.email).toBe(email);
 
       // 4. Logout
-      const logoutRes = await request(app)
-        .post('/api/v1/auth/logout')
-        .set('Cookie', cookie);
+      const logoutRes = await request(app).post('/api/v1/auth/logout').set('Cookie', cookie);
       expect(logoutRes.status).toBe(200);
 
       // 5. Verify unauthenticated
-      const failRes = await request(app)
-        .get('/api/v1/users/me')
-        .set('Cookie', cookie);
+      const failRes = await request(app).get('/api/v1/users/me').set('Cookie', cookie);
       expect(failRes.status).toBe(401);
     });
   });
@@ -110,16 +104,13 @@ describe('Phase B14 — Full System Integration & Hardening (E2E Workflows)', ()
       const patient = await registerAndLogin('patientgame', 'PATIENT');
 
       // 1. Admin creates a cognitive game
-      const gameRes = await request(app)
-        .post('/api/v1/games')
-        .set('Cookie', admin.cookie)
-        .send({
-          title: 'Spatial Pattern Match',
-          description: 'Memorize the grid patterns',
-          category: 'PATTERN',
-          difficulty: 'EASY',
-          instructions: 'Look at the highlighted cells',
-        });
+      const gameRes = await request(app).post('/api/v1/games').set('Cookie', admin.cookie).send({
+        title: 'Spatial Pattern Match',
+        description: 'Memorize the grid patterns',
+        category: 'PATTERN',
+        difficulty: 'EASY',
+        instructions: 'Look at the highlighted cells',
+      });
       expect(gameRes.status).toBe(201);
       const gameId = gameRes.body.data._id || gameRes.body.data.id;
 

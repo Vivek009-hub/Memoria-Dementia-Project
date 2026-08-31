@@ -196,8 +196,12 @@ describe('Community Sessions & Proposals (B7)', () => {
     const ideaId = propRes.body.data._id;
 
     // 2. Patient A & B vote
-    await request(app).post(`/api/v1/community/sessions/ideas/${ideaId}/vote`).set('Cookie', patientA.cookie);
-    await request(app).post(`/api/v1/community/sessions/ideas/${ideaId}/vote`).set('Cookie', patientB.cookie);
+    await request(app)
+      .post(`/api/v1/community/sessions/ideas/${ideaId}/vote`)
+      .set('Cookie', patientA.cookie);
+    await request(app)
+      .post(`/api/v1/community/sessions/ideas/${ideaId}/vote`)
+      .set('Cookie', patientB.cookie);
 
     // 3. Admin approves proposal
     const approveRes = await request(app)

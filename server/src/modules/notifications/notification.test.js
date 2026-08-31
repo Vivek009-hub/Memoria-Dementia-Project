@@ -211,9 +211,7 @@ describe('Notification API — list (B9)', () => {
     await createTestNotification(patient.id);
     await createTestNotification(patient.id, { title: 'Second', message: 'Second notification.' });
 
-    const res = await request(app)
-      .get('/api/v1/notifications')
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get('/api/v1/notifications').set('Cookie', patient.cookie);
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
@@ -226,9 +224,7 @@ describe('Notification API — list (B9)', () => {
   it('returns empty list when user has no notifications', async () => {
     const patient = await registerAndLogin('emptypatient', 'PATIENT');
 
-    const res = await request(app)
-      .get('/api/v1/notifications')
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get('/api/v1/notifications').set('Cookie', patient.cookie);
 
     expect(res.status).toBe(200);
     expect(res.body.data).toEqual([]);
@@ -419,7 +415,7 @@ describe('Notification API — mark all as read (B9)', () => {
 // ── 8. SECURITY: CROSS-USER ACCESS ───────────────────────────────────────────
 
 describe('Notification Security — cross-user access (B9)', () => {
-  it('user cannot access another user\'s notification', async () => {
+  it("user cannot access another user's notification", async () => {
     const patientA = await registerAndLogin('securityA', 'PATIENT');
     const patientB = await registerAndLogin('securityB', 'PATIENT');
 
@@ -433,7 +429,7 @@ describe('Notification Security — cross-user access (B9)', () => {
     expect(res.status).toBe(404); // 404, not 403, to avoid information leakage
   });
 
-  it('user cannot mark another user\'s notification as read', async () => {
+  it("user cannot mark another user's notification as read", async () => {
     const patientA = await registerAndLogin('markSecA', 'PATIENT');
     const patientB = await registerAndLogin('markSecB', 'PATIENT');
 
@@ -451,16 +447,14 @@ describe('Notification Security — cross-user access (B9)', () => {
     expect(original.isRead).toBe(false);
   });
 
-  it('user cannot list another user\'s notifications (list is scoped to self)', async () => {
+  it("user cannot list another user's notifications (list is scoped to self)", async () => {
     const patientA = await registerAndLogin('listSecA', 'PATIENT');
     const patientB = await registerAndLogin('listSecB', 'PATIENT');
 
     await createTestNotification(patientA.id);
 
     // Patient B's list should not contain Patient A's notification
-    const res = await request(app)
-      .get('/api/v1/notifications')
-      .set('Cookie', patientB.cookie);
+    const res = await request(app).get('/api/v1/notifications').set('Cookie', patientB.cookie);
 
     expect(res.status).toBe(200);
     const notifIds = res.body.data.map((n) => n._id);
@@ -538,7 +532,7 @@ describe('Notification Preferences (B9)', () => {
     expect(res.status).toBe(400);
   });
 
-  it('user cannot modify another user\'s preferences', async () => {
+  it("user cannot modify another user's preferences", async () => {
     const patientA = await registerAndLogin('prefSecA', 'PATIENT');
     const patientB = await registerAndLogin('prefSecB', 'PATIENT');
 

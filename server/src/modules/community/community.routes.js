@@ -60,7 +60,10 @@ adminCommunityRouter.post('/sessions/ideas/:ideaId/schedule', controller.schedul
 adminCommunityRouter.post('/sessions/schedule', controller.scheduleSession);
 adminCommunityRouter.patch('/sessions/:sessionId', controller.adminUpdateSession);
 adminCommunityRouter.post('/sessions/:sessionId/cancel', controller.adminCancelSession);
-adminCommunityRouter.post('/sessions/:sessionId/registration/close', controller.adminCloseRegistration);
+adminCommunityRouter.post(
+  '/sessions/:sessionId/registration/close',
+  controller.adminCloseRegistration
+);
 adminCommunityRouter.get('/sessions/:sessionId/registrations', controller.adminGetRegistrations);
 
 export default {

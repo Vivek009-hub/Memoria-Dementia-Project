@@ -102,7 +102,14 @@ function getUtcOffsetMinutes(timezone, date) {
   // Intl hour12:false returns 24 for midnight in some locales — normalise
   if (h === 24) h = 0;
 
-  const localMs = Date.UTC(get('year'), get('month') - 1, get('day'), h, get('minute'), get('second'));
+  const localMs = Date.UTC(
+    get('year'),
+    get('month') - 1,
+    get('day'),
+    h,
+    get('minute'),
+    get('second')
+  );
 
   return Math.round((localMs - date.getTime()) / 60000);
 }
@@ -136,9 +143,8 @@ export function computeNextOccurrence(reminder, after) {
   const globalEndDate = endDate ? new Date(endDate) : null;
 
   // Earliest valid date to search from
-  const searchFrom = schedule.startAt && new Date(schedule.startAt) > now
-    ? new Date(schedule.startAt)
-    : now;
+  const searchFrom =
+    schedule.startAt && new Date(schedule.startAt) > now ? new Date(schedule.startAt) : now;
 
   // Start iterating from searchFrom, advancing by frequency unit
   let candidate = new Date(searchFrom);

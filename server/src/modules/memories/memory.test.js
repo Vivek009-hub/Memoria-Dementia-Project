@@ -81,9 +81,8 @@ async function registerAndLogin(prefix = 'user', role = undefined) {
  * Create an ACTIVE caregiver relationship with given permissions.
  */
 async function createActiveRelationship(caregiverId, patientId, permissions = {}) {
-  const CaregiverRelationship = (
-    await import('../caregivers/caregiverRelationship.model.js')
-  ).default;
+  const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+    .default;
   return CaregiverRelationship.create({
     caregiverId: new mongoose.Types.ObjectId(caregiverId),
     patientId: new mongoose.Types.ObjectId(patientId),
@@ -292,9 +291,8 @@ describe('POST /api/v1/memories', () => {
   it('REVOKED caregiver (403)', async () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const caregiver = await registerAndLogin('caregiver');
-    const CaregiverRelationship = (
-      await import('../caregivers/caregiverRelationship.model.js')
-    ).default;
+    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+      .default;
     await CaregiverRelationship.create({
       caregiverId: new mongoose.Types.ObjectId(caregiver.id),
       patientId: new mongoose.Types.ObjectId(patient.id),
@@ -323,9 +321,7 @@ describe('GET /api/v1/memories', () => {
     await createMemoryViaApi(patientA.cookie, { title: 'Second' });
     await createMemoryViaApi(patientB.cookie, { title: 'PatientB Memory' });
 
-    const res = await request(app)
-      .get('/api/v1/memories')
-      .set('Cookie', patientA.cookie);
+    const res = await request(app).get('/api/v1/memories').set('Cookie', patientA.cookie);
     expect(res.status).toBe(200);
     expect(res.body.data.length).toBe(2);
     res.body.data.forEach((m) => expect(m.patientId).toBe(patientA.id));
@@ -351,9 +347,7 @@ describe('GET /api/v1/memories', () => {
     const memId = res1.body.data._id;
 
     // Deactivate
-    await request(app)
-      .delete(`/api/v1/memories/${memId}`)
-      .set('Cookie', patient.cookie);
+    await request(app).delete(`/api/v1/memories/${memId}`).set('Cookie', patient.cookie);
 
     const res = await request(app)
       .get('/api/v1/memories')
@@ -377,9 +371,7 @@ describe('GET /api/v1/memories', () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     await createMemoryViaApi(patient.cookie);
 
-    const res = await request(app)
-      .get('/api/v1/memories')
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get('/api/v1/memories').set('Cookie', patient.cookie);
     expect(res.status).toBe(200);
     expect(res.body.pagination).toBeDefined();
     expect(res.body.pagination.total).toBe(1);
@@ -408,9 +400,7 @@ describe('GET /api/v1/memories/:memoryId', () => {
     const createRes = await createMemoryViaApi(patient.cookie);
     const memId = createRes.body.data._id;
 
-    const res = await request(app)
-      .get(`/api/v1/memories/${memId}`)
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get(`/api/v1/memories/${memId}`).set('Cookie', patient.cookie);
     expect(res.status).toBe(200);
     expect(res.body.data._id).toBe(memId);
   });
@@ -421,26 +411,20 @@ describe('GET /api/v1/memories/:memoryId', () => {
     const createRes = await createMemoryViaApi(patientA.cookie);
     const memId = createRes.body.data._id;
 
-    const res = await request(app)
-      .get(`/api/v1/memories/${memId}`)
-      .set('Cookie', patientB.cookie);
+    const res = await request(app).get(`/api/v1/memories/${memId}`).set('Cookie', patientB.cookie);
     expect(res.status).toBe(404);
   });
 
   it('rejects invalid ObjectId (400)', async () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
-    const res = await request(app)
-      .get('/api/v1/memories/not-an-id')
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get('/api/v1/memories/not-an-id').set('Cookie', patient.cookie);
     expect(res.status).toBe(400);
   });
 
   it('returns 404 for non-existent memory', async () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const fakeId = new mongoose.Types.ObjectId().toString();
-    const res = await request(app)
-      .get(`/api/v1/memories/${fakeId}`)
-      .set('Cookie', patient.cookie);
+    const res = await request(app).get(`/api/v1/memories/${fakeId}`).set('Cookie', patient.cookie);
     expect(res.status).toBe(404);
   });
 });

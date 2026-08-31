@@ -43,7 +43,11 @@ export async function createMeetingForSession(sessionId, user, meetingData = {})
   const isAdmin = user.role === 'ADMIN';
 
   if (!isHost && !isCreator && !isAdmin) {
-    throw new AppError('You do not have permission to create a meeting for this session', 403, 'FORBIDDEN');
+    throw new AppError(
+      'You do not have permission to create a meeting for this session',
+      403,
+      'FORBIDDEN'
+    );
   }
 
   // Check if meeting already exists
@@ -123,7 +127,8 @@ export async function joinMeeting(sessionId, user) {
   }
 
   // Determine user role for meeting
-  const isHost = (session.hostId && session.hostId.toString() === user.id.toString()) || user.role === 'ADMIN';
+  const isHost =
+    (session.hostId && session.hostId.toString() === user.id.toString()) || user.role === 'ADMIN';
   const participantRole = isHost ? 'HOST' : 'PATIENT';
 
   if (!isHost) {
@@ -134,7 +139,11 @@ export async function joinMeeting(sessionId, user) {
     });
 
     if (!registration || registration.status === 'CANCELLED') {
-      throw new AppError('You must be registered for this session to join the meeting', 403, 'FORBIDDEN');
+      throw new AppError(
+        'You must be registered for this session to join the meeting',
+        403,
+        'FORBIDDEN'
+      );
     }
   }
 
@@ -144,13 +153,21 @@ export async function joinMeeting(sessionId, user) {
     if (isHost) {
       meeting = await createMeetingForSession(sessionId, user);
     } else {
-      throw new AppError('Meeting has not been initialized for this session yet', 404, 'MEETING_NOT_INITIALIZED');
+      throw new AppError(
+        'Meeting has not been initialized for this session yet',
+        404,
+        'MEETING_NOT_INITIALIZED'
+      );
     }
   }
 
   // Check meeting status
   if (['COMPLETED', 'CANCELLED', 'EXPIRED'].includes(meeting.status)) {
-    throw new AppError(`Meeting is ${meeting.status.toLowerCase()} and cannot be joined`, 400, 'MEETING_CLOSED');
+    throw new AppError(
+      `Meeting is ${meeting.status.toLowerCase()} and cannot be joined`,
+      400,
+      'MEETING_CLOSED'
+    );
   }
 
   // Check existing participant record
@@ -275,7 +292,10 @@ export async function leaveMeeting(sessionId, user) {
   if (activeAttendance) {
     activeAttendance.status = 'LEFT';
     activeAttendance.leftAt = now;
-    const duration = Math.max(0, Math.floor((now.getTime() - activeAttendance.joinedAt.getTime()) / 1000));
+    const duration = Math.max(
+      0,
+      Math.floor((now.getTime() - activeAttendance.joinedAt.getTime()) / 1000)
+    );
     activeAttendance.durationSeconds = duration;
     await activeAttendance.save();
   }
@@ -302,7 +322,11 @@ export async function startMeeting(sessionId, user) {
   }
 
   if (['COMPLETED', 'CANCELLED', 'EXPIRED'].includes(meeting.status)) {
-    throw new AppError(`Cannot start a meeting that is ${meeting.status.toLowerCase()}`, 400, 'INVALID_STATE_TRANSITION');
+    throw new AppError(
+      `Cannot start a meeting that is ${meeting.status.toLowerCase()}`,
+      400,
+      'INVALID_STATE_TRANSITION'
+    );
   }
 
   const provider = getProvider(meeting.provider);
@@ -360,7 +384,10 @@ export async function endMeeting(sessionId, user) {
   for (const record of openAttendance) {
     record.status = 'LEFT';
     record.leftAt = now;
-    record.durationSeconds = Math.max(0, Math.floor((now.getTime() - record.joinedAt.getTime()) / 1000));
+    record.durationSeconds = Math.max(
+      0,
+      Math.floor((now.getTime() - record.joinedAt.getTime()) / 1000)
+    );
     await record.save();
   }
 
@@ -418,7 +445,10 @@ export async function removeParticipant(sessionId, hostUser, targetUserId) {
     if (activeAttendance) {
       activeAttendance.status = 'REMOVED';
       activeAttendance.leftAt = now;
-      activeAttendance.durationSeconds = Math.max(0, Math.floor((now.getTime() - activeAttendance.joinedAt.getTime()) / 1000));
+      activeAttendance.durationSeconds = Math.max(
+        0,
+        Math.floor((now.getTime() - activeAttendance.joinedAt.getTime()) / 1000)
+      );
       await activeAttendance.save();
     }
   }

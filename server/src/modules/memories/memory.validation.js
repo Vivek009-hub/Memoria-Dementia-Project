@@ -48,11 +48,7 @@ export function validateCreateMemory(body) {
   }
 
   if (!body.type || !MEMORY_TYPES.includes(body.type)) {
-    throw new AppError(
-      `type must be one of: ${MEMORY_TYPES.join(', ')}`,
-      422,
-      'VALIDATION_ERROR'
-    );
+    throw new AppError(`type must be one of: ${MEMORY_TYPES.join(', ')}`, 422, 'VALIDATION_ERROR');
   }
 
   const data = {
@@ -296,7 +292,11 @@ export function validateListMemoriesQuery(query = {}) {
 
   if (query.type !== undefined) {
     if (!MEMORY_TYPES.includes(query.type)) {
-      throw new AppError(`type must be one of: ${MEMORY_TYPES.join(', ')}`, 422, 'VALIDATION_ERROR');
+      throw new AppError(
+        `type must be one of: ${MEMORY_TYPES.join(', ')}`,
+        422,
+        'VALIDATION_ERROR'
+      );
     }
     result.type = query.type;
   }
@@ -314,7 +314,8 @@ export function validateListMemoriesQuery(query = {}) {
 
   if (query.from !== undefined) {
     const d = new Date(query.from);
-    if (isNaN(d.getTime())) throw new AppError('from must be a valid date', 422, 'VALIDATION_ERROR');
+    if (isNaN(d.getTime()))
+      throw new AppError('from must be a valid date', 422, 'VALIDATION_ERROR');
     result.from = d.toISOString();
   }
 
@@ -329,13 +330,15 @@ export function validateListMemoriesQuery(query = {}) {
 
   if (query.page !== undefined) {
     const p = parseInt(query.page, 10);
-    if (isNaN(p) || p < 1) throw new AppError('page must be an integer >= 1', 422, 'VALIDATION_ERROR');
+    if (isNaN(p) || p < 1)
+      throw new AppError('page must be an integer >= 1', 422, 'VALIDATION_ERROR');
     result.page = p;
   }
 
   if (query.limit !== undefined) {
     const l = parseInt(query.limit, 10);
-    if (isNaN(l) || l < 1) throw new AppError('limit must be an integer >= 1', 422, 'VALIDATION_ERROR');
+    if (isNaN(l) || l < 1)
+      throw new AppError('limit must be an integer >= 1', 422, 'VALIDATION_ERROR');
     if (l > 100) throw new AppError('limit must be at most 100', 422, 'VALIDATION_ERROR');
     result.limit = l;
   }
@@ -413,7 +416,10 @@ export function validateUpdateFamilyMember(body) {
   }
 
   if (body.relationship !== undefined) {
-    if (body.relationship !== null && (typeof body.relationship !== 'string' || body.relationship.length > 100)) {
+    if (
+      body.relationship !== null &&
+      (typeof body.relationship !== 'string' || body.relationship.length > 100)
+    ) {
       throw new AppError('relationship must be at most 100 characters', 422, 'VALIDATION_ERROR');
     }
     data.relationship = body.relationship ? body.relationship.trim() : null;
@@ -434,7 +440,10 @@ export function validateUpdateFamilyMember(body) {
   }
 
   if (body.description !== undefined) {
-    if (body.description !== null && (typeof body.description !== 'string' || body.description.length > 2000)) {
+    if (
+      body.description !== null &&
+      (typeof body.description !== 'string' || body.description.length > 2000)
+    ) {
       throw new AppError('description must be at most 2000 characters', 422, 'VALIDATION_ERROR');
     }
     data.description = body.description ? body.description.trim() : null;
@@ -479,13 +488,15 @@ export function validateListFamilyMembersQuery(query = {}) {
 
   if (query.page !== undefined) {
     const p = parseInt(query.page, 10);
-    if (isNaN(p) || p < 1) throw new AppError('page must be an integer >= 1', 422, 'VALIDATION_ERROR');
+    if (isNaN(p) || p < 1)
+      throw new AppError('page must be an integer >= 1', 422, 'VALIDATION_ERROR');
     result.page = p;
   }
 
   if (query.limit !== undefined) {
     const l = parseInt(query.limit, 10);
-    if (isNaN(l) || l < 1) throw new AppError('limit must be an integer >= 1', 422, 'VALIDATION_ERROR');
+    if (isNaN(l) || l < 1)
+      throw new AppError('limit must be an integer >= 1', 422, 'VALIDATION_ERROR');
     if (l > 100) throw new AppError('limit must be at most 100', 422, 'VALIDATION_ERROR');
     result.limit = l;
   }

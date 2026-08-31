@@ -10,11 +10,7 @@ export async function createMeeting(req, res, next) {
     const { sessionId } = req.params;
     validateObjectId(sessionId, 'sessionId');
     validateCreateMeeting(req.body);
-    const meeting = await meetingService.createMeetingForSession(
-      sessionId,
-      req.user,
-      req.body
-    );
+    const meeting = await meetingService.createMeetingForSession(sessionId, req.user, req.body);
     res.status(201).json({ success: true, data: meeting });
   } catch (err) {
     next(err);
@@ -81,11 +77,7 @@ export async function removeParticipant(req, res, next) {
     const { sessionId, participantId } = req.params;
     validateObjectId(sessionId, 'sessionId');
     validateObjectId(participantId, 'participantId');
-    const result = await meetingService.removeParticipant(
-      sessionId,
-      req.user,
-      participantId
-    );
+    const result = await meetingService.removeParticipant(sessionId, req.user, participantId);
     res.status(200).json({ success: true, data: result });
   } catch (err) {
     next(err);

@@ -200,7 +200,11 @@ export async function getVotingResults(queryParams = {}) {
   }
 
   const [proposals, total] = await Promise.all([
-    CommunityProposal.find(filter).sort({ voteCount: -1, createdAt: -1 }).skip(skip).limit(limit).lean(),
+    CommunityProposal.find(filter)
+      .sort({ voteCount: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
     CommunityProposal.countDocuments(filter),
   ]);
 
@@ -410,7 +414,8 @@ export async function registerForSession(sessionId, patientId) {
   }
 
   if (session.registrationStatus !== 'OPEN') {
-    const errorCode = session.registrationStatus === 'FULL' ? 'SESSION_FULL' : 'REGISTRATION_CLOSED';
+    const errorCode =
+      session.registrationStatus === 'FULL' ? 'SESSION_FULL' : 'REGISTRATION_CLOSED';
     throw new AppError(
       `Registration for this session is ${session.registrationStatus.toLowerCase()}`,
       409,
@@ -422,7 +427,11 @@ export async function registerForSession(sessionId, patientId) {
   const existingReg = await SessionRegistration.findOne({ sessionId, patientId });
   if (existingReg) {
     if (existingReg.status === 'REGISTERED') {
-      throw new AppError('You are already registered for this session', 409, 'DUPLICATE_REGISTRATION');
+      throw new AppError(
+        'You are already registered for this session',
+        409,
+        'DUPLICATE_REGISTRATION'
+      );
     }
     // Re-activating cancelled registration
     existingReg.status = 'REGISTERED';
@@ -462,7 +471,11 @@ export async function registerForSession(sessionId, patientId) {
       // Rollback count if DB constraint failed
       await CommunitySession.findByIdAndUpdate(sessionId, { $inc: { registeredCount: -1 } });
       if (err.code === 11000) {
-        throw new AppError('You are already registered for this session', 409, 'DUPLICATE_REGISTRATION');
+        throw new AppError(
+          'You are already registered for this session',
+          409,
+          'DUPLICATE_REGISTRATION'
+        );
       }
       throw err;
     }
@@ -505,7 +518,10 @@ export async function cancelRegistration(sessionId, patientId) {
     { new: true }
   );
 
-  if (updatedSession.registeredCount < updatedSession.maximumParticipants && updatedSession.registrationStatus === 'FULL') {
+  if (
+    updatedSession.registeredCount < updatedSession.maximumParticipants &&
+    updatedSession.registrationStatus === 'FULL'
+  ) {
     await CommunitySession.findByIdAndUpdate(sessionId, { registrationStatus: 'OPEN' });
   }
 
@@ -562,7 +578,8 @@ export async function adminUpdateSession(sessionId, data) {
   if (data.timezone !== undefined) session.timezone = data.timezone;
   if (data.hostId !== undefined) session.hostId = data.hostId;
   if (data.featuredPerson !== undefined) session.featuredPerson = data.featuredPerson;
-  if (data.maximumParticipants !== undefined) session.maximumParticipants = data.maximumParticipants;
+  if (data.maximumParticipants !== undefined)
+    session.maximumParticipants = data.maximumParticipants;
   if (data.meetingType !== undefined) session.meetingType = data.meetingType;
   if (data.registrationStatus !== undefined) session.registrationStatus = data.registrationStatus;
   if (data.status !== undefined) session.status = data.status;

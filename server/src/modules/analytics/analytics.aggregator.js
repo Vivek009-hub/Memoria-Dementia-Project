@@ -150,6 +150,9 @@ export function calculateEngagementScore(games, reminders, memories, community) 
   score += (games.completed || 0) * 10;
   score += (reminders.completed || 0) * 5;
   score += (memories.created || 0) * 8 + (memories.viewed || 0) * 2;
-  score += (community.votes || 0) * 3 + (community.registrations || 0) * 5 + (community.attendances || 0) * 10;
+  score +=
+    (community.votes || 0) * 3 +
+    (community.registrations || 0) * 5 +
+    (community.attendances || 0) * 10;
   return score;
 }

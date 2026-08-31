@@ -157,11 +157,7 @@ export async function updateFamilyMember(req, res, next) {
   try {
     const updates = validateUpdateFamilyMember(req.body);
     const patientId = resolvePatientId(req);
-    const member = await memoryService.updateFamilyMember(
-      req.params.memberId,
-      patientId,
-      updates
-    );
+    const member = await memoryService.updateFamilyMember(req.params.memberId, patientId, updates);
     res.status(200).json({ success: true, data: member });
   } catch (err) {
     next(err);
