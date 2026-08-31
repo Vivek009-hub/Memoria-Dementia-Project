@@ -5,6 +5,7 @@
  * All authorization is handled by middleware before reaching these handlers.
  */
 
+import fs from 'fs';
 import * as memoryService from './memory.service.js';
 import {
   validateCreateMemory,
@@ -39,11 +40,21 @@ function resolvePatientId(req) {
  */
 export async function createMemory(req, res, next) {
   try {
+    if (req.file) {
+      req.body.mediaUrl = `/uploads/memories/${req.file.filename}`;
+    }
     const data = validateCreateMemory(req.body);
     const patientId = resolvePatientId(req);
     const memory = await memoryService.createMemory(patientId, req.user.id, data);
     res.status(201).json({ success: true, data: memory });
   } catch (err) {
+    if (req.file && req.file.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {
+        // Cleanup error ignore
+      }
+    }
     next(err);
   }
 }
@@ -80,6 +91,9 @@ export async function getMemory(req, res, next) {
  */
 export async function updateMemory(req, res, next) {
   try {
+    if (req.file) {
+      req.body.mediaUrl = `/uploads/memories/${req.file.filename}`;
+    }
     const updates = validateUpdateMemory(req.body);
     const patientId = resolvePatientId(req);
     const memory = await memoryService.updateMemory(
@@ -90,6 +104,13 @@ export async function updateMemory(req, res, next) {
     );
     res.status(200).json({ success: true, data: memory });
   } catch (err) {
+    if (req.file && req.file.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {
+        // Cleanup error ignore
+      }
+    }
     next(err);
   }
 }

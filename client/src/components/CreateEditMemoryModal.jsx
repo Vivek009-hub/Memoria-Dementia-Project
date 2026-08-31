@@ -28,6 +28,8 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
   const [description, setDescription] = useState('');
   const [type, setType] = useState('PHOTO');
   const [mediaUrl, setMediaUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [relatedPlace, setRelatedPlace] = useState('');
   const [importantDate, setImportantDate] = useState('');
   const [datePrecision, setDatePrecision] = useState('exact');
@@ -77,10 +79,39 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
       setRelatedPersonId('');
       setTagsInput('');
     }
+    setSelectedFile(null);
+    setPreviewUrl(null);
     setErrorMsg('');
   }, [memory, isOpen]);
 
   if (!isOpen) return null;
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setErrorMsg('Please select a valid image file (JPEG, PNG, WEBP, GIF).');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMsg('Selected photo exceeds the 10MB file size limit.');
+      return;
+    }
+
+    setErrorMsg('');
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleRemoveSelectedFile = () => {
+    setSelectedFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,20 +135,39 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
       .map((t) => t.trim())
       .filter((t) => t.length > 0);
 
-    const payload = {
-      title: title.trim(),
-      description: description.trim() || undefined,
-      type,
-      mediaUrl: mediaUrl.trim() || undefined,
-      relatedPlace: relatedPlace.trim() || undefined,
-      importantDate: importantDate ? new Date(importantDate).toISOString() : undefined,
-      datePrecision,
-      relatedPersonId: relatedPersonId || undefined,
-      tags: parsedTags.length > 0 ? parsedTags : undefined,
-    };
-
     try {
-      await onSave(payload, memory?._id);
+      if (selectedFile) {
+        // Submit using FormData for local file upload
+        const formData = new FormData();
+        formData.append('photo', selectedFile);
+        formData.append('title', title.trim());
+        if (description.trim()) formData.append('description', description.trim());
+        formData.append('type', type);
+        if (relatedPlace.trim()) formData.append('relatedPlace', relatedPlace.trim());
+        if (importantDate) formData.append('importantDate', new Date(importantDate).toISOString());
+        formData.append('datePrecision', datePrecision);
+        if (relatedPersonId) formData.append('relatedPersonId', relatedPersonId);
+        if (parsedTags.length > 0) {
+          parsedTags.forEach((tag) => formData.append('tags', tag));
+        }
+
+        await onSave(formData, memory?._id);
+      } else {
+        // Submit JSON object if no local file selected (e.g. text or URL)
+        const payload = {
+          title: title.trim(),
+          description: description.trim() || undefined,
+          type,
+          mediaUrl: mediaUrl.trim() || undefined,
+          relatedPlace: relatedPlace.trim() || undefined,
+          importantDate: importantDate ? new Date(importantDate).toISOString() : undefined,
+          datePrecision,
+          relatedPersonId: relatedPersonId || undefined,
+          tags: parsedTags.length > 0 ? parsedTags : undefined,
+        };
+
+        await onSave(payload, memory?._id);
+      }
       onClose();
     } catch (err) {
       setErrorMsg(err.message || 'Failed to save memory. Please check your entries and try again.');
@@ -125,6 +175,8 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
       setSubmitting(false);
     }
   };
+
+  const activeImagePreview = previewUrl || (mediaUrl ? mediaUrl : null);
 
   return (
     <div
@@ -196,6 +248,72 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
                 );
               })}
             </div>
+          </div>
+
+          {/* Local Photo Upload Section */}
+          <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+              Memory Photo
+            </label>
+            
+            {activeImagePreview ? (
+              <div className="relative w-full h-48 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 group">
+                <img
+                  src={activeImagePreview}
+                  alt="Memory preview"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-3">
+                  <label className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl cursor-pointer shadow-md transition-all">
+                    <span>Change Photo</span>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif,image/jpg"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                  </label>
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveSelectedFile}
+                      className="px-4 py-2 bg-red-600/80 hover:bg-red-600 text-white font-bold text-xs rounded-xl shadow-md transition-all"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <label className="w-full p-6 border-2 border-dashed border-slate-800 hover:border-indigo-500/50 rounded-2xl bg-slate-950/50 hover:bg-slate-950 flex flex-col items-center justify-center space-y-2 cursor-pointer transition-all">
+                <Camera className="w-8 h-8 text-indigo-400" />
+                <div className="text-center">
+                  <span className="text-sm font-extrabold text-white">Click to upload a photo</span>
+                  <p className="text-xs text-slate-400 mt-1">JPEG, PNG, WEBP, GIF up to 10MB</p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/jpg"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+              </label>
+            )}
+
+            {/* Optional URL input fallback */}
+            {!selectedFile && (
+              <details className="text-xs text-slate-400 mt-1">
+                <summary className="cursor-pointer hover:text-slate-300 font-bold">Or enter photo URL directly</summary>
+                <input
+                  type="url"
+                  maxLength={2048}
+                  value={mediaUrl}
+                  onChange={(e) => setMediaUrl(e.target.value)}
+                  placeholder="https://example.com/photo.jpg"
+                  className="w-full p-3 mt-2 bg-slate-950 border border-slate-800 rounded-xl text-white font-medium text-xs focus:outline-none focus:border-indigo-500 transition-colors"
+                />
+              </details>
+            )}
           </div>
 
           <div>
@@ -277,20 +395,6 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
                 </select>
               </div>
             )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-              Photo URL
-            </label>
-            <input
-              type="url"
-              maxLength={2048}
-              value={mediaUrl}
-              onChange={(e) => setMediaUrl(e.target.value)}
-              placeholder="https://example.com/photo.jpg"
-              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
-            />
           </div>
 
           <div>

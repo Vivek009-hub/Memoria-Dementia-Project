@@ -13,9 +13,28 @@ import { requireAuth } from '../../middleware/auth.middleware.js';
 import { requireRole } from '../../middleware/authorization.middleware.js';
 import { canAccessPatient } from '../../utils/authorization.js';
 import { AppError } from '../../utils/AppError.js';
+import { uploadMemoryPhoto } from '../../middleware/upload.middleware.js';
 import * as controller from './memory.controller.js';
 
 const router = Router();
+
+/**
+ * Middleware handling optional photo upload fields ('photo', 'image', 'file')
+ */
+function photoUploadMiddleware(req, res, next) {
+  uploadMemoryPhoto.fields([
+    { name: 'photo', maxCount: 1 },
+    { name: 'image', maxCount: 1 },
+    { name: 'file', maxCount: 1 },
+  ])(req, res, (err) => {
+    if (err) return next(err);
+    if (req.files) {
+      const file = req.files.photo?.[0] || req.files.image?.[0] || req.files.file?.[0];
+      if (file) req.file = file;
+    }
+    next();
+  });
+}
 
 // ── Caregiver scope middleware ─────────────────────────────────────────────────
 
@@ -62,7 +81,7 @@ router.use(caregiverMemoryScope);
 // Express interpreting 'family-members' as a dynamic segment.
 
 // POST   /api/v1/memories
-router.post('/', controller.createMemory);
+router.post('/', photoUploadMiddleware, controller.createMemory);
 
 // GET    /api/v1/memories
 router.get('/', controller.listMemories);
@@ -90,7 +109,7 @@ router.delete('/family-members/:memberId', controller.deleteFamilyMember);
 router.get('/:memoryId', controller.getMemory);
 
 // PATCH  /api/v1/memories/:memoryId
-router.patch('/:memoryId', controller.updateMemory);
+router.patch('/:memoryId', photoUploadMiddleware, controller.updateMemory);
 
 // DELETE /api/v1/memories/:memoryId
 router.delete('/:memoryId', controller.deleteMemory);

@@ -899,3 +899,43 @@ describe('Memory full lifecycle', () => {
     expect(inactiveRes.body.data.length).toBe(1);
   });
 });
+
+// ── Local Memory Photo Upload ──────────────────────────────────────────────────
+
+describe('POST /api/v1/memories (Local Photo Upload)', () => {
+  it('allows Patient to upload a local photo file via multipart/form-data', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+
+    // Create a mock image buffer
+    const mockImageBuffer = Buffer.from('fake-image-content-jpeg-bytes');
+
+    const res = await request(app)
+      .post('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .field('title', 'Local Photo Upload Test')
+      .field('type', 'PHOTO')
+      .attach('photo', mockImageBuffer, { filename: 'test-pic.jpg', contentType: 'image/jpeg' });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.title).toBe('Local Photo Upload Test');
+    expect(res.body.data.mediaUrl).toMatch(/^\/uploads\/memories\//);
+
+    // Verify static image serving endpoint
+    const staticRes = await request(app).get(res.body.data.mediaUrl);
+    expect(staticRes.status).toBe(200);
+  });
+
+  it('rejects unsupported file types (422)', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const mockFile = Buffer.from('console.log("bad")');
+
+    const res = await request(app)
+      .post('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .field('title', 'Invalid Executable')
+      .field('type', 'PHOTO')
+      .attach('photo', mockFile, { filename: 'script.exe', contentType: 'application/x-msdownload' });
+
+    expect(res.status).toBe(422);
+  });
+});

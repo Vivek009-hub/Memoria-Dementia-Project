@@ -10,10 +10,16 @@ import { notFound } from './middleware/notFound.middleware.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import v1Router from './routes/index.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
-// Security headers
-app.use(helmet());
+// Security headers — allow cross-origin resource access for uploaded images
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 // CORS — origin controlled by CLIENT_URL env variable
 // credentials:true is required for cross-origin cookie support
@@ -24,9 +30,13 @@ app.use(requestLogger);
 
 // Body parsing
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Cookie parsing — required for session cookie authentication
 app.use(cookieParser());
+
+// Static file serving for user uploads (memories, images)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // API routes
 app.use('/api/v1', v1Router);

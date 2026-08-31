@@ -34,11 +34,11 @@ export class ApiClient {
     this.authToken = token;
   }
 
-  getHeaders(customHeaders = {}) {
-    const headers = {
-      'Content-Type': 'application/json',
-      ...customHeaders,
-    };
+  getHeaders(customHeaders = {}, isFormData = false) {
+    const headers = { ...customHeaders };
+    if (!isFormData && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json';
+    }
     if (this.authToken) {
       headers['Authorization'] = `Bearer ${this.authToken}`;
     }
@@ -58,11 +58,22 @@ export class ApiClient {
     const timeoutId = setTimeout(() => controller.abort(), options.timeoutMs || this.timeoutMs);
     const url = `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
 
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+    const requestHeaders = this.getHeaders(options.headers, isFormData);
+
+    const requestBody = options.body
+      ? isFormData
+        ? options.body
+        : typeof options.body === 'string'
+        ? options.body
+        : JSON.stringify(options.body)
+      : undefined;
+
     try {
       const response = await fetch(url, {
         method: options.method || 'GET',
-        headers: this.getHeaders(options.headers),
-        body: options.body ? (typeof options.body === 'string' ? options.body : JSON.stringify(options.body)) : undefined,
+        headers: requestHeaders,
+        body: requestBody,
         signal: controller.signal,
         credentials: 'include',
         ...options.fetchOptions,

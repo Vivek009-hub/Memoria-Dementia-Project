@@ -6,9 +6,15 @@
  */
 
 import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import Memory from './memory.model.js';
 import FamilyMember from './familyMember.model.js';
 import { AppError } from '../../utils/AppError.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -171,6 +177,23 @@ export async function deleteMemory(memoryId, patientId) {
   if (!memory) {
     throw new AppError('Memory not found', 404, 'NOT_FOUND');
   }
+
+  // If mediaUrl is a local uploaded file, clean up disk if no active memory references it
+  if (memory.mediaUrl && memory.mediaUrl.startsWith('/uploads/memories/')) {
+    try {
+      const filename = path.basename(memory.mediaUrl);
+      const filePath = path.join(__dirname, '../../../uploads/memories', filename);
+      if (fs.existsSync(filePath)) {
+        const otherRef = await Memory.findOne({ mediaUrl: memory.mediaUrl, isActive: true });
+        if (!otherRef) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    } catch {
+      // Non-blocking cleanup error
+    }
+  }
+
   return memory;
 }
 

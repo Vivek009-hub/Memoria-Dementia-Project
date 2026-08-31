@@ -21,10 +21,11 @@ export function validateObjectId(id, fieldName = 'id') {
 }
 
 /**
- * Helper to check valid HTTP/HTTPS URL syntax
+ * Helper to check valid HTTP/HTTPS URL syntax or local relative upload path
  */
 function isValidUrl(val) {
   if (typeof val !== 'string') return false;
+  if (val.startsWith('/uploads/')) return true;
   try {
     const u = new URL(val);
     return u.protocol === 'http:' || u.protocol === 'https:';

@@ -30,6 +30,7 @@ import { CaregiverDashboardPage } from '../pages/CaregiverDashboardPage.jsx';
 import { AdminDashboardPage } from '../pages/AdminDashboardPage.jsx';
 import { AnalyticsPage } from '../pages/AnalyticsPage.jsx';
 import { PatientProfilePage } from '../pages/PatientProfilePage.jsx';
+import { PatientDashboardPage } from '../pages/PatientDashboardPage.jsx';
 
 export function AppRoutes() {
   const { role, user } = useAuth();
@@ -65,7 +66,7 @@ export function AppRoutes() {
             ) : role === 'CAREGIVER' ? (
               <CaregiverDashboardPage onNavigate={(path) => navigate(path)} />
             ) : (
-              <MemoriesPage patientId={user?._id} />
+              <PatientDashboardPage />
             )
           }
         />
