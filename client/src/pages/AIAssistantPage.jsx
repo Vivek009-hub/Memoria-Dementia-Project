@@ -122,10 +122,12 @@ export function AIAssistantPage({ patientId, onNavigate }) {
     try {
       const res = await aiApi.chatWithAssistant(text, patientId);
       const aiReplyText =
+        res.data?.answer ||
+        res.answer ||
         res.data?.reply ||
         res.reply ||
         res.data?.message ||
-        "I've listened to your query and recorded your preference. How else can I assist your memory today?";
+        "I've listened to your query. How else can I assist your memory today?";
 
       const aiMsg = {
         id: `ai_${Date.now()}`,
