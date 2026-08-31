@@ -1,0 +1,481 @@
+/**
+ * RemindersScreen.jsx — Reminders & Daily Routine Hub (Phase F6 / B6)
+ *
+ * Provides:
+ * - Today's Routine view grouped by Morning, Afternoon, Evening
+ * - Full Reminder List catalog with category filters
+ * - Occurrence History Log tab
+ * - Modals for Create, Edit, View Details, Delete, and Skip/Snooze
+ */
+
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Clock, Plus, Filter, RefreshCw, AlertTriangle, Sun, Sunset, Moon,
+  CheckCircle2, History, Repeat, Sparkles
+} from 'lucide-react';
+import { ReminderCard } from '../components/ReminderCard.jsx';
+import { ReminderDetailModal } from '../components/ReminderDetailModal.jsx';
+import { CreateEditReminderModal } from '../components/CreateEditReminderModal.jsx';
+import { DeleteReminderDialog } from '../components/DeleteReminderDialog.jsx';
+import { SnoozeSkipModal } from '../components/SnoozeSkipModal.jsx';
+import * as remindersApi from '../api/reminders.api.js';
+
+const CATEGORY_FILTERS = [
+  { id: '', label: 'All' },
+  { id: 'MEDICATION', label: 'Medication' },
+  { id: 'MEAL', label: 'Meals' },
+  { id: 'APPOINTMENT', label: 'Appointments' },
+  { id: 'ACTIVITY', label: 'Activities' },
+  { id: 'BIRTHDAY', label: 'Birthdays' },
+  { id: 'IMPORTANT_EVENT', label: 'Events' },
+];
+
+export function RemindersScreen({ patientId }) {
+  const [reminders, setReminders] = useState([]);
+  const [historyLogs, setHistoryLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // Active view tab ('today' | 'all' | 'history')
+  const [viewTab, setViewTab] = useState('today');
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  // Track completed/skipped occurrence IDs in local UI state for instantaneous feedback
+  const [completedMap, setCompletedMap] = useState({});
+  const [skippedMap, setSkippedMap] = useState({});
+
+  // Modal states
+  const [selectedReminder, setSelectedReminder] = useState(null);
+  const [createEditModalOpen, setCreateEditModalOpen] = useState(false);
+  const [reminderToEdit, setReminderToEdit] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reminderToDelete, setReminderToDelete] = useState(null);
+  const [skipModalOpen, setSkipModalOpen] = useState(false);
+  const [reminderToSkip, setReminderToSkip] = useState(null);
+
+  // Fetch reminders list
+  const fetchReminders = useCallback(async () => {
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      const res = await remindersApi.listReminders({
+        type: selectedCategory || undefined,
+        patientId,
+      });
+      if (res.data) {
+        setReminders(res.data);
+      } else {
+        setReminders([]);
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'We couldn\'t load your reminders right now.');
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedCategory, patientId]);
+
+  // Fetch occurrence history logs
+  const fetchHistory = useCallback(async () => {
+    try {
+      const res = await remindersApi.getReminderHistory({ patientId, limit: 20 });
+      if (res.data) {
+        setHistoryLogs(res.data);
+      }
+    } catch {
+      // Non-blocking error
+    }
+  }, [patientId]);
+
+  useEffect(() => {
+    fetchReminders();
+  }, [fetchReminders]);
+
+  useEffect(() => {
+    if (viewTab === 'history') {
+      fetchHistory();
+    }
+  }, [viewTab, fetchHistory]);
+
+  // Actions
+  const handleSaveReminder = async (formData, reminderId) => {
+    if (reminderId) {
+      await remindersApi.updateReminder(reminderId, formData);
+    } else {
+      await remindersApi.createReminder({ ...formData, patientId });
+    }
+    fetchReminders();
+  };
+
+  const handleDeleteReminder = async (reminderId) => {
+    await remindersApi.deleteReminder(reminderId, patientId);
+    if (selectedReminder && selectedReminder._id === reminderId) {
+      setSelectedReminder(null);
+    }
+    fetchReminders();
+  };
+
+  const handleCompleteReminder = async (rem) => {
+    await remindersApi.completeReminder(rem._id, {}, patientId);
+    setCompletedMap((prev) => ({ ...prev, [rem._id]: true }));
+    fetchHistory();
+  };
+
+  const handleConfirmSkip = async (reminderId, options) => {
+    await remindersApi.skipReminder(reminderId, options, patientId);
+    setSkippedMap((prev) => ({ ...prev, [reminderId]: true }));
+    fetchHistory();
+  };
+
+  // Group reminders into Morning (00:00-11:59), Afternoon (12:00-16:59), Evening (17:00-23:59)
+  const groupRemindersByPeriod = (remList) => {
+    const morning = [];
+    const afternoon = [];
+    const evening = [];
+
+    remList.forEach((r) => {
+      const timeStr = r.schedule?.time || '12:00';
+      const [h] = timeStr.split(':').map(Number);
+      if (h < 12) morning.push(r);
+      else if (h < 17) afternoon.push(r);
+      else evening.push(r);
+    });
+
+    return { morning, afternoon, evening };
+  };
+
+  const { morning, afternoon, evening } = groupRemindersByPeriod(reminders);
+
+  return (
+    <div className="w-full max-w-4xl mx-auto space-y-6">
+      {/* Top Header Card */}
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center space-x-2 text-indigo-400 mb-1">
+            <Clock className="w-6 h-6" />
+            <span className="text-xs font-black uppercase tracking-wider">Daily Routine</span>
+          </div>
+          <h1 className="text-3xl font-black text-white tracking-tight">My Reminders</h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Stay on track with your medications, appointments, and daily routines.
+          </p>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => {
+              setReminderToEdit(null);
+              setCreateEditModalOpen(true);
+            }}
+            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Add Reminder</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Navigation View Tabs & Filters */}
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-lg space-y-4">
+        <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          {/* Main View Tabs */}
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setViewTab('today')}
+              className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
+                viewTab === 'today'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+              }`}
+            >
+              <Sun className="w-4 h-4 text-amber-400" />
+              <span>Today's Routine</span>
+            </button>
+
+            <button
+              onClick={() => setViewTab('all')}
+              className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
+                viewTab === 'all'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+              }`}
+            >
+              <Clock className="w-4 h-4" />
+              <span>All Reminders</span>
+            </button>
+
+            <button
+              onClick={() => setViewTab('history')}
+              className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
+                viewTab === 'history'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+              }`}
+            >
+              <History className="w-4 h-4" />
+              <span>History</span>
+            </button>
+          </div>
+
+          <button
+            onClick={fetchReminders}
+            className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors"
+            title="Refresh reminders"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Category Pills */}
+        <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
+          {CATEGORY_FILTERS.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                selectedCategory === cat.id
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      {loading ? (
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
+          <RefreshCw className="w-10 h-10 text-indigo-400 animate-spin mx-auto mb-3" />
+          <p className="text-slate-300 font-bold text-lg">Loading your schedule...</p>
+        </div>
+      ) : errorMsg ? (
+        <div className="bg-slate-900 border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
+          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
+          <div>
+            <h3 className="text-xl font-bold text-white mb-1">We Couldn't Load Your Reminders</h3>
+            <p className="text-sm text-slate-400">{errorMsg}</p>
+          </div>
+          <button
+            onClick={fetchReminders}
+            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl border border-slate-700 transition-all inline-flex items-center space-x-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Try Again</span>
+          </button>
+        </div>
+      ) : viewTab === 'history' ? (
+        /* History Log View */
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-lg space-y-4">
+          <h2 className="text-xl font-bold text-white flex items-center space-x-2">
+            <History className="w-5 h-5 text-indigo-400" />
+            <span>Recent Occurrence History</span>
+          </h2>
+
+          {historyLogs.length === 0 ? (
+            <p className="text-sm text-slate-500 py-6 text-center">No occurrence history recorded yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {historyLogs.map((log) => (
+                <div key={log._id} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-between">
+                  <div>
+                    <h4 className="text-base font-bold text-white">
+                      {log.reminderId?.title || 'Reminder Occurrence'}
+                    </h4>
+                    <span className="text-xs text-slate-400">
+                      Scheduled: {new Date(log.scheduledAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <span
+                    className={`px-3 py-1 text-xs font-extrabold rounded-full border ${
+                      log.status === 'COMPLETED'
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                        : log.status === 'CANCELLED' || log.status === 'SKIPPED'
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                        : 'bg-slate-800 text-slate-300 border-slate-700'
+                    }`}
+                  >
+                    {log.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : reminders.length === 0 ? (
+        /* Empty State */
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg space-y-4">
+          <div className="w-20 h-20 bg-indigo-500/10 border border-indigo-500/20 rounded-full flex items-center justify-center mx-auto text-indigo-400">
+            <Clock className="w-10 h-10" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-black text-white mb-2">No Reminders Found</h3>
+            <p className="text-slate-400 max-w-md mx-auto text-sm leading-relaxed">
+              You have no reminders set for this category. Add a reminder for medications, meals, or events to keep your day organized.
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setReminderToEdit(null);
+              setCreateEditModalOpen(true);
+            }}
+            className="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-base rounded-2xl shadow-lg inline-flex items-center space-x-2 transition-all touch-target-xl"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Add Your First Reminder</span>
+          </button>
+        </div>
+      ) : viewTab === 'today' ? (
+        /* Today's Routine View (Grouped) */
+        <div className="space-y-6">
+          {/* Morning */}
+          {morning.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 text-amber-400">
+                <Sun className="w-5 h-5" />
+                <h2 className="text-lg font-black text-white uppercase tracking-wider">Morning Routine</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {morning.map((r) => (
+                  <ReminderCard
+                    key={r._id}
+                    reminder={r}
+                    status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
+                    onComplete={handleCompleteReminder}
+                    onSkip={(rem) => {
+                      setReminderToSkip(rem);
+                      setSkipModalOpen(true);
+                    }}
+                    onSelect={(rem) => setSelectedReminder(rem)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Afternoon */}
+          {afternoon.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 text-orange-400">
+                <Sunset className="w-5 h-5" />
+                <h2 className="text-lg font-black text-white uppercase tracking-wider">Afternoon Routine</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {afternoon.map((r) => (
+                  <ReminderCard
+                    key={r._id}
+                    reminder={r}
+                    status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
+                    onComplete={handleCompleteReminder}
+                    onSkip={(rem) => {
+                      setReminderToSkip(rem);
+                      setSkipModalOpen(true);
+                    }}
+                    onSelect={(rem) => setSelectedReminder(rem)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Evening */}
+          {evening.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 text-indigo-400">
+                <Moon className="w-5 h-5" />
+                <h2 className="text-lg font-black text-white uppercase tracking-wider">Evening Routine</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {evening.map((r) => (
+                  <ReminderCard
+                    key={r._id}
+                    reminder={r}
+                    status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
+                    onComplete={handleCompleteReminder}
+                    onSkip={(rem) => {
+                      setReminderToSkip(rem);
+                      setSkipModalOpen(true);
+                    }}
+                    onSelect={(rem) => setSelectedReminder(rem)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* All Reminders Grid View */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {reminders.map((r) => (
+            <ReminderCard
+              key={r._id}
+              reminder={r}
+              status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
+              onComplete={handleCompleteReminder}
+              onSkip={(rem) => {
+                setReminderToSkip(rem);
+                setSkipModalOpen(true);
+              }}
+              onSelect={(rem) => setSelectedReminder(rem)}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Detail Modal */}
+      {selectedReminder && (
+        <ReminderDetailModal
+          reminder={selectedReminder}
+          onClose={() => setSelectedReminder(null)}
+          onComplete={handleCompleteReminder}
+          onSkip={(rem) => {
+            setSelectedReminder(null);
+            setReminderToSkip(rem);
+            setSkipModalOpen(true);
+          }}
+          onEdit={(rem) => {
+            setReminderToEdit(rem);
+            setCreateEditModalOpen(true);
+          }}
+          onDelete={(rem) => {
+            setReminderToDelete(rem);
+            setDeleteModalOpen(true);
+          }}
+        />
+      )}
+
+      {/* Create / Edit Modal */}
+      <CreateEditReminderModal
+        reminder={reminderToEdit}
+        isOpen={createEditModalOpen}
+        onClose={() => {
+          setCreateEditModalOpen(false);
+          setReminderToEdit(null);
+        }}
+        onSave={handleSaveReminder}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteReminderDialog
+        reminder={reminderToDelete}
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setReminderToDelete(null);
+        }}
+        onConfirmDelete={handleDeleteReminder}
+      />
+
+      {/* Skip / Snooze Modal */}
+      <SnoozeSkipModal
+        reminder={reminderToSkip}
+        isOpen={skipModalOpen}
+        onClose={() => {
+          setSkipModalOpen(false);
+          setReminderToSkip(null);
+        }}
+        onConfirmSkip={handleConfirmSkip}
+      />
+    </div>
+  );
+}

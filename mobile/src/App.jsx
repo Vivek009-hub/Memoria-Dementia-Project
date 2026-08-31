@@ -1,11 +1,11 @@
 /**
  * App.jsx — Memora Patient Mobile & Web Application Shell
  *
- * Integrates Safety Companion, Memory Vault, and B11 AI Assistance.
+ * Integrates Safety Companion, Memory Vault, Reminders & Daily Routine, and B11 AI Assistance.
  */
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, HeartHandshake } from 'lucide-react';
+import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
 import { SOSButton } from './components/SOSButton.jsx';
@@ -14,6 +14,7 @@ import { GeofenceStatus } from './components/GeofenceStatus.jsx';
 import { EmergencyContacts } from './components/EmergencyContacts.jsx';
 import { SafetyHistory } from './components/SafetyHistory.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
+import { RemindersScreen } from './screens/RemindersScreen.jsx';
 import { AIAssistantScreen } from './screens/AIAssistantScreen.jsx';
 import { getCurrentCoordinates } from './services/location.service.js';
 import * as safetyApi from './api/safetyApi.js';
@@ -23,7 +24,7 @@ function Dashboard() {
   const { user, login } = useAuth();
   const { isOnline, geofences, safetyEvents, pendingQueueCount, refreshSafetyData } = useSafety();
 
-  const [activeTab, setActiveTab] = useState('memories'); // 'safety' | 'memories' | 'assistant'
+  const [activeTab, setActiveTab] = useState('reminders'); // 'reminders' | 'memories' | 'assistant' | 'safety'
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -69,46 +70,58 @@ function Dashboard() {
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tight text-white">Memora</h1>
-            <p className="text-xs text-slate-400 font-medium">Memory Vault & Assistance System</p>
+            <p className="text-xs text-slate-400 font-medium">Memory & Daily Assistance System</p>
           </div>
         </div>
 
         {/* Navigation Tabs */}
         {user && (
-          <nav className="flex items-center bg-slate-900 border border-slate-800 p-1.5 rounded-2xl space-x-1">
+          <nav className="flex items-center bg-slate-900 border border-slate-800 p-1.5 rounded-2xl space-x-1 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('reminders')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'reminders'
+                  ? 'bg-indigo-600 text-white shadow-lg'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Clock className="w-4 h-4 text-amber-400" />
+              <span>Reminders</span>
+            </button>
+
             <button
               onClick={() => setActiveTab('memories')}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
                 activeTab === 'memories'
                   ? 'bg-indigo-600 text-white shadow-lg'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <BookOpen className="w-4 h-4" />
+              <BookOpen className="w-4 h-4 text-indigo-400" />
               <span>Memories</span>
             </button>
 
             <button
               onClick={() => setActiveTab('assistant')}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
                 activeTab === 'assistant'
                   ? 'bg-indigo-600 text-white shadow-lg'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <Bot className="w-4 h-4" />
+              <Bot className="w-4 h-4 text-emerald-400" />
               <span>AI Assistant</span>
             </button>
 
             <button
               onClick={() => setActiveTab('safety')}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
                 activeTab === 'safety'
                   ? 'bg-red-600 text-white shadow-lg'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <Shield className="w-4 h-4" />
+              <Shield className="w-4 h-4 text-red-400" />
               <span>Safety</span>
             </button>
           </nav>
@@ -142,7 +155,7 @@ function Dashboard() {
       {!user ? (
         <div className="w-full max-w-md p-6 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl my-8">
           <h2 className="text-2xl font-bold text-white mb-2 text-center">Patient Sign In</h2>
-          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your memory vault and companion.</p>
+          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your reminders and companion.</p>
           
           {loginError && (
             <div className="p-3 mb-4 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-sm text-center">
@@ -183,6 +196,7 @@ function Dashboard() {
         </div>
       ) : (
         <main className="w-full max-w-4xl">
+          {activeTab === 'reminders' && <RemindersScreen patientId={user.id} />}
           {activeTab === 'memories' && <MemoriesScreen patientId={user.id} />}
           {activeTab === 'assistant' && <AIAssistantScreen />}
           {activeTab === 'safety' && (
