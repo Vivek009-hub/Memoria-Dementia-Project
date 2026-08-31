@@ -100,11 +100,22 @@ export function MemoriesPage({ patientId }) {
     fetchFamilyMembers();
   }, [fetchFamilyMembers]);
 
-  const handleSaveMemory = async (formData, memoryId) => {
-    if (memoryId) {
-      await memoriesApi.updateMemory(memoryId, formData);
+  const handleSaveMemory = async (formDataOrPayload, memoryId) => {
+    if (formDataOrPayload instanceof FormData) {
+      if (patientId) formDataOrPayload.append('patientId', patientId);
+      if (memoryId) {
+        await memoriesApi.updateMemory(memoryId, formDataOrPayload);
+      } else {
+        await memoriesApi.createMemory(formDataOrPayload);
+      }
     } else {
-      await memoriesApi.createMemory({ ...formData, patientId });
+      const payload = { ...formDataOrPayload };
+      if (patientId) payload.patientId = patientId;
+      if (memoryId) {
+        await memoriesApi.updateMemory(memoryId, payload);
+      } else {
+        await memoriesApi.createMemory(payload);
+      }
     }
     fetchMemories();
   };
