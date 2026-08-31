@@ -24,8 +24,8 @@ function cookieOptions(expiresAt) {
  */
 export async function register(req, res, next) {
   try {
-    const { name, email, password } = req.body;
-    const { user } = await authService.register({ name, email, password });
+    const { name, email, password, role } = req.body;
+    const { user } = await authService.register({ name, email, password, role });
 
     res.status(201).json({
       success: true,

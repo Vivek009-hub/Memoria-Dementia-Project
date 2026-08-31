@@ -153,10 +153,16 @@ describe('POST /api/v1/auth/register', () => {
     }
   });
 
-  it('assigns CAREGIVER as the default role', async () => {
+  it('assigns CAREGIVER as the default role when unprovided', async () => {
     const res = await registerUser();
     expect(res.status).toBe(201);
     expect(res.body.data.user.role).toBe('CAREGIVER');
+  });
+
+  it('assigns PATIENT when explicitly selected', async () => {
+    const res = await registerUser({ email: 'patient@example.com', role: 'PATIENT' });
+    expect(res.status).toBe(201);
+    expect(res.body.data.user.role).toBe('PATIENT');
   });
 });
 

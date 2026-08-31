@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 import { PublicLayout } from '../layouts/PublicLayout.jsx';
@@ -14,12 +14,25 @@ import { LoginPage } from '../pages/LoginPage.jsx';
 import { RegisterPage } from '../pages/RegisterPage.jsx';
 import { UnauthorizedPage } from '../pages/UnauthorizedPage.jsx';
 import { NotFoundPage } from '../pages/NotFoundPage.jsx';
-import { DashboardPlaceholder } from '../pages/DashboardPlaceholder.jsx';
 import { GameLibraryPage } from '../pages/games/GameLibraryPage.jsx';
 import { GamePlayPage } from '../pages/games/GamePlayPage.jsx';
+import { DesignSystemShowcase } from '../pages/DesignSystemShowcase.jsx';
+
+// Fully Functional Phase Pages
+import { MemoriesPage } from '../pages/MemoriesPage.jsx';
+import { RemindersPage } from '../pages/RemindersPage.jsx';
+import { CommunityPage } from '../pages/CommunityPage.jsx';
+import { MeetingsPage } from '../pages/MeetingsPage.jsx';
+import { AIAssistantPage } from '../pages/AIAssistantPage.jsx';
+import { NotificationsPage } from '../pages/NotificationsPage.jsx';
+import { SafetyPage } from '../pages/SafetyPage.jsx';
+import { CaregiverDashboardPage } from '../pages/CaregiverDashboardPage.jsx';
+import { AdminDashboardPage } from '../pages/AdminDashboardPage.jsx';
+import { AnalyticsPage } from '../pages/AnalyticsPage.jsx';
 
 export function AppRoutes() {
-  const { role } = useAuth();
+  const { role, user } = useAuth();
+  const navigate = useNavigate();
 
   const AppLayout = role === 'ADMIN' ? AdminLayout : role === 'CAREGIVER' ? CaregiverLayout : PatientLayout;
 
@@ -43,17 +56,30 @@ export function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<DashboardPlaceholder title="Overview Dashboard" />} />
+        <Route
+          index
+          element={
+            role === 'ADMIN' ? (
+              <AdminDashboardPage />
+            ) : role === 'CAREGIVER' ? (
+              <CaregiverDashboardPage onNavigate={(path) => navigate(path)} />
+            ) : (
+              <MemoriesPage patientId={user?._id} />
+            )
+          }
+        />
         <Route path="games" element={<GameLibraryPage />} />
         <Route path="games/:gameId" element={<GamePlayPage />} />
-        <Route path="memories" element={<DashboardPlaceholder title="Memory Assistance" module="F5 Module" />} />
-        <Route path="reminders" element={<DashboardPlaceholder title="Smart Reminders" module="F6 Module" />} />
-        <Route path="community" element={<DashboardPlaceholder title="Community Sessions" module="F7 Module" />} />
-        <Route path="meetings" element={<DashboardPlaceholder title="Meeting Circle" module="F8 Module" />} />
-        <Route path="assistant" element={<DashboardPlaceholder title="AI Assistant" module="F11 Module" />} />
-        <Route path="notifications" element={<DashboardPlaceholder title="Notifications" module="F9 Module" />} />
-        <Route path="analytics" element={<DashboardPlaceholder title="Cognitive Progress Analytics" module="F10 Module" />} />
-        <Route path="safety" element={<DashboardPlaceholder title="Safety & Location Monitoring" module="F12 Module" />} />
+        <Route path="memories" element={<MemoriesPage patientId={user?._id} />} />
+        <Route path="reminders" element={<RemindersPage patientId={user?._id} />} />
+        <Route path="community" element={<CommunityPage patientId={user?._id} />} />
+        <Route path="meetings" element={<MeetingsPage patientId={user?._id} />} />
+        <Route path="assistant" element={<AIAssistantPage patientId={user?._id} onNavigate={(path) => navigate(path)} />} />
+        <Route path="notifications" element={<NotificationsPage onNavigate={(path) => navigate(path)} />} />
+        <Route path="analytics" element={<AnalyticsPage patientId={user?._id} />} />
+        <Route path="safety" element={<SafetyPage patientId={user?._id} />} />
+        <Route path="caregiver" element={<CaregiverDashboardPage onNavigate={(path) => navigate(path)} />} />
+        <Route path="admin" element={<AdminDashboardPage />} />
       </Route>
 
       {/* Fallback 404 Route */}

@@ -49,12 +49,13 @@ function safeUser(user) {
  * - Normalizes email to lowercase.
  * - Rejects duplicate emails.
  * - Hashes password with bcrypt.
- * - Assigns default role CAREGIVER (clients cannot self-assign privileged roles).
+ * - Assigns PATIENT or CAREGIVER based on requested role (defaults to CAREGIVER if unprovided).
+ * - Privileged roles (ADMIN, HOST) are forbidden from self-registration.
  *
- * @param {{ name: string, email: string, password: string }} params
+ * @param {{ name: string, email: string, password: string, role?: string }} params
  * @returns {Promise<{ user: object }>}
  */
-export async function register({ name, email, password }) {
+export async function register({ name, email, password, role }) {
   const normalizedEmail = email.trim().toLowerCase();
 
   // Duplicate email check
@@ -66,18 +67,27 @@ export async function register({ name, email, password }) {
   // Hash password
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
-  // Create user — role is always CAREGIVER for self-registration.
-  // Privileged role assignment (ADMIN, HOST) is an admin-only operation in a later phase.
+  // Self-registration role resolution: allow PATIENT or CAREGIVER. Default to CAREGIVER if unprovided.
+  let assignedRole = 'CAREGIVER';
+  if (role) {
+    const uppercaseRole = String(role).toUpperCase();
+    if (uppercaseRole === 'PATIENT') {
+      assignedRole = 'PATIENT';
+    } else if (uppercaseRole === 'CAREGIVER') {
+      assignedRole = 'CAREGIVER';
+    }
+  }
+
   const user = await User.create({
     name: name.trim(),
     email: normalizedEmail,
     passwordHash,
-    role: 'CAREGIVER',
+    role: assignedRole,
     preferredLanguage: 'en',
     isActive: true,
   });
 
-  logger.info({ userId: user._id }, 'auth: user registered');
+  logger.info({ userId: user._id, role: user.role }, 'auth: user registered');
 
   return { user: safeUser(user) };
 }
@@ -151,7 +161,6 @@ export async function logout(rawToken) {
 
   const tokenHash = hashToken(rawToken);
 
-  // Update without throwing — logout is always safe even if session not found
   await Session.updateOne(
     { sessionTokenHash: tokenHash, revokedAt: null },
     { revokedAt: new Date() }
@@ -172,7 +181,6 @@ export async function logout(rawToken) {
 export async function validateSession(rawToken) {
   const tokenHash = hashToken(rawToken);
 
-  // Select sessionTokenHash explicitly (select:false)
   const session = await Session.findOne({ sessionTokenHash: tokenHash }).select(
     '+sessionTokenHash'
   );
@@ -189,7 +197,6 @@ export async function validateSession(rawToken) {
     throw new AppError('Session has expired', 401, 'SESSION_EXPIRED');
   }
 
-  // Load associated user (exclude passwordHash)
   const user = await User.findById(session.userId);
 
   if (!user) {
@@ -200,7 +207,6 @@ export async function validateSession(rawToken) {
     throw new AppError('This account has been deactivated', 403, 'ACCOUNT_INACTIVE');
   }
 
-  // Update lastUsedAt asynchronously — do not await to keep auth fast
   Session.updateOne({ _id: session._id }, { lastUsedAt: new Date() }).catch((err) => {
     logger.warn({ err }, 'auth: failed to update session lastUsedAt');
   });
