@@ -4,7 +4,13 @@
 import { defaultApiClient } from './client.js';
 
 export async function getReminders(params = {}, client = defaultApiClient) {
-  const query = new URLSearchParams(params).toString();
+  const cleanParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, val]) => {
+    if (val !== undefined && val !== null && val !== '' && val !== 'undefined') {
+      cleanParams.append(key, val);
+    }
+  });
+  const query = cleanParams.toString();
   const endpoint = `/reminders${query ? `?${query}` : ''}`;
   return await client.get(endpoint);
 }

@@ -407,7 +407,7 @@ export function validateReminderAction(body) {
 export function validateReminderListQuery(query) {
   const filters = {};
 
-  if (query.type !== undefined) {
+  if (query.type !== undefined && query.type !== '' && query.type !== 'undefined') {
     if (!REMINDER_TYPES.includes(query.type)) {
       throw new AppError(
         `type must be one of: ${REMINDER_TYPES.join(', ')}`,

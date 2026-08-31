@@ -45,11 +45,12 @@ export function RemindersPage({ patientId }) {
     setLoading(true);
     setErrorMsg('');
     try {
-      const res = await remindersApi.getReminders({
-        type: selectedType || undefined,
-        date: selectedDate,
-        patientId,
-      });
+      const params = {};
+      if (selectedType) params.type = selectedType;
+      if (selectedDate) params.date = selectedDate;
+      if (patientId) params.patientId = patientId;
+
+      const res = await remindersApi.getReminders(params);
 
       if (res.data) {
         setReminders(res.data);
@@ -77,7 +78,9 @@ export function RemindersPage({ patientId }) {
     if (reminderId) {
       await remindersApi.updateReminder(reminderId, formData);
     } else {
-      await remindersApi.createReminder({ ...formData, patientId });
+      const payload = { ...formData };
+      if (patientId) payload.patientId = patientId;
+      await remindersApi.createReminder(payload);
     }
     fetchReminders();
   };
