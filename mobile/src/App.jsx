@@ -23,7 +23,7 @@ function Dashboard() {
   const { user, login } = useAuth();
   const { isOnline, pendingQueueCount, refreshSafetyData } = useSafety();
 
-  const [activeTab, setActiveTab] = useState('safety'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety'
+  const [activeTab, setActiveTab] = useState('assistant'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety'
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loginEmail, setLoginEmail] = useState('');
@@ -84,7 +84,7 @@ function Dashboard() {
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tight text-white">Memora</h1>
-            <p className="text-xs text-slate-400 font-medium">Safety & Comprehensive Patient Suite</p>
+            <p className="text-xs text-slate-400 font-medium">Complete Memory, AI & Safety Platform</p>
           </div>
         </div>
 
@@ -92,15 +92,15 @@ function Dashboard() {
         {user && (
           <nav className="flex items-center bg-slate-900 border border-slate-800 p-1.5 rounded-2xl space-x-1 overflow-x-auto">
             <button
-              onClick={() => setActiveTab('safety')}
+              onClick={() => setActiveTab('assistant')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
-                activeTab === 'safety'
-                  ? 'bg-red-600 text-white shadow-lg'
+                activeTab === 'assistant'
+                  ? 'bg-indigo-600 text-white shadow-lg'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <Shield className="w-4 h-4 text-red-400" />
-              <span>Safety</span>
+              <Bot className="w-4 h-4 text-emerald-400" />
+              <span>AI Assistant</span>
             </button>
 
             <button
@@ -157,15 +157,15 @@ function Dashboard() {
             </button>
 
             <button
-              onClick={() => setActiveTab('assistant')}
+              onClick={() => setActiveTab('safety')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
-                activeTab === 'assistant'
-                  ? 'bg-indigo-600 text-white shadow-lg'
+                activeTab === 'safety'
+                  ? 'bg-red-600 text-white shadow-lg'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <Bot className="w-4 h-4 text-emerald-400" />
-              <span>AI Assistant</span>
+              <Shield className="w-4 h-4 text-red-400" />
+              <span>Safety</span>
             </button>
           </nav>
         )}
@@ -198,7 +198,7 @@ function Dashboard() {
       {!user ? (
         <div className="w-full max-w-md p-6 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl my-8">
           <h2 className="text-2xl font-bold text-white mb-2 text-center">Patient Sign In</h2>
-          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your safety dashboard & daily suite.</p>
+          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your AI companion & daily suite.</p>
           
           {loginError && (
             <div className="p-3 mb-4 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-sm text-center">
@@ -239,6 +239,9 @@ function Dashboard() {
         </div>
       ) : (
         <main className="w-full max-w-4xl">
+          {activeTab === 'assistant' && (
+            <AIAssistantScreen onNavigate={(tab) => setActiveTab(tab)} />
+          )}
           {activeTab === 'safety' && <SafetyDashboardScreen />}
           {activeTab === 'notifications' && (
             <NotificationsScreen
@@ -249,7 +252,6 @@ function Dashboard() {
           {activeTab === 'reminders' && <RemindersScreen patientId={user.id} />}
           {activeTab === 'memories' && <MemoriesScreen patientId={user.id} />}
           {activeTab === 'community' && <CommunityScreen patientId={user.id} />}
-          {activeTab === 'assistant' && <AIAssistantScreen />}
         </main>
       )}
     </div>
