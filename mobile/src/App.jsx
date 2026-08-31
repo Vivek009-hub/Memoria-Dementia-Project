@@ -1,11 +1,11 @@
 /**
- * App.jsx — Memora Patient Mobile & Web Application Shell
+ * App.jsx — Memora Patient & Caregiver Mobile & Web Application Shell
  *
- * Integrates Safety Companion Dashboard, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, Notifications & Activity Center, and B11 AI Assistance.
+ * Integrates Caregiver Support Dashboard, Safety Companion Dashboard, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, Notifications & Activity Center, and B11 AI Assistance.
  */
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell } from 'lucide-react';
+import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
@@ -14,6 +14,7 @@ import { CommunityScreen } from './screens/CommunityScreen.jsx';
 import { NotificationsScreen } from './screens/NotificationsScreen.jsx';
 import { SafetyDashboardScreen } from './screens/SafetyDashboardScreen.jsx';
 import { AIAssistantScreen } from './screens/AIAssistantScreen.jsx';
+import { CaregiverDashboardScreen } from './screens/CaregiverDashboardScreen.jsx';
 import { getCurrentCoordinates } from './services/location.service.js';
 import * as safetyApi from './api/safetyApi.js';
 import * as notificationsApi from './api/notifications.api.js';
@@ -23,12 +24,20 @@ function Dashboard() {
   const { user, login } = useAuth();
   const { isOnline, pendingQueueCount, refreshSafetyData } = useSafety();
 
-  const [activeTab, setActiveTab] = useState('assistant'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety'
+  const isCaregiver = user?.role === 'CAREGIVER';
+
+  const [activeTab, setActiveTab] = useState('assistant'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety' | 'caregiver'
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  useEffect(() => {
+    if (isCaregiver) {
+      setActiveTab('caregiver');
+    }
+  }, [isCaregiver]);
 
   // Fetch unread notification count
   useEffect(() => {
@@ -84,13 +93,29 @@ function Dashboard() {
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tight text-white">Memora</h1>
-            <p className="text-xs text-slate-400 font-medium">Complete Memory, AI & Safety Platform</p>
+            <p className="text-xs text-slate-400 font-medium">
+              {isCaregiver ? 'Caregiver Authorized Support Hub' : 'Patient & Caregiver Safety Platform'}
+            </p>
           </div>
         </div>
 
         {/* Navigation Tabs */}
         {user && (
           <nav className="flex items-center bg-slate-900 border border-slate-800 p-1.5 rounded-2xl space-x-1 overflow-x-auto">
+            {isCaregiver && (
+              <button
+                onClick={() => setActiveTab('caregiver')}
+                className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+                  activeTab === 'caregiver'
+                    ? 'bg-indigo-600 text-white shadow-lg'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <UserCheck className="w-4 h-4 text-emerald-400" />
+                <span>Caregiver Dashboard</span>
+              </button>
+            )}
+
             <button
               onClick={() => setActiveTab('assistant')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
@@ -194,11 +219,11 @@ function Dashboard() {
         </div>
       </header>
 
-      {/* Patient Auth Check / Sign In Screen */}
+      {/* Patient / Caregiver Auth Check */}
       {!user ? (
         <div className="w-full max-w-md p-6 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl my-8">
-          <h2 className="text-2xl font-bold text-white mb-2 text-center">Patient Sign In</h2>
-          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your AI companion & daily suite.</p>
+          <h2 className="text-2xl font-bold text-white mb-2 text-center">Memora Sign In</h2>
+          <p className="text-sm text-slate-400 text-center mb-6">Sign in to your patient or caregiver account.</p>
           
           {loginError && (
             <div className="p-3 mb-4 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-sm text-center">
@@ -214,7 +239,7 @@ function Dashboard() {
                 required
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
-                placeholder="patient@memora.com"
+                placeholder="user@memora.com"
                 className="w-full p-4 bg-slate-950 border border-slate-800 rounded-xl text-white font-medium text-lg focus:outline-none focus:border-indigo-500"
               />
             </div>
@@ -233,12 +258,13 @@ function Dashboard() {
               type="submit"
               className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xl rounded-xl shadow-lg touch-target-xl"
             >
-              Sign In to Memora
+              Sign In
             </button>
           </form>
         </div>
       ) : (
         <main className="w-full max-w-4xl">
+          {activeTab === 'caregiver' && <CaregiverDashboardScreen />}
           {activeTab === 'assistant' && (
             <AIAssistantScreen onNavigate={(tab) => setActiveTab(tab)} />
           )}
