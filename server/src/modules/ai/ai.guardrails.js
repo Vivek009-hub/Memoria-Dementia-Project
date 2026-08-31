@@ -25,7 +25,7 @@ const MEDICAL_DIAGNOSIS_PATTERNS = [
 ];
 
 export const MEDICAL_SAFETY_DISCLAIMER =
-  "I cannot diagnose medical conditions, assess disease progression, or prescribe treatments. Please consult a qualified healthcare professional for medical advice.";
+  'I cannot diagnose medical conditions, assess disease progression, or prescribe treatments. Please consult a qualified healthcare professional for medical advice.';
 
 /**
  * Sanitize prompt input from untrusted user messages or stored memories.

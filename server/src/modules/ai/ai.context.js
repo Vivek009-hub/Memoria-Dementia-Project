@@ -25,7 +25,11 @@ export async function getAuthorizedMemories(user, targetPatientId = null) {
   if (user.role === 'CAREGIVER') {
     await canAccessPatient(user, patientId, 'manageMemories');
   } else if (user.role === 'PATIENT' && user.id.toString() !== patientId.toString()) {
-    throw new AppError('You do not have permission to access memories for this patient', 403, 'FORBIDDEN');
+    throw new AppError(
+      'You do not have permission to access memories for this patient',
+      403,
+      'FORBIDDEN'
+    );
   }
 
   // Fetch active memories from B5 collection
@@ -58,7 +62,11 @@ export async function buildCognitiveActivityContext(user, targetPatientId = null
   if (user.role === 'CAREGIVER') {
     await canAccessPatient(user, patientId, 'viewCognitiveActivity');
   } else if (user.role === 'PATIENT' && user.id.toString() !== patientId.toString()) {
-    throw new AppError('You do not have permission to access activity data for this patient', 403, 'FORBIDDEN');
+    throw new AppError(
+      'You do not have permission to access activity data for this patient',
+      403,
+      'FORBIDDEN'
+    );
   }
 
   // Fetch active available games

@@ -30,7 +30,7 @@ export class MockAIProvider extends BaseAIProvider {
       lowerMessage.includes('medical diagnosis')
     ) {
       responseText =
-        "I cannot diagnose medical conditions or assess disease progression. Please consult a qualified healthcare professional or your primary doctor for medical advice.";
+        'I cannot diagnose medical conditions or assess disease progression. Please consult a qualified healthcare professional or your primary doctor for medical advice.';
     }
     // 2. Health symptoms & practical care advice (e.g. fever, headache, cold, pain)
     else if (
@@ -44,13 +44,13 @@ export class MockAIProvider extends BaseAIProvider {
     ) {
       if (lowerMessage.includes('fever') || lowerMessage.includes('temperature')) {
         responseText =
-          "If you are experiencing a fever, please rest comfortably in a cool room, stay hydrated by drinking water or warm fluids, and notify your family or caregiver right away. If your fever is high or lasts more than a day, please consult a medical doctor immediately.";
+          'If you are experiencing a fever, please rest comfortably in a cool room, stay hydrated by drinking water or warm fluids, and notify your family or caregiver right away. If your fever is high or lasts more than a day, please consult a medical doctor immediately.';
       } else if (lowerMessage.includes('headache') || lowerMessage.includes('pain')) {
         responseText =
-          "For headaches or body discomfort, rest in a quiet, softly lit room, drink plenty of water, and inform your caregiver. If the pain is severe or sudden, please reach out to your doctor.";
+          'For headaches or body discomfort, rest in a quiet, softly lit room, drink plenty of water, and inform your caregiver. If the pain is severe or sudden, please reach out to your doctor.';
       } else {
         responseText =
-          "Whenever you feel unwell, please rest, stay hydrated, and let your caregiver or loved ones know immediately so they can assist you safely.";
+          'Whenever you feel unwell, please rest, stay hydrated, and let your caregiver or loved ones know immediately so they can assist you safely.';
       }
     }
     // 3. Daily Routine, Agenda & Schedule
@@ -63,10 +63,10 @@ export class MockAIProvider extends BaseAIProvider {
       lowerMessage.includes('timetable')
     ) {
       responseText =
-        "Here is your recommended daily care routine for today:\n\n" +
-        "• 🌅 Morning (8:00 AM): Healthy breakfast, morning music therapy, and daily memory photo review.\n" +
-        "• ☀️ Afternoon (1:00 PM): Nutritious lunch, a quick Memory Match puzzle game, and hydration break.\n" +
-        "• 🌇 Evening (6:00 PM): Relaxing garden walk or family call, evening wind-down, and early sleep.";
+        'Here is your recommended daily care routine for today:\n\n' +
+        '• 🌅 Morning (8:00 AM): Healthy breakfast, morning music therapy, and daily memory photo review.\n' +
+        '• ☀️ Afternoon (1:00 PM): Nutritious lunch, a quick Memory Match puzzle game, and hydration break.\n' +
+        '• 🌇 Evening (6:00 PM): Relaxing garden walk or family call, evening wind-down, and early sleep.';
     }
     // 4. Emergency Contacts & Safety
     else if (
@@ -78,7 +78,7 @@ export class MockAIProvider extends BaseAIProvider {
       lowerMessage.includes('call')
     ) {
       responseText =
-        "Your emergency contacts and family directory are saved in your Memora Safety profile. If you ever feel in danger or need immediate help, tap the red SOS button at the bottom of your screen to notify your caregiver instantly.";
+        'Your emergency contacts and family directory are saved in your Memora Safety profile. If you ever feel in danger or need immediate help, tap the red SOS button at the bottom of your screen to notify your caregiver instantly.';
     }
     // 5. Games & Cognitive Exercises
     else if (
@@ -90,7 +90,7 @@ export class MockAIProvider extends BaseAIProvider {
       lowerMessage.includes('activity')
     ) {
       responseText =
-        "To keep your mind sharp and refreshed, I recommend playing Memory Match Cards or solving the Daily Word Puzzle! You can start playing directly from your games library.";
+        'To keep your mind sharp and refreshed, I recommend playing Memory Match Cards or solving the Daily Word Puzzle! You can start playing directly from your games library.';
     }
     // 6. Memory retrieval with DB context
     else if (Array.isArray(context) && context.length > 0) {
@@ -169,7 +169,8 @@ export class MockAIProvider extends BaseAIProvider {
       lowerMessage.includes('yesterday')
     ) {
       if (lowerMessage.includes('visited')) {
-        responseText = "According to your family records, your family members and caregivers visit regularly. You can check your recent visitors log in your Caregiver directory!";
+        responseText =
+          'According to your family records, your family members and caregivers visit regularly. You can check your recent visitors log in your Caregiver directory!';
       } else {
         responseText = "I couldn't find a memory about that in your recorded memories.";
       }
@@ -184,7 +185,7 @@ export class MockAIProvider extends BaseAIProvider {
       lowerMessage.includes('relax')
     ) {
       responseText =
-        "Here is a calming thought for today: Imagine standing in a peaceful green garden bathed in soft morning sunlight. Warm breezes rustle through blooming jasmine, and gentle birdsong fills the air. Take a slow, deep breath in... and relax.";
+        'Here is a calming thought for today: Imagine standing in a peaceful green garden bathed in soft morning sunlight. Warm breezes rustle through blooming jasmine, and gentle birdsong fills the air. Take a slow, deep breath in... and relax.';
     }
     // 9. Greetings & Small Talk
     else if (
@@ -196,9 +197,11 @@ export class MockAIProvider extends BaseAIProvider {
       lowerMessage.includes('how are you')
     ) {
       if (language === 'hi') {
-        responseText = "नमस्ते! मैं मेमोरा AI सहायक हूँ। आज मैं आपकी दिनचर्या, यादों या मनपसंद खेलों में कैसे मदद कर सकता हूँ?";
+        responseText =
+          'नमस्ते! मैं मेमोरा AI सहायक हूँ। आज मैं आपकी दिनचर्या, यादों या मनपसंद खेलों में कैसे मदद कर सकता हूँ?';
       } else {
-        responseText = "Hello! It's wonderful to talk with you today. How are you feeling right now? I'm here to answer any questions about your day or memories.";
+        responseText =
+          "Hello! It's wonderful to talk with you today. How are you feeling right now? I'm here to answer any questions about your day or memories.";
       }
     }
     // 10. Intelligent dynamic conversational fallback (answers user's specific prompt!)

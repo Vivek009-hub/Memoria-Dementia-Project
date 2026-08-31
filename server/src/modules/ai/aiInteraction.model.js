@@ -16,11 +16,7 @@ export const AI_INTERACTION_TYPES = [
   'OTHER',
 ];
 
-export const AI_INTERACTION_STATUSES = [
-  'SUCCESS',
-  'FAILED',
-  'BLOCKED_BY_GUARDRAIL',
-];
+export const AI_INTERACTION_STATUSES = ['SUCCESS', 'FAILED', 'BLOCKED_BY_GUARDRAIL'];
 
 const aiInteractionSchema = new mongoose.Schema(
   {

@@ -8,14 +8,7 @@
 import mongoose from 'mongoose';
 
 export const MEETING_TYPES = ['VIDEO', 'VOICE'];
-export const MEETING_STATUSES = [
-  'SCHEDULED',
-  'READY',
-  'LIVE',
-  'COMPLETED',
-  'CANCELLED',
-  'EXPIRED',
-];
+export const MEETING_STATUSES = ['SCHEDULED', 'READY', 'LIVE', 'COMPLETED', 'CANCELLED', 'EXPIRED'];
 
 const meetingSchema = new mongoose.Schema(
   {

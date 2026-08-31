@@ -67,7 +67,7 @@ export async function askMemoryAssistant(user, { message, language = 'en', patie
     });
 
     return {
-      answer: "I cannot fulfill this request as it violates security policies.",
+      answer: 'I cannot fulfill this request as it violates security policies.',
       sources: [],
       language,
       provider: 'mock',
@@ -102,7 +102,11 @@ export async function askMemoryAssistant(user, { message, language = 'en', patie
     type: 'MEMORY_ASSISTANCE',
     language,
     inputMetadata: { queryLength: cleanMessage.length, memoryCount: rawMemories.length },
-    outputMetadata: { responseLength: safeAnswer.length, sourcesCount: providerResult.sources?.length || 0, latencyMs },
+    outputMetadata: {
+      responseLength: safeAnswer.length,
+      sourcesCount: providerResult.sources?.length || 0,
+      latencyMs,
+    },
     provider: providerResult.provider,
     model: providerResult.model,
     status: 'SUCCESS',

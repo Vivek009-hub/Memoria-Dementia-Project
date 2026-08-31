@@ -78,13 +78,18 @@ describe('Analytics & Progress Tracking (B10)', () => {
     // Create a game session for patient
     const Game = (await import('../games/game.model.js')).default;
     const GameSession = (await import('../games/gameSession.model.js')).default;
-    const game = await Game.create({ title: 'Memory Match', category: 'MEMORY_MATCHING', difficulty: 'MEDIUM', createdBy: new mongoose.Types.ObjectId() });
+    const game = await Game.create({
+      title: 'Memory Match',
+      category: 'MEMORY_MATCHING',
+      difficulty: 'MEDIUM',
+      createdBy: new mongoose.Types.ObjectId(),
+    });
     await GameSession.create({
       patientId: patient.id,
       gameId: game._id,
       difficulty: 'MEDIUM',
       score: 850,
-      accuracy: 0.90,
+      accuracy: 0.9,
       durationSeconds: 120,
       status: 'COMPLETED',
       completedAt: new Date(),
@@ -149,7 +154,8 @@ describe('Analytics & Progress Tracking (B10)', () => {
     const caregiverWithAccess = await registerAndLogin('caregiver4_1', 'CAREGIVER');
     const caregiverNoAccess = await registerAndLogin('caregiver4_2', 'CAREGIVER');
 
-    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js')).default;
+    const CaregiverRelationship = (await import('../caregivers/caregiverRelationship.model.js'))
+      .default;
 
     // Grant ACTIVE relationship + viewCognitiveActivity to caregiverWithAccess
     await CaregiverRelationship.create({

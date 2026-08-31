@@ -58,9 +58,6 @@ meetingParticipantSchema.index({ meetingId: 1, userId: 1 }, { unique: true });
 meetingParticipantSchema.index({ meetingId: 1, status: 1 });
 meetingParticipantSchema.index({ userId: 1, joinedAt: -1 });
 
-const MeetingParticipant = mongoose.model(
-  'MeetingParticipant',
-  meetingParticipantSchema
-);
+const MeetingParticipant = mongoose.model('MeetingParticipant', meetingParticipantSchema);
 
 export default MeetingParticipant;

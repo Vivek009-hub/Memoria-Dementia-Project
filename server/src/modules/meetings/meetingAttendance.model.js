@@ -52,9 +52,6 @@ const meetingAttendanceSchema = new mongoose.Schema(
 meetingAttendanceSchema.index({ meetingId: 1, userId: 1 });
 meetingAttendanceSchema.index({ userId: 1, joinedAt: -1 });
 
-const MeetingAttendance = mongoose.model(
-  'MeetingAttendance',
-  meetingAttendanceSchema
-);
+const MeetingAttendance = mongoose.model('MeetingAttendance', meetingAttendanceSchema);
 
 export default MeetingAttendance;

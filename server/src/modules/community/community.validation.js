@@ -7,7 +7,11 @@
 import mongoose from 'mongoose';
 import { AppError } from '../../utils/AppError.js';
 import { SESSION_TYPES, PROPOSAL_STATUSES } from './communityProposal.model.js';
-import { MEETING_TYPES, REGISTRATION_STATUSES, SESSION_STATUSES } from './communitySession.model.js';
+import {
+  MEETING_TYPES,
+  REGISTRATION_STATUSES,
+  SESSION_STATUSES,
+} from './communitySession.model.js';
 
 export function validateObjectId(id, fieldName = 'id') {
   if (!id || typeof id !== 'string' || !mongoose.Types.ObjectId.isValid(id)) {

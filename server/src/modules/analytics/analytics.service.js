@@ -74,7 +74,11 @@ export async function getGameAnalytics(patientId, startDate, endDate) {
 /**
  * Get paginated game session history.
  */
-export async function getGameHistory(patientId, queryParams = {}, pagination = { page: 1, limit: 20 }) {
+export async function getGameHistory(
+  patientId,
+  queryParams = {},
+  pagination = { page: 1, limit: 20 }
+) {
   const { page, limit } = pagination;
   const skip = (page - 1) * limit;
 
@@ -84,7 +88,12 @@ export async function getGameHistory(patientId, queryParams = {}, pagination = {
   if (queryParams.difficulty) match.difficulty = queryParams.difficulty;
 
   const [sessions, total] = await Promise.all([
-    GameSession.find(match).populate('gameId', 'title category').sort({ completedAt: -1, createdAt: -1 }).skip(skip).limit(limit).lean(),
+    GameSession.find(match)
+      .populate('gameId', 'title category')
+      .sort({ completedAt: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
     GameSession.countDocuments(match),
   ]);
 
@@ -242,7 +251,8 @@ export async function getAdminGameMetrics() {
   return {
     totalCompletedGames: totalCompleted,
     platformAverageScore: totalCompleted > 0 ? Math.round(totalScore / totalCompleted) : 0,
-    platformAverageAccuracy: totalCompleted > 0 ? Number((totalAccuracy / totalCompleted).toFixed(2)) : 0,
+    platformAverageAccuracy:
+      totalCompleted > 0 ? Number((totalAccuracy / totalCompleted).toFixed(2)) : 0,
   };
 }
 

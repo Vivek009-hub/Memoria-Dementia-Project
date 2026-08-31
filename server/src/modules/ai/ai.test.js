@@ -203,9 +203,7 @@ describe('Phase B11 — AI Cognitive & Memory Assistance', () => {
         .set('Cookie', patientUser1.cookie)
         .send({ message: 'When did I visit Jaipur?' });
 
-      const res = await request(app)
-        .get('/api/v1/ai/usage')
-        .set('Cookie', patientUser1.cookie);
+      const res = await request(app).get('/api/v1/ai/usage').set('Cookie', patientUser1.cookie);
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);

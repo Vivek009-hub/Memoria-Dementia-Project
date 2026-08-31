@@ -8,6 +8,7 @@ import memoriesRouter from '../modules/memories/memory.routes.js';
 import remindersRouter from '../modules/reminders/reminder.routes.js';
 import { communityRouter, adminCommunityRouter } from '../modules/community/community.routes.js';
 import meetingsRouter from '../modules/meetings/meeting.routes.js';
+import meetingCircleRouter from '../modules/meetings/meetingCircle.routes.js';
 import notificationsRouter from '../modules/notifications/notification.routes.js';
 import { analyticsRouter, adminAnalyticsRouter } from '../modules/analytics/analytics.routes.js';
 import aiRouter from '../modules/ai/ai.routes.js';
@@ -46,6 +47,7 @@ router.use('/community', communityRouter);
 router.use('/admin/community', adminCommunityRouter);
 
 // B8 — Memora Meeting Circle
+router.use('/meeting-circles', meetingCircleRouter);
 router.use('/community', meetingsRouter);
 router.use('/meetings', meetingsRouter);
 
