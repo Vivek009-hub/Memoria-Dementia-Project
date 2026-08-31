@@ -55,6 +55,20 @@ export async function updateProposal(ideaId, data) {
 }
 
 /**
+ * Admin opens or closes voting for a session proposal.
+ */
+export async function toggleVotingStatus(ideaId, isOpen) {
+  const proposal = await CommunityProposal.findById(ideaId);
+  if (!proposal) {
+    throw new AppError('Proposal not found', 404, 'NOT_FOUND');
+  }
+
+  proposal.status = isOpen ? 'VOTING' : 'CLOSED';
+  await proposal.save();
+  return proposal;
+}
+
+/**
  * Patient / Public lists active voting proposals.
  */
 export async function getVotingProposals(queryParams = {}, patientId = null) {

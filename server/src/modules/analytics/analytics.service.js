@@ -1,5 +1,5 @@
 /**
- * analytics.service.js — Analytics business logic & database service
+ * analytics.service.js — Analytics business logic, Admin metrics & Traffic service
  */
 
 import ActivityEvent from './activityEvent.model.js';
@@ -7,7 +7,9 @@ import GameSession from '../games/gameSession.model.js';
 import ReminderLog from '../reminders/reminderLog.model.js';
 import CommunityVote from '../community/communityVote.model.js';
 import SessionRegistration from '../community/sessionRegistration.model.js';
+import CommunitySession from '../community/communitySession.model.js';
 import User from '../users/user.model.js';
+import TrafficLog from './trafficLog.model.js';
 import {
   aggregateGameMetrics,
   aggregateReminderMetrics,
@@ -217,23 +219,156 @@ export async function getEngagementTrends(patientId, startDate, endDate) {
   return trends;
 }
 
-// ── ADMIN PLATFORM ANALYTICS ─────────────────────────────────────────────────
+// ── ADMIN PLATFORM ANALYTICS & OVERVIEW ──────────────────────────────────────
 
-export async function getAdminOverview(_startDate, _endDate) {
-  const [totalPatients, totalGames, totalVotes, totalRegistrations] = await Promise.all([
-    User.countDocuments({ role: 'PATIENT', isActive: true }),
-    GameSession.countDocuments({ status: 'COMPLETED' }),
-    CommunityVote.countDocuments(),
-    SessionRegistration.countDocuments({ status: 'REGISTERED' }),
+/**
+ * Real backend calculation for Admin Overview dashboard stat cards.
+ */
+export async function getAdminOverview() {
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 3600 * 1000);
+
+  const [
+    totalUsers,
+    totalPatients,
+    totalCaregivers,
+    totalHosts,
+    upcomingEventsCount,
+    recentActiveUsersCount,
+  ] = await Promise.all([
+    User.countDocuments(),
+    User.countDocuments({ role: 'PATIENT' }),
+    User.countDocuments({ role: 'CAREGIVER' }),
+    User.countDocuments({ role: 'HOST' }),
+    CommunitySession.countDocuments({ status: 'SCHEDULED' }),
+    User.countDocuments({ lastLoginAt: { $gte: twentyFourHoursAgo } }),
   ]);
 
   return {
+    totalUsers,
     totalPatients,
-    platformActivity: {
-      totalGamesCompleted: totalGames,
-      totalCommunityVotes: totalVotes,
-      totalSessionRegistrations: totalRegistrations,
+    patients: totalPatients,
+    caregivers: totalCaregivers,
+    hosts: totalHosts,
+    upcomingEvents: upcomingEventsCount,
+    activeUsers: recentActiveUsersCount,
+  };
+}
+
+/**
+ * Admin: Activity Audit Log retrieval with pagination.
+ */
+export async function getAdminActivityLogs({ page = 1, limit = 20, eventType = '' } = {}) {
+  const pageNum = Math.max(1, parseInt(page, 10) || 1);
+  const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 20));
+  const skip = (pageNum - 1) * limitNum;
+
+  const query = {};
+  if (eventType) {
+    query.eventType = eventType;
+  }
+
+  const [events, total] = await Promise.all([
+    ActivityEvent.find(query)
+      .populate('patientId', 'name email role')
+      .populate('userId', 'name email role')
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .lean(),
+    ActivityEvent.countDocuments(query),
+  ]);
+
+  const formattedEvents = events.map((ev) => ({
+    id: ev._id.toString(),
+    timestamp: ev.timestamp || ev.createdAt,
+    actor: ev.userId?.name || ev.patientId?.name || 'System / Admin',
+    actorEmail: ev.userId?.email || ev.patientId?.email || null,
+    actorRole: ev.userId?.role || ev.patientId?.role || 'SYSTEM',
+    action: ev.eventType,
+    category: ev.category || ev.source || 'GENERAL',
+    metadata: ev.metadata || {},
+  }));
+
+  return {
+    events: formattedEvents,
+    pagination: {
+      total,
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(total / limitNum) || 1,
     },
+  };
+}
+
+/**
+ * Admin: Operational Traffic Metrics calculation (Today, 7 Days, 30 Days).
+ */
+export async function getAdminTrafficMetrics({ range = 'today' } = {}) {
+  const now = new Date();
+  let startDate = new Date();
+
+  if (range === 'today') {
+    startDate.setHours(0, 0, 0, 0);
+  } else if (range === '7d') {
+    startDate.setDate(now.getDate() - 7);
+  } else if (range === '30d') {
+    startDate.setDate(now.getDate() - 30);
+  } else {
+    startDate.setHours(0, 0, 0, 0);
+  }
+
+  const filter = { timestamp: { $gte: startDate } };
+
+  const [totalRequests, errors4xx, errors5xx, avgResTimeResult, activeUsersDistinct] =
+    await Promise.all([
+      TrafficLog.countDocuments(filter),
+      TrafficLog.countDocuments({ ...filter, statusCode: { $gte: 400, $lt: 500 } }),
+      TrafficLog.countDocuments({ ...filter, statusCode: { $gte: 500 } }),
+      TrafficLog.aggregate([
+        { $match: filter },
+        { $group: { _id: null, avgResponseTime: { $avg: '$responseTimeMs' } } },
+      ]),
+      TrafficLog.distinct('userId', { ...filter, userId: { $ne: null } }),
+    ]);
+
+  const avgResponseTimeMs =
+    avgResTimeResult.length > 0 ? Math.round(avgResTimeResult[0].avgResponseTime) : 0;
+
+  // Build aggregate time series for visual chart
+  let groupFormat = '%Y-%m-%d';
+  if (range === 'today') {
+    groupFormat = '%Y-%m-%d %H:00';
+  }
+
+  const chartAggregation = await TrafficLog.aggregate([
+    { $match: filter },
+    {
+      $group: {
+        _id: { $dateToString: { format: groupFormat, date: '$timestamp' } },
+        requests: { $sum: 1 },
+        errors: {
+          $sum: { $cond: [{ $gte: ['$statusCode', 400] }, 1, 0] },
+        },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
+  const chartData = chartAggregation.map((item) => ({
+    label: item._id,
+    requests: item.requests,
+    errors: item.errors,
+  }));
+
+  return {
+    range,
+    totalRequests,
+    activeUsers: activeUsersDistinct.length,
+    errors4xx,
+    errors5xx,
+    totalErrors: errors4xx + errors5xx,
+    avgResponseTimeMs,
+    chartData,
   };
 }
 

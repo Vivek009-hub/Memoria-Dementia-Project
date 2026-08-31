@@ -52,6 +52,7 @@ adminCommunityRouter.use(requireAuth, requireRole('ADMIN'));
 // Admin proposal management
 adminCommunityRouter.post('/sessions/ideas', controller.createProposal);
 adminCommunityRouter.patch('/sessions/ideas/:ideaId', controller.updateProposal);
+adminCommunityRouter.patch('/sessions/ideas/:ideaId/toggle-voting', controller.toggleVotingStatus);
 adminCommunityRouter.get('/sessions/voting/results', controller.getVotingResults);
 adminCommunityRouter.post('/sessions/ideas/:ideaId/approve', controller.approveProposal);
 

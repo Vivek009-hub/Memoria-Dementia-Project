@@ -47,6 +47,8 @@ adminAnalyticsRouter.use(requireAuth, requireRole('ADMIN'));
 adminAnalyticsRouter.get('/overview', controller.getAdminOverview);
 adminAnalyticsRouter.get('/games', controller.getAdminGames);
 adminAnalyticsRouter.get('/community', controller.getAdminCommunity);
+adminAnalyticsRouter.get('/activity', controller.getAdminActivity);
+adminAnalyticsRouter.get('/traffic', controller.getAdminTraffic);
 
 export default {
   analyticsRouter,
