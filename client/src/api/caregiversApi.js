@@ -21,3 +21,11 @@ export async function updateCaregiverRelationship(relationshipId, data) {
     body: data,
   });
 }
+
+export async function pairWithCode(inviteCode) {
+  return await request('/caregivers/pair', {
+    method: 'POST',
+    body: { inviteCode },
+  });
+}
+

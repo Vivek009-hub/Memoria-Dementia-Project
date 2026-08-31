@@ -30,6 +30,20 @@ export function validatePatientUpdate(body) {
 
   const update = {};
 
+  if (body.name !== undefined) {
+    if (typeof body.name !== 'string' || body.name.trim().length === 0) {
+      throw new AppError('name must be a non-empty string', 422, 'VALIDATION_ERROR');
+    }
+    update.name = body.name.trim();
+  }
+
+  if (body.phone !== undefined) {
+    if (typeof body.phone !== 'string') {
+      throw new AppError('phone must be a string', 422, 'VALIDATION_ERROR');
+    }
+    update.phone = body.phone.trim();
+  }
+
   if (body.dateOfBirth !== undefined) {
     const d = new Date(body.dateOfBirth);
     if (isNaN(d.getTime())) {

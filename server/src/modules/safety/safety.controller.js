@@ -127,7 +127,7 @@ export async function cancelSafetyEvent(req, res, next) {
 export async function getCurrentLocation(req, res, next) {
   try {
     const patientId = req.query?.patientId || req.user.id;
-    const location = await safetyService.getCurrentLocation(patientId);
+    const location = await safetyService.getCurrentLocation(patientId, req.user);
     res.status(200).json({ success: true, data: location });
   } catch (err) {
     next(err);

@@ -53,6 +53,19 @@ export async function updateRelationship(req, res, next) {
 }
 
 /**
+ * POST /api/v1/caregivers/pair
+ */
+export async function pairWithCode(req, res, next) {
+  try {
+    const inviteCode = req.body?.inviteCode || req.body?.code;
+    const relationship = await caregiversService.pairWithCode(req.user.id, inviteCode);
+    res.status(200).json({ success: true, data: { relationship } });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * DELETE /api/v1/caregivers/relationships/:relationshipId
  * Revokes the relationship (soft delete).
  */
@@ -65,3 +78,4 @@ export async function revokeRelationship(req, res, next) {
     next(err);
   }
 }
+

@@ -14,6 +14,7 @@ import {
 } from '../notifications/notification.model.js';
 import { evaluatePatientGeofences } from './geofence.service.js';
 import { AppError } from '../../utils/AppError.js';
+import { canAccessPatient } from '../../utils/authorization.js';
 
 /**
  * Record a safety audit trail entry.
@@ -320,10 +321,23 @@ export async function cancelSafetyEvent(eventId, actorId) {
   return event;
 }
 
+import PatientProfile from '../patients/patientProfile.model.js';
+
 /**
- * Get last known location for a patient.
+ * Get last known location for a patient with authorization & privacy check.
  */
-export async function getCurrentLocation(patientId) {
+export async function getCurrentLocation(patientId, requestingUser = null) {
+  if (requestingUser && requestingUser.role === 'CAREGIVER') {
+    // 1. Verify caregiver relationship has viewLocation permission
+    await canAccessPatient(requestingUser, patientId, 'viewLocation');
+
+    // 2. Verify patient location sharing is not explicitly disabled
+    const profile = await PatientProfile.findOne({ userId: patientId });
+    if (profile && profile.safetySettings && profile.safetySettings.locationSharingEnabled === false) {
+      throw new AppError('Patient has disabled location sharing', 403, 'LOCATION_SHARING_DISABLED');
+    }
+  }
+
   const latest = await LocationEvent.findOne({ patientId }).sort({ timestamp: -1 }).lean();
   if (!latest) {
     return null;

@@ -29,6 +29,7 @@ import { SafetyPage } from '../pages/SafetyPage.jsx';
 import { CaregiverDashboardPage } from '../pages/CaregiverDashboardPage.jsx';
 import { AdminDashboardPage } from '../pages/AdminDashboardPage.jsx';
 import { AnalyticsPage } from '../pages/AnalyticsPage.jsx';
+import { PatientProfilePage } from '../pages/PatientProfilePage.jsx';
 
 export function AppRoutes() {
   const { role, user } = useAuth();
@@ -68,6 +69,7 @@ export function AppRoutes() {
             )
           }
         />
+        <Route path="profile" element={<PatientProfilePage />} />
         <Route path="games" element={<GameLibraryPage />} />
         <Route path="games/:gameId" element={<GamePlayPage />} />
         <Route path="memories" element={<MemoriesPage patientId={user?._id} />} />

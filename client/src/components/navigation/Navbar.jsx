@@ -16,11 +16,14 @@ export function Navbar() {
 
       {isAuthenticated ? (
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800">
+          <Link
+            to={user?.role === 'PATIENT' ? '/app/profile' : '/app'}
+            className="flex items-center space-x-2 bg-slate-950 hover:bg-slate-800 px-3 py-1.5 rounded-full border border-slate-800 transition-colors cursor-pointer"
+          >
             <User className="w-4 h-4 text-brand-400" />
             <span className="text-sm font-semibold text-slate-200">{user?.name || user?.email}</span>
             <Badge variant="brand">{user?.role}</Badge>
-          </div>
+          </Link>
           <button
             onClick={logout}
             className="flex items-center space-x-1 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm font-bold rounded-xl border border-slate-700 transition-colors"
