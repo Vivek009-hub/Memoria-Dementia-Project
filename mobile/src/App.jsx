@@ -1,11 +1,11 @@
 /**
  * App.jsx — Memora Patient, Caregiver & Admin Mobile & Web Application Shell
  *
- * Integrates Admin Dashboard, Caregiver Support Dashboard, Safety Companion Dashboard, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, Notifications & Activity Center, and B11 AI Assistance.
+ * Integrates Progress & Analytics Dashboard, Admin Dashboard, Caregiver Support Dashboard, Safety Companion Dashboard, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, Notifications & Activity Center, and B11 AI Assistance.
  */
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck, ShieldAlert } from 'lucide-react';
+import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck, ShieldAlert, BarChart3 } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
@@ -16,6 +16,7 @@ import { SafetyDashboardScreen } from './screens/SafetyDashboardScreen.jsx';
 import { AIAssistantScreen } from './screens/AIAssistantScreen.jsx';
 import { CaregiverDashboardScreen } from './screens/CaregiverDashboardScreen.jsx';
 import { AdminDashboardScreen } from './screens/AdminDashboardScreen.jsx';
+import { ProgressScreen } from './screens/ProgressScreen.jsx';
 import { getCurrentCoordinates } from './services/location.service.js';
 import * as safetyApi from './api/safetyApi.js';
 import * as notificationsApi from './api/notifications.api.js';
@@ -28,7 +29,7 @@ function Dashboard() {
   const isCaregiver = user?.role === 'CAREGIVER';
   const isAdmin = user?.role === 'ADMIN';
 
-  const [activeTab, setActiveTab] = useState('assistant'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety' | 'caregiver' | 'admin'
+  const [activeTab, setActiveTab] = useState('assistant'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety' | 'caregiver' | 'admin' | 'progress'
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loginEmail, setLoginEmail] = useState('');
@@ -151,6 +152,18 @@ function Dashboard() {
             </button>
 
             <button
+              onClick={() => setActiveTab('progress')}
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'progress'
+                  ? 'bg-indigo-600 text-white shadow-lg'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4 text-indigo-400" />
+              <span>Progress</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('reminders')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
                 activeTab === 'reminders'
@@ -261,7 +274,7 @@ function Dashboard() {
                 required
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
-                placeholder="admin@memora.com"
+                placeholder="user@memora.com"
                 className="w-full p-4 bg-slate-950 border border-slate-800 rounded-xl text-white font-medium text-lg focus:outline-none focus:border-indigo-500"
               />
             </div>
@@ -286,6 +299,7 @@ function Dashboard() {
         </div>
       ) : (
         <main className="w-full max-w-4xl">
+          {activeTab === 'progress' && <ProgressScreen patientId={isCaregiver ? null : user.id} />}
           {activeTab === 'admin' && <AdminDashboardScreen />}
           {activeTab === 'caregiver' && <CaregiverDashboardScreen />}
           {activeTab === 'assistant' && (
