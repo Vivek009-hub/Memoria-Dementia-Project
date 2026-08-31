@@ -26,6 +26,9 @@ router.post('/relationships', caregiversController.createRelationship);
 // PATCH  /api/v1/caregivers/relationships/:relationshipId
 router.patch('/relationships/:relationshipId', caregiversController.updateRelationship);
 
+// POST   /api/v1/caregivers/pair
+router.post('/pair', caregiversController.pairWithCode);
+
 // DELETE /api/v1/caregivers/relationships/:relationshipId  (revoke — soft delete)
 router.delete('/relationships/:relationshipId', caregiversController.revokeRelationship);
 

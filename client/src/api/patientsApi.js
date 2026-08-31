@@ -29,3 +29,49 @@ export async function addEmergencyContact(contactData, patientId = null) {
     body: contactData,
   });
 }
+
+export async function updateEmergencyContact(contactId, contactData, patientId = null) {
+  const endpoint = patientId ? `/patients/${patientId}/emergency-contacts/${contactId}` : `/patients/me/emergency-contacts/${contactId}`;
+  return await request(endpoint, {
+    method: 'PATCH',
+    body: contactData,
+  });
+}
+
+export async function deleteEmergencyContact(contactId, patientId = null) {
+  const endpoint = patientId ? `/patients/${patientId}/emergency-contacts/${contactId}` : `/patients/me/emergency-contacts/${contactId}`;
+  return await request(endpoint, {
+    method: 'DELETE',
+  });
+}
+
+export async function getPatientCaregivers() {
+  return await request('/patients/me/caregivers');
+}
+
+export async function generateCaregiverInvite(options = {}) {
+  return await request('/patients/me/caregivers/invite', {
+    method: 'POST',
+    body: options,
+  });
+}
+
+export async function acceptCaregiverRequest(relationshipId) {
+  return await request(`/patients/me/caregivers/${relationshipId}/accept`, {
+    method: 'POST',
+  });
+}
+
+export async function updateCaregiverPermissions(relationshipId, permissions) {
+  return await request(`/patients/me/caregivers/${relationshipId}/permissions`, {
+    method: 'PATCH',
+    body: { permissions },
+  });
+}
+
+export async function revokeCaregiverConnection(relationshipId) {
+  return await request(`/patients/me/caregivers/${relationshipId}/revoke`, {
+    method: 'POST',
+  });
+}
+

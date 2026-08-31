@@ -11,6 +11,7 @@ import {
   ShieldAlert,
   BarChart3,
   Home,
+  User,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 
@@ -19,6 +20,7 @@ export function Sidebar() {
 
   const patientNav = [
     { label: 'Overview', path: '/app', icon: Home },
+    { label: 'Profile', path: '/app/profile', icon: User },
     { label: 'Games', path: '/app/games', icon: Gamepad2 },
     { label: 'Memories', path: '/app/memories', icon: Heart },
     { label: 'Reminders', path: '/app/reminders', icon: Bell },

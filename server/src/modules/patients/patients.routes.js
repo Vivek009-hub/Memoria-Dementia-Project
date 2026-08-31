@@ -30,6 +30,13 @@ router.get('/me', requireRole('PATIENT'), patientsController.getMe);
 // PATCH /api/v1/patients/me — PATIENT role only
 router.patch('/me', requireRole('PATIENT'), patientsController.updateMe);
 
+// ── Caregiver Connections under /me ──────────────────────────────────────────
+router.get('/me/caregivers', requireRole('PATIENT'), patientsController.getMyCaregivers);
+router.post('/me/caregivers/invite', requireRole('PATIENT'), patientsController.generateCaregiverInvite);
+router.post('/me/caregivers/:relationshipId/accept', requireRole('PATIENT'), patientsController.acceptCaregiverRequest);
+router.patch('/me/caregivers/:relationshipId/permissions', requireRole('PATIENT'), patientsController.updateCaregiverPermissions);
+router.post('/me/caregivers/:relationshipId/revoke', requireRole('PATIENT'), patientsController.revokeCaregiverConnection);
+
 // ── Emergency contacts under /me ─────────────────────────────────────────────
 // Mount the emergency contacts sub-router at /me/emergency-contacts
 router.use('/me/emergency-contacts', requireRole('PATIENT'), emergencyContactsRouter);
