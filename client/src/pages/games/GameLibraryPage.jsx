@@ -7,7 +7,8 @@ import { startGameSession } from '../../api/gamesApi.js';
 
 const DEFAULT_MOCK_GAMES = [
   {
-    _id: 'game_mem_1',
+    id: '65f1a0000000000000000001',
+    _id: '65f1a0000000000000000001',
     title: 'Memory Match',
     description: 'Exercise your memory by finding matching pairs of familiar items.',
     category: 'MEMORY_MATCHING',
@@ -15,7 +16,8 @@ const DEFAULT_MOCK_GAMES = [
     instructions: 'Tap on cards to flip them over. Match all pairs of identical cards to complete the exercise!',
   },
   {
-    _id: 'game_seq_1',
+    id: '65f1a0000000000000000002',
+    _id: '65f1a0000000000000000002',
     title: 'Sequence Recall',
     description: 'Remember and repeat the sequence of colored lights in the correct order.',
     category: 'SEQUENCE',
@@ -23,7 +25,8 @@ const DEFAULT_MOCK_GAMES = [
     instructions: 'Watch the sequence of colors carefully. When it is your turn, tap the colored buttons in the exact same order!',
   },
   {
-    _id: 'game_word_1',
+    id: '65f1a0000000000000000003',
+    _id: '65f1a0000000000000000003',
     title: 'Word & Language',
     description: 'Stimulate language recall by answering simple everyday vocabulary questions.',
     category: 'WORD_LANGUAGE',
@@ -31,7 +34,8 @@ const DEFAULT_MOCK_GAMES = [
     instructions: 'Read the question carefully and tap the best answer option from the choices given.',
   },
   {
-    _id: 'game_pic_1',
+    id: '65f1a0000000000000000004',
+    _id: '65f1a0000000000000000004',
     title: 'Picture Recognition',
     description: 'Identify familiar everyday objects and symbols from high-contrast pictures.',
     category: 'PICTURE_RECOGNITION',
@@ -86,6 +90,8 @@ export function GameLibraryPage() {
       const res = await fetchGameHistory();
       if (res?.data && Array.isArray(res.data)) {
         setHistory(res.data);
+      } else if (Array.isArray(res)) {
+        setHistory(res);
       }
     } catch (err) {
       console.warn('Could not load game history', err);

@@ -14,6 +14,56 @@ import Game from './game.model.js';
 import GameSession from './gameSession.model.js';
 import { AppError } from '../../utils/AppError.js';
 
+const DEFAULT_GAMES_SEED = [
+  {
+    _id: new mongoose.Types.ObjectId('65f1a0000000000000000001'),
+    title: 'Memory Match',
+    description: 'Exercise your memory by finding matching pairs of familiar items.',
+    category: 'MEMORY_MATCHING',
+    difficulty: 'EASY',
+    instructions: 'Tap on cards to flip them over. Match all pairs of identical cards to complete the exercise!',
+    isActive: true,
+  },
+  {
+    _id: new mongoose.Types.ObjectId('65f1a0000000000000000002'),
+    title: 'Sequence Recall',
+    description: 'Remember and repeat the sequence of colored lights in the correct order.',
+    category: 'SEQUENCE',
+    difficulty: 'MEDIUM',
+    instructions: 'Watch the sequence of colors carefully. When it is your turn, tap the colored buttons in the exact same order!',
+    isActive: true,
+  },
+  {
+    _id: new mongoose.Types.ObjectId('65f1a0000000000000000003'),
+    title: 'Word & Language',
+    description: 'Stimulate language recall by answering simple everyday vocabulary questions.',
+    category: 'WORD_LANGUAGE',
+    difficulty: 'EASY',
+    instructions: 'Read the question carefully and tap the best answer option from the choices given.',
+    isActive: true,
+  },
+  {
+    _id: new mongoose.Types.ObjectId('65f1a0000000000000000004'),
+    title: 'Picture Recognition',
+    description: 'Identify familiar everyday objects and symbols from high-contrast pictures.',
+    category: 'PICTURE_RECOGNITION',
+    difficulty: 'EASY',
+    instructions: 'Look at the prompt and tap the matching picture icon on the screen.',
+    isActive: true,
+  },
+];
+
+async function ensureDefaultGamesSeeded() {
+  const count = await Game.countDocuments();
+  if (count === 0) {
+    try {
+      await Game.insertMany(DEFAULT_GAMES_SEED);
+    } catch {
+      // Ignore concurrency conflict if seeded in parallel
+    }
+  }
+}
+
 // ── Game Catalog ─────────────────────────────────────────────────────────────
 
 /**
@@ -25,6 +75,7 @@ import { AppError } from '../../utils/AppError.js';
  * @returns {Promise<object[]>}
  */
 export async function listGames(filters = {}, includeInactive = false) {
+  await ensureDefaultGamesSeeded();
   const query = {};
 
   if (!includeInactive) {
@@ -47,6 +98,7 @@ export async function listGames(filters = {}, includeInactive = false) {
  * @returns {Promise<object>}
  */
 export async function getGame(gameId, includeInactive = false) {
+  await ensureDefaultGamesSeeded();
   const query = { _id: new mongoose.Types.ObjectId(gameId) };
   if (!includeInactive) {
     query.isActive = true;
@@ -74,6 +126,7 @@ export async function getGame(gameId, includeInactive = false) {
  * @returns {Promise<object>}
  */
 export async function startSession(patientId, gameId, data) {
+  await ensureDefaultGamesSeeded();
   // Verify the game exists and is active
   const game = await Game.findOne({
     _id: new mongoose.Types.ObjectId(gameId),
