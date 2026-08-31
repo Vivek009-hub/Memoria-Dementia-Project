@@ -111,6 +111,18 @@ export async function approveProposal(req, res, next) {
   }
 }
 
+export async function toggleVotingStatus(req, res, next) {
+  try {
+    const { ideaId } = req.params;
+    const { isOpen } = req.body;
+    validateObjectId(ideaId, 'ideaId');
+    const proposal = await communityService.toggleVotingStatus(ideaId, Boolean(isOpen));
+    res.status(200).json({ success: true, data: proposal });
+  } catch (err) {
+    next(err);
+  }
+}
+
 // ── SCHEDULE & REGISTRATION HANDLERS ────────────────────────────────────────
 
 export async function scheduleSession(req, res, next) {

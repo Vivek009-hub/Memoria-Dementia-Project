@@ -146,3 +146,23 @@ export async function getAdminCommunity(req, res, next) {
     next(err);
   }
 }
+
+export async function getAdminActivity(req, res, next) {
+  try {
+    const { page, limit, eventType } = req.query;
+    const result = await analyticsService.getAdminActivityLogs({ page, limit, eventType });
+    res.status(200).json({ success: true, data: result.events, pagination: result.pagination });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getAdminTraffic(req, res, next) {
+  try {
+    const { range } = req.query;
+    const traffic = await analyticsService.getAdminTrafficMetrics({ range });
+    res.status(200).json({ success: true, data: traffic });
+  } catch (err) {
+    next(err);
+  }
+}

@@ -14,7 +14,13 @@ import { analyticsRouter, adminAnalyticsRouter } from '../modules/analytics/anal
 import aiRouter from '../modules/ai/ai.routes.js';
 import safetyRouter from '../modules/safety/safety.routes.js';
 
+import adminUserRouter from '../modules/users/adminUser.routes.js';
+import { trafficLogger } from '../middleware/trafficLogger.middleware.js';
+
 const router = Router();
+
+// Operational Traffic Logging Middleware
+router.use(trafficLogger);
 
 // GET /api/v1/health
 router.get('/health', (_req, res) => {
@@ -30,6 +36,7 @@ router.use('/auth', authRouter);
 
 // B3 — Users / Patients / Caregivers
 router.use('/users', usersRouter);
+router.use('/admin/users', adminUserRouter);
 router.use('/patients', patientsRouter);
 router.use('/caregivers', caregiversRouter);
 
