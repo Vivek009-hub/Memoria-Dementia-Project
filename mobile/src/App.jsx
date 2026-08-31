@@ -1,22 +1,18 @@
 /**
  * App.jsx — Memora Patient Mobile & Web Application Shell
  *
- * Integrates Safety Companion, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, Notifications & Activity Center, and B11 AI Assistance.
+ * Integrates Safety Companion Dashboard, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, Notifications & Activity Center, and B11 AI Assistance.
  */
 
 import React, { useState, useEffect } from 'react';
 import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
-import { SOSButton } from './components/SOSButton.jsx';
-import { FallDetector } from './components/FallDetector.jsx';
-import { GeofenceStatus } from './components/GeofenceStatus.jsx';
-import { EmergencyContacts } from './components/EmergencyContacts.jsx';
-import { SafetyHistory } from './components/SafetyHistory.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
 import { RemindersScreen } from './screens/RemindersScreen.jsx';
 import { CommunityScreen } from './screens/CommunityScreen.jsx';
 import { NotificationsScreen } from './screens/NotificationsScreen.jsx';
+import { SafetyDashboardScreen } from './screens/SafetyDashboardScreen.jsx';
 import { AIAssistantScreen } from './screens/AIAssistantScreen.jsx';
 import { getCurrentCoordinates } from './services/location.service.js';
 import * as safetyApi from './api/safetyApi.js';
@@ -25,9 +21,9 @@ import { defaultApiClient } from './api/client.js';
 
 function Dashboard() {
   const { user, login } = useAuth();
-  const { isOnline, geofences, safetyEvents, pendingQueueCount, refreshSafetyData } = useSafety();
+  const { isOnline, pendingQueueCount, refreshSafetyData } = useSafety();
 
-  const [activeTab, setActiveTab] = useState('notifications'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety'
+  const [activeTab, setActiveTab] = useState('safety'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety'
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loginEmail, setLoginEmail] = useState('');
@@ -88,13 +84,25 @@ function Dashboard() {
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tight text-white">Memora</h1>
-            <p className="text-xs text-slate-400 font-medium">Full Patient Assistance Suite</p>
+            <p className="text-xs text-slate-400 font-medium">Safety & Comprehensive Patient Suite</p>
           </div>
         </div>
 
         {/* Navigation Tabs */}
         {user && (
           <nav className="flex items-center bg-slate-900 border border-slate-800 p-1.5 rounded-2xl space-x-1 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('safety')}
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'safety'
+                  ? 'bg-red-600 text-white shadow-lg'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Shield className="w-4 h-4 text-red-400" />
+              <span>Safety</span>
+            </button>
+
             <button
               onClick={() => setActiveTab('reminders')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
@@ -159,18 +167,6 @@ function Dashboard() {
               <Bot className="w-4 h-4 text-emerald-400" />
               <span>AI Assistant</span>
             </button>
-
-            <button
-              onClick={() => setActiveTab('safety')}
-              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
-                activeTab === 'safety'
-                  ? 'bg-red-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Shield className="w-4 h-4 text-red-400" />
-              <span>Safety</span>
-            </button>
           </nav>
         )}
 
@@ -202,7 +198,7 @@ function Dashboard() {
       {!user ? (
         <div className="w-full max-w-md p-6 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl my-8">
           <h2 className="text-2xl font-bold text-white mb-2 text-center">Patient Sign In</h2>
-          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your notifications & daily suite.</p>
+          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your safety dashboard & daily suite.</p>
           
           {loginError && (
             <div className="p-3 mb-4 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-sm text-center">
@@ -243,6 +239,7 @@ function Dashboard() {
         </div>
       ) : (
         <main className="w-full max-w-4xl">
+          {activeTab === 'safety' && <SafetyDashboardScreen />}
           {activeTab === 'notifications' && (
             <NotificationsScreen
               onNavigate={(tab) => setActiveTab(tab)}
@@ -253,21 +250,6 @@ function Dashboard() {
           {activeTab === 'memories' && <MemoriesScreen patientId={user.id} />}
           {activeTab === 'community' && <CommunityScreen patientId={user.id} />}
           {activeTab === 'assistant' && <AIAssistantScreen />}
-          {activeTab === 'safety' && (
-            <div className="w-full max-w-md mx-auto flex flex-col items-center space-y-6">
-              <section className="w-full flex justify-center py-2">
-                <SOSButton
-                  isOnline={isOnline}
-                  currentLocation={currentLocation}
-                  onSOSTriggered={refreshSafetyData}
-                />
-              </section>
-              <GeofenceStatus geofences={geofences} />
-              <FallDetector currentLocation={currentLocation} />
-              <EmergencyContacts />
-              <SafetyHistory events={safetyEvents} />
-            </div>
-          )}
         </main>
       )}
     </div>
