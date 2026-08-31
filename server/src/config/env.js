@@ -17,8 +17,10 @@ export const env = {
 
   // Authentication / session
   sessionSecret: process.env.SESSION_SECRET,
-  // Session lifetime in milliseconds — default 7 days
   sessionTtlMs: parseInt(process.env.SESSION_TTL_MS || String(7 * 24 * 60 * 60 * 1000), 10),
-  // HTTP-only cookie name
   cookieName: process.env.COOKIE_NAME || 'memora_session',
+
+  // Default Admin Credentials (Seed)
+  adminEmail: process.env.ADMIN_EMAIL || 'admin@memora.com',
+  adminPassword: process.env.ADMIN_PASSWORD || 'Admin@123456',
 };
