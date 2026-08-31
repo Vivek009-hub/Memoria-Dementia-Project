@@ -57,6 +57,12 @@ export function GameLibraryPage() {
     loadHistory();
   }, []);
 
+  useEffect(() => {
+    if (activeTab === 'HISTORY') {
+      loadHistory();
+    }
+  }, [activeTab]);
+
   async function loadGames() {
     try {
       setLoading(true);
@@ -93,12 +99,13 @@ export function GameLibraryPage() {
   const handleStartGame = async (difficulty) => {
     if (!selectedGameForInstructions) return;
 
+    const gameId = selectedGameForInstructions.id || selectedGameForInstructions._id;
+
     try {
       setIsStartingSession(true);
-      const gameId = selectedGameForInstructions._id;
       // Start session on B4 backend
       const sessionRes = await startGameSession(gameId, difficulty);
-      const sessionId = sessionRes?.data?._id || sessionRes?._id;
+      const sessionId = sessionRes?.data?.id || sessionRes?.data?._id || sessionRes?.id || sessionRes?._id;
 
       // Navigate to play page with session context
       navigate(`/app/games/${gameId}`, {
@@ -109,11 +116,12 @@ export function GameLibraryPage() {
         },
       });
     } catch (err) {
-      // If backend fails or fallback needed, navigate with mock session ID
-      navigate(`/app/games/${selectedGameForInstructions._id}`, {
+      console.warn('Session start API failed, using fallback session ID:', err);
+      // If backend fails or fallback needed, navigate with fallback session ID
+      navigate(`/app/games/${gameId}`, {
         state: {
           game: selectedGameForInstructions,
-          sessionId: `mock_session_${Date.now()}`,
+          sessionId: `fallback_session_${Date.now()}`,
           difficulty,
         },
       });
@@ -194,7 +202,7 @@ export function GameLibraryPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredGames.map((game) => (
-                <GameCard key={game._id} game={game} onPlay={handleSelectGame} />
+                <GameCard key={game.id || game._id} game={game} onPlay={handleSelectGame} />
               ))}
             </div>
           )}
@@ -211,15 +219,15 @@ export function GameLibraryPage() {
             <div className="space-y-4">
               {history.map((item) => (
                 <div
-                  key={item._id}
+                  key={item.id || item._id}
                   className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200"
                 >
                   <div>
                     <span className="text-xs font-bold text-slate-500 uppercase block">
-                      {new Date(item.completedAt || item.createdAt).toLocaleDateString()}
+                      {new Date(item.completedAt || item.createdAt || item.startedAt).toLocaleDateString()}
                     </span>
                     <h4 className="text-lg font-bold text-slate-900">
-                      {item.gameId?.title || 'Cognitive Exercise'}
+                      {item.game?.title || item.gameId?.title || 'Cognitive Exercise'}
                     </h4>
                     <span className="text-sm font-semibold text-blue-600">Difficulty: {item.difficulty}</span>
                   </div>

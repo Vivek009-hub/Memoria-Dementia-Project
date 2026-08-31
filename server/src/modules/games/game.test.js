@@ -558,6 +558,63 @@ describe('GET /api/v1/games/history', () => {
     expect(found).toBeDefined();
     expect(found.status).toBe('COMPLETED');
   });
+
+  it('orders history with newest completed session first', async () => {
+    const { user } = await createAndLogin('patient_order');
+    await setUserRole(user.id, 'PATIENT');
+    const cookie = await loginAs(user.email);
+    const game = await createGame();
+
+    // Session 1
+    const s1 = await request(app)
+      .post(`/api/v1/games/${game._id}/sessions`)
+      .set('Cookie', cookie)
+      .send({ difficulty: 'EASY' });
+    await request(app)
+      .post(`/api/v1/games/sessions/${s1.body.data.id}/complete`)
+      .set('Cookie', cookie)
+      .send({ score: 50 });
+
+    // Session 2
+    const s2 = await request(app)
+      .post(`/api/v1/games/${game._id}/sessions`)
+      .set('Cookie', cookie)
+      .send({ difficulty: 'MEDIUM' });
+    await request(app)
+      .post(`/api/v1/games/sessions/${s2.body.data.id}/complete`)
+      .set('Cookie', cookie)
+      .send({ score: 90 });
+
+    const historyRes = await request(app).get('/api/v1/games/history').set('Cookie', cookie);
+    expect(historyRes.status).toBe(200);
+    expect(historyRes.body.data.length).toBeGreaterThanOrEqual(2);
+    expect(historyRes.body.data[0].id).toBe(s2.body.data.id);
+  });
+
+  it('enforces patient isolation for /history (Patient B cannot see Patient A records)', async () => {
+    const { user: pA } = await createAndLogin('patient_iso_A');
+    await setUserRole(pA.id, 'PATIENT');
+    const cookieA = await loginAs(pA.email);
+
+    const { user: pB } = await createAndLogin('patient_iso_B');
+    await setUserRole(pB.id, 'PATIENT');
+    const cookieB = await loginAs(pB.email);
+
+    const game = await createGame();
+    const sA = await request(app)
+      .post(`/api/v1/games/${game._id}/sessions`)
+      .set('Cookie', cookieA)
+      .send({ difficulty: 'HARD' });
+    await request(app)
+      .post(`/api/v1/games/sessions/${sA.body.data.id}/complete`)
+      .set('Cookie', cookieA)
+      .send({ score: 100 });
+
+    const resB = await request(app).get('/api/v1/games/history').set('Cookie', cookieB);
+    expect(resB.status).toBe(200);
+    const foundAInB = resB.body.data.find((s) => s.id === sA.body.data.id);
+    expect(foundAInB).toBeUndefined();
+  });
 });
 
 // ── API: Caregiver Access to Patient History ─────────────────────────────────

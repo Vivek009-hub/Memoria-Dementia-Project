@@ -209,7 +209,7 @@ export async function getHistory(patientId, filters = {}) {
 
   const sessions = await GameSession.find(query)
     .populate('gameId', 'title category difficulty media')
-    .sort({ startedAt: -1 })
+    .sort({ completedAt: -1, startedAt: -1 })
     .lean();
 
   return sessions.map(formatSession);

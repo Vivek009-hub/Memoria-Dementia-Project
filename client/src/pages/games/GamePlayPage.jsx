@@ -62,10 +62,11 @@ export function GamePlayPage() {
     setDifficulty(selectedDiff);
     try {
       const sessionRes = await startGameSession(gameId, selectedDiff);
-      const newSessionId = sessionRes?.data?._id || sessionRes?._id || `session_${Date.now()}`;
+      const newSessionId = sessionRes?.data?.id || sessionRes?.data?._id || sessionRes?.id || sessionRes?._id;
       setSessionId(newSessionId);
     } catch (err) {
-      setSessionId(`session_fallback_${Date.now()}`);
+      console.warn('Could not start game session on backend:', err);
+      setSessionId(`fallback_session_${Date.now()}`);
     } finally {
       setGameState('PLAYING');
       setTimerSeconds(0);
@@ -84,15 +85,35 @@ export function GamePlayPage() {
       hintsUsed: gameResults.hintsUsed || 0,
     };
 
+    const isRealBackendSession =
+      sessionId &&
+      !sessionId.startsWith('mock_') &&
+      !sessionId.startsWith('fallback_') &&
+      !sessionId.startsWith('session_');
+
     try {
-      if (sessionId && !sessionId.startsWith('mock_')) {
+      if (isRealBackendSession) {
         const res = await submitGameSession(sessionId, payload);
-        setCompletedSession(res?.data || { ...payload, _id: sessionId });
+        const savedData = res?.data || res;
+        setCompletedSession({
+          ...payload,
+          id: savedData?.id || savedData?._id || sessionId,
+          completedAt: savedData?.completedAt || new Date().toISOString(),
+        });
       } else {
-        setCompletedSession({ ...payload, _id: `session_${Date.now()}` });
+        setCompletedSession({
+          ...payload,
+          id: sessionId || `session_${Date.now()}`,
+          completedAt: new Date().toISOString(),
+        });
       }
     } catch (err) {
-      setCompletedSession({ ...payload, _id: `session_${Date.now()}` });
+      console.error('Failed to submit completed game session to backend:', err);
+      setCompletedSession({
+        ...payload,
+        id: sessionId || `session_${Date.now()}`,
+        completedAt: new Date().toISOString(),
+      });
     } finally {
       setIsSubmitting(false);
       setGameState('SUMMARY');
