@@ -1,11 +1,11 @@
 /**
  * App.jsx — Memora Patient Mobile & Web Application Shell
  *
- * Integrates Safety Companion, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, and B11 AI Assistance.
+ * Integrates Safety Companion, Memory Vault, Reminders & Daily Routine, Community & Meeting Circle, Notifications & Activity Center, and B11 AI Assistance.
  */
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users } from 'lucide-react';
+import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
 import { SOSButton } from './components/SOSButton.jsx';
@@ -16,20 +16,37 @@ import { SafetyHistory } from './components/SafetyHistory.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
 import { RemindersScreen } from './screens/RemindersScreen.jsx';
 import { CommunityScreen } from './screens/CommunityScreen.jsx';
+import { NotificationsScreen } from './screens/NotificationsScreen.jsx';
 import { AIAssistantScreen } from './screens/AIAssistantScreen.jsx';
 import { getCurrentCoordinates } from './services/location.service.js';
 import * as safetyApi from './api/safetyApi.js';
+import * as notificationsApi from './api/notifications.api.js';
 import { defaultApiClient } from './api/client.js';
 
 function Dashboard() {
   const { user, login } = useAuth();
   const { isOnline, geofences, safetyEvents, pendingQueueCount, refreshSafetyData } = useSafety();
 
-  const [activeTab, setActiveTab] = useState('community'); // 'reminders' | 'memories' | 'community' | 'assistant' | 'safety'
+  const [activeTab, setActiveTab] = useState('notifications'); // 'reminders' | 'memories' | 'community' | 'notifications' | 'assistant' | 'safety'
+  const [unreadCount, setUnreadCount] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  // Fetch unread notification count
+  useEffect(() => {
+    if (user) {
+      notificationsApi
+        .getUnreadCount()
+        .then((res) => {
+          if (res.data?.unreadCount !== undefined) {
+            setUnreadCount(res.data.unreadCount);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [user, activeTab]);
 
   // Fetch current GPS location and sync periodically
   useEffect(() => {
@@ -71,7 +88,7 @@ function Dashboard() {
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tight text-white">Memora</h1>
-            <p className="text-xs text-slate-400 font-medium">Memory, Daily & Community System</p>
+            <p className="text-xs text-slate-400 font-medium">Full Patient Assistance Suite</p>
           </div>
         </div>
 
@@ -112,6 +129,23 @@ function Dashboard() {
             >
               <Users className="w-4 h-4 text-purple-400" />
               <span>Community</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('notifications')}
+              className={`relative px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'notifications'
+                  ? 'bg-indigo-600 text-white shadow-lg'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Bell className="w-4 h-4 text-indigo-400" />
+              <span>Notifications</span>
+              {unreadCount > 0 && (
+                <span className="px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full ml-1">
+                  {unreadCount}
+                </span>
+              )}
             </button>
 
             <button
@@ -168,7 +202,7 @@ function Dashboard() {
       {!user ? (
         <div className="w-full max-w-md p-6 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl my-8">
           <h2 className="text-2xl font-bold text-white mb-2 text-center">Patient Sign In</h2>
-          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your community & daily companion.</p>
+          <p className="text-sm text-slate-400 text-center mb-6">Sign in to access your notifications & daily suite.</p>
           
           {loginError && (
             <div className="p-3 mb-4 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-sm text-center">
@@ -209,6 +243,12 @@ function Dashboard() {
         </div>
       ) : (
         <main className="w-full max-w-4xl">
+          {activeTab === 'notifications' && (
+            <NotificationsScreen
+              onNavigate={(tab) => setActiveTab(tab)}
+              onUnreadCountChange={(count) => setUnreadCount(count)}
+            />
+          )}
           {activeTab === 'reminders' && <RemindersScreen patientId={user.id} />}
           {activeTab === 'memories' && <MemoriesScreen patientId={user.id} />}
           {activeTab === 'community' && <CommunityScreen patientId={user.id} />}
