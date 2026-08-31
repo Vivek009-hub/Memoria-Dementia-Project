@@ -1,0 +1,13 @@
+{
+  "app_name": "Memora",
+  "tagline": "AI-Powered Cognitive Care, Memory Assistance & Safety Platform",
+  "sign_in": "Sign In",
+  "register": "Register",
+  "logout": "Logout",
+  "welcome": "Welcome back",
+  "emergency_sos": "Emergency SOS",
+  "reminders": "Reminders",
+  "memories": "Memories",
+  "games": "Games",
+  "community": "Community"
+}
