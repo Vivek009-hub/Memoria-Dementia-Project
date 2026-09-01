@@ -4,14 +4,14 @@
 
 :root {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #090d16;
-  color: #f8fafc;
+  background-color: #f8fafc;
+  color: #0f172a;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }

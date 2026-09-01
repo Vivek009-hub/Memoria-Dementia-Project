@@ -99,30 +99,31 @@ export function SafetyPage({ patientId }) {
   );
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  return (
+    <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-red-700 via-rose-800 to-indigo-900 rounded-3xl p-6 md:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center space-x-2 text-[#D95C5C] mb-1">
-            <Shield className="w-5 h-5" />
-            <span className="text-xs font-semibold uppercase tracking-wider">Safety & Geofencing Hub</span>
+          <div className="flex items-center space-x-2 text-rose-200 mb-2">
+            <Shield className="w-6 h-6" />
+            <span className="text-xs font-black uppercase tracking-wider">Safety & Geofencing Hub</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#F5F5F0] tracking-tight">Caregiver Safety Oversight</h1>
-          <p className="text-sm text-[#A7A7A2] mt-1">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight">Caregiver Safety Oversight</h1>
+          <p className="text-rose-100 text-base mt-1">
             Configure safe zone boundaries, track live patient location, and handle emergency SOS alerts.
           </p>
         </div>
 
         <div className="flex items-center space-x-3 self-start md:self-auto">
           {/* Deterministic Safety Badge */}
-          <span className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border ${
+          <span className={`px-4 py-2 rounded-2xl text-xs font-extrabold uppercase tracking-wider border shadow-sm ${
             currentStatus === 'SOS_ACTIVE'
-              ? 'bg-[#D95C5C]/20 border-[#D95C5C] text-[#D95C5C] animate-pulse'
+              ? 'bg-rose-500 text-white border-rose-400 animate-pulse'
               : currentStatus === 'OUTSIDE_ZONE'
-              ? 'bg-amber-500/20 border-amber-500 text-amber-400'
+              ? 'bg-amber-500 text-white border-amber-400'
               : currentStatus === 'SAFE'
-              ? 'bg-[#45B982]/20 border-[#45B982] text-[#45B982]'
-              : 'bg-zinc-800 border-zinc-700 text-zinc-400'
+              ? 'bg-emerald-500 text-white border-emerald-400'
+              : 'bg-slate-800 text-slate-300 border-slate-700'
           }`}>
             {currentStatus === 'SOS_ACTIVE' && '🚨 SOS ACTIVE'}
             {currentStatus === 'OUTSIDE_ZONE' && '🔴 OUTSIDE SAFE ZONE'}
@@ -132,29 +133,31 @@ export function SafetyPage({ patientId }) {
 
           <button
             onClick={fetchSafetyData}
-            className="p-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg border border-[#343434] transition-colors"
+            className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl border border-white/20 backdrop-blur-md transition-all shadow-sm"
             title="Refresh safety data"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-5 h-5" />
           </button>
         </div>
       </div>
 
       {/* Visual Map Display */}
-      <GeofenceMap
-        safeZone={geofences[0] || null}
-        patientLocation={location}
-        status={currentStatus}
-        height="260px"
-      />
+      <div className="bg-white rounded-3xl p-4 border-2 border-slate-200 shadow-sm overflow-hidden">
+        <GeofenceMap
+          safeZone={geofences[0] || null}
+          patientLocation={location}
+          status={currentStatus}
+          height="280px"
+        />
+      </div>
 
       {/* Main SOS & Status Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Patient SOS Trigger Box */}
-        <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 text-center space-y-3 flex flex-col justify-between">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 text-center space-y-4 flex flex-col justify-between shadow-sm">
           <div>
-            <h2 className="text-base font-semibold text-[#F5F5F0]">Patient Emergency Trigger</h2>
-            <p className="text-xs text-[#A7A7A2] mt-1">
+            <h2 className="text-xl font-extrabold text-slate-900">Patient Emergency Trigger</h2>
+            <p className="text-sm text-slate-600 mt-1">
               Provides direct 1-tap SOS assistance for patient app users.
             </p>
           </div>
@@ -162,38 +165,40 @@ export function SafetyPage({ patientId }) {
         </div>
 
         {/* Safe Zones Configuration Panel */}
-        <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 space-y-4">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <MapPin className="w-4 h-4 text-[#D8B24C]" />
-              <h3 className="text-base font-semibold text-[#F5F5F0]">Configured Safe Zones</h3>
+              <MapPin className="w-5 h-5 text-blue-600" />
+              <h3 className="text-xl font-extrabold text-slate-900">Configured Safe Zones</h3>
             </div>
             <button
               onClick={() => {
                 setSelectedZone(null);
                 setModalOpen(true);
               }}
-              className="px-3 py-1.5 bg-[#D8B24C] hover:bg-[#E8C968] text-[#151515] text-xs font-bold rounded-lg flex items-center space-x-1.5 transition-colors"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-bold rounded-xl flex items-center space-x-1.5 shadow-md transition-all"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               <span>Add Safe Zone</span>
             </button>
           </div>
 
           {geofences.length === 0 ? (
-            <p className="text-xs text-[#A7A7A2] py-4 text-center">
-              No safe zone configured yet. Click above to define home boundary.
-            </p>
+            <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200">
+              <p className="text-sm font-semibold text-slate-500">
+                No safe zone configured yet. Click above to define home boundary.
+              </p>
+            </div>
           ) : (
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
               {geofences.map((gf) => (
                 <div
                   key={gf._id}
-                  className="p-3 bg-[#151515] border border-[#343434] rounded-lg flex items-center justify-between text-xs"
+                  className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between text-sm"
                 >
                   <div>
-                    <span className="font-semibold text-[#F5F5F0] block">{gf.name}</span>
-                    <span className="text-[11px] text-[#A7A7A2]">
+                    <span className="font-extrabold text-slate-900 block text-base">{gf.name}</span>
+                    <span className="text-xs font-semibold text-slate-500">
                       Radius: {gf.radiusMeters}m &bull; ({gf.centerLatitude?.toFixed(4)}, {gf.centerLongitude?.toFixed(4)})
                     </span>
                   </div>
@@ -203,17 +208,17 @@ export function SafetyPage({ patientId }) {
                         setSelectedZone(gf);
                         setModalOpen(true);
                       }}
-                      className="p-1 text-[#A7A7A2] hover:text-[#D8B24C]"
+                      className="p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-200 rounded-xl transition-colors"
                       title="Edit Safe Zone"
                     >
-                      <Edit2 className="w-3.5 h-3.5" />
+                      <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteGeofence(gf._id)}
-                      className="p-1 text-[#A7A7A2] hover:text-[#D95C5C]"
+                      className="p-2 text-slate-500 hover:text-rose-600 hover:bg-slate-200 rounded-xl transition-colors"
                       title="Delete Safe Zone"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -224,40 +229,40 @@ export function SafetyPage({ patientId }) {
       </div>
 
       {/* Active & Recent Safety Alerts Section */}
-      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 space-y-4">
-        <h3 className="text-base font-semibold text-[#F5F5F0] flex items-center space-x-2">
-          <ShieldAlert className="w-4 h-4 text-[#D95C5C]" />
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
+        <h3 className="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
+          <ShieldAlert className="w-5 h-5 text-rose-600" />
           <span>Active & Unresolved Safety Alerts</span>
         </h3>
 
         {loading ? (
-          <div className="py-8 text-center text-[#A7A7A2]">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#D8B24C]" />
-            <p className="text-xs font-medium">Checking safety events...</p>
+          <div className="py-8 text-center text-slate-500">
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 text-blue-600" />
+            <p className="text-sm font-bold">Checking safety events...</p>
           </div>
         ) : activeEvents.length === 0 ? (
-          <div className="p-6 bg-[#151515] rounded-lg border border-[#343434] text-center space-y-2">
-            <CheckCircle2 className="w-8 h-8 text-[#45B982] mx-auto" />
-            <h4 className="text-sm font-semibold text-[#F5F5F0]">No Active Emergency Alerts</h4>
-            <p className="text-xs text-[#A7A7A2]">All safety parameters are normal and no unresolved events exist.</p>
+          <div className="p-8 bg-emerald-50 rounded-2xl border border-emerald-200 text-center space-y-2">
+            <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+            <h4 className="text-lg font-extrabold text-slate-900">No Active Emergency Alerts</h4>
+            <p className="text-sm text-slate-600 font-semibold">All safety parameters are normal and no unresolved events exist.</p>
           </div>
         ) : (
           <div className="space-y-3">
             {activeEvents.map((evt) => (
               <div
                 key={evt._id}
-                className="p-4 bg-[#D95C5C]/10 border border-[#D95C5C]/30 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                className="p-5 bg-rose-50 border-2 border-rose-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
               >
                 <div className="flex items-start space-x-3">
-                  <AlertTriangle className="w-5 h-5 text-[#D95C5C] shrink-0 mt-0.5" />
+                  <AlertTriangle className="w-6 h-6 text-rose-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-xs font-semibold uppercase text-[#D95C5C] block tracking-wider">
+                    <span className="text-xs font-black uppercase text-rose-700 block tracking-wider">
                       {evt.type || 'SAFETY_EVENT'} &bull; {evt.status}
                     </span>
-                    <h4 className="text-sm font-semibold text-[#F5F5F0]">
+                    <h4 className="text-base font-extrabold text-slate-900">
                       {evt.metadata?.geofenceName ? `Breach of ${evt.metadata.geofenceName}` : evt.reason || 'Emergency Safety Event'}
                     </h4>
-                    <span className="text-xs text-[#A7A7A2] block mt-0.5">
+                    <span className="text-xs font-semibold text-slate-500 block mt-0.5">
                       Triggered {new Date(evt.triggeredAt || evt.createdAt).toLocaleString()}
                     </span>
                   </div>
@@ -268,7 +273,7 @@ export function SafetyPage({ patientId }) {
                     <button
                       onClick={() => handleAcknowledgeEvent(evt._id)}
                       disabled={actionLoadingId === evt._id}
-                      className="px-3 py-1.5 bg-[#D8B24C] hover:bg-[#E8C968] text-[#151515] font-semibold text-xs rounded-lg transition-colors"
+                      className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md transition-all"
                     >
                       Acknowledge
                     </button>
@@ -276,7 +281,7 @@ export function SafetyPage({ patientId }) {
                   <button
                     onClick={() => handleResolveEvent(evt._id)}
                     disabled={actionLoadingId === evt._id}
-                    className="px-3.5 py-1.5 bg-[#45B982] hover:bg-[#45B982]/90 disabled:opacity-50 text-[#151515] font-semibold text-xs rounded-lg transition-colors"
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-md transition-all"
                   >
                     Mark Resolved
                   </button>
