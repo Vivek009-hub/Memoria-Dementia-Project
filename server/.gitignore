@@ -1,5 +1,35 @@
+# ==========================================
+# Memora Server — Backend .gitignore
+# ==========================================
+
+# Dependencies
 node_modules/
+
+# Environment Configuration & Secrets
 .env
-coverage/
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build & Compilation Output
 dist/
+build/
+
+# Runtime Logs
+logs/
 *.log
+
+# Test & Coverage Reports
+coverage/
+.nyc_output/
+
+# File Uploads & Temporary Attachments
+uploads/
+temp/
+
+# IDE & OS Metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

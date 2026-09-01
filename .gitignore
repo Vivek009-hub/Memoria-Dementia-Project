@@ -1,1 +1,82 @@
+# ==========================================
+# Memora Dementia Project — Root .gitignore
+# ==========================================
 
+# Dependency Directories
+**/node_modules/
+node_modules/
+
+# Environment Variables & Secrets
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+.env
+.env.*
+
+# Build Outputs & Bundles
+**/dist/
+**/build/
+**/.vite/
+**/.next/
+**/out/
+dist/
+build/
+
+# Mobile / React Native / Expo Artifacts
+**/.expo/
+**/android/.gradle/
+**/android/app/build/
+**/android/build/
+**/ios/Pods/
+**/ios/build/
+
+# Logs & Debugging Output
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+*.log
+
+# Testing & Coverage Metrics
+**/coverage/
+.nyc_output/
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Code Editor Configurations
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary & Cache Files
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+*.tmp
+*.temp
+
+# Local Uploads & Static Storage
+**/uploads/
+**/temp_uploads/
