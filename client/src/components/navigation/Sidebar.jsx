@@ -80,9 +80,23 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="pt-4 border-t border-[#343434] px-3.5 hidden md:block">
-        <p className="text-xs text-[#74746F]">Memora &copy; 2026</p>
-        <p className="text-[11px] text-[#74746F]">Cognitive Care System</p>
+      <div className="space-y-4">
+        {/* Supportive encouragement card */}
+        <div className="p-4 bg-[#202020] border border-[#343434] rounded-xl space-y-1.5 hidden md:block">
+          <div className="flex items-center space-x-2 text-[#D8B24C]">
+            <Heart className="w-4 h-4 text-[#D8B24C] fill-[#D8B24C]/20" />
+            <span className="text-xs font-semibold text-[#F5F5F0]">You're doing great!</span>
+          </div>
+          <p className="text-xs text-[#A7A7A2] leading-relaxed">
+            Keep engaging daily to strengthen your memories.
+          </p>
+          <div className="w-6 h-0.5 bg-[#D8B24C]/40 rounded-full mt-2" />
+        </div>
+
+        <div className="pt-3 border-t border-[#343434] px-1 hidden md:block">
+          <p className="text-xs text-[#74746F]">Memora &copy; 2026</p>
+          <p className="text-[11px] text-[#74746F]">Cognitive Care System</p>
+        </div>
       </div>
     </aside>
   );

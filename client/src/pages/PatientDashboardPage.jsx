@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Clock, BookOpen, Gamepad2, ArrowRight,
-  UserCheck, RefreshCw, Bot, Calendar, Sparkles, CheckCircle2, Activity
+  UserCheck, RefreshCw, Bot, Calendar, CheckCircle2, Activity
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { ActivityProgressCard } from '../components/ActivityProgressCard.jsx';
@@ -67,9 +67,9 @@ export function PatientDashboardPage() {
   };
 
   const scheduleItems = [
-    { time: '09:00 AM', category: 'Medicine', title: 'Vitamin B12 & Daily Prescription', color: 'text-[#D8B24C] bg-[#D8B24C]/10 border-[#D8B24C]/30' },
-    { time: '11:30 AM', category: 'Recall Activity', title: 'Photo memory exercise', color: 'text-[#9B6B9E] bg-[#9B6B9E]/10 border-[#9B6B9E]/30' },
-    { time: '04:00 PM', category: 'Evening Walk', title: '30 mins with caregiver', color: 'text-[#45B982] bg-[#45B982]/10 border-[#45B982]/30' },
+    { time: '09:00 AM', category: 'Medicine', title: 'Vitamin B12 & Daily Prescription', color: 'text-[#D8B24C] bg-[#D8B24C]/10 border-[#D8B24C]/30', dotColor: 'bg-[#D8B24C]' },
+    { time: '11:30 AM', category: 'Recall Activity', title: 'Photo memory exercise', color: 'text-[#9B6B9E] bg-[#9B6B9E]/10 border-[#9B6B9E]/30', dotColor: 'bg-[#9B6B9E]' },
+    { time: '04:00 PM', category: 'Evening Walk', title: '30 mins with caregiver', color: 'text-[#45B982] bg-[#45B982]/10 border-[#45B982]/30', dotColor: 'bg-[#45B982]' },
   ];
 
   const recentActivities = [
@@ -234,7 +234,7 @@ export function PatientDashboardPage() {
 
       {/* Today's Schedule & Recent Activity Split */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Today's Schedule */}
+        {/* Today's Schedule Timeline */}
         <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-[#F5F5F0] flex items-center space-x-2">
@@ -249,12 +249,13 @@ export function PatientDashboardPage() {
             </button>
           </div>
 
-          <div className="space-y-3 pt-1">
+          <div className="relative pl-5 space-y-4 pt-1 before:absolute before:left-2 before:top-3 before:bottom-3 before:w-0.5 before:bg-[#343434]">
             {scheduleItems.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-start space-x-3.5 p-3.5 bg-[#151515] border border-[#343434] rounded-lg transition-colors hover:border-[#343434]/80"
+                className="relative flex items-start space-x-3.5 p-3.5 bg-[#151515] border border-[#343434] rounded-lg transition-colors hover:border-[#343434]/80"
               >
+                <span className={`absolute -left-5 top-4.5 w-2.5 h-2.5 rounded-full border border-[#202020] ${item.dotColor}`} />
                 <div className="text-xs font-mono font-semibold text-[#A7A7A2] w-20 pt-0.5 shrink-0">
                   {item.time}
                 </div>
