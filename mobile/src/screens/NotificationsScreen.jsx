@@ -106,7 +106,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header Card */}
-      <div className="bg-[#0F172A] border border-[#27324A] rounded-3xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-[#181818] border border-[#2A2A2A] rounded-3xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center space-x-2 text-[#F4C542] mb-2">
             <Bell className="w-6 h-6" />
@@ -121,7 +121,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setPrefModalOpen(true)}
-            className="p-3 bg-[#151B2B] hover:bg-[#242D40] text-[#CBD5E1] hover:text-[#F8FAFC] rounded-2xl border border-[#27324A] transition-all shadow-sm"
+            className="p-3 bg-[#202020] hover:bg-[#262626] text-[#CBD5E1] hover:text-[#F8FAFC] rounded-2xl border border-[#2A2A2A] transition-all shadow-sm"
             title="Notification Settings"
           >
             <Settings className="w-5 h-5" />
@@ -130,7 +130,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
           <button
             onClick={handleMarkAllRead}
             disabled={markingAll || unreadCount === 0}
-            className="px-5 py-3 bg-[#F4C542] hover:bg-[#FFD75A] disabled:opacity-40 text-[#0F172A] font-extrabold text-sm rounded-2xl shadow-lg shadow-[#F4C542]/20 flex items-center space-x-2 transition-all"
+            className="px-5 py-3 bg-[#F4C542] hover:bg-[#FFD75A] disabled:opacity-40 text-[#121212] font-extrabold text-sm rounded-2xl shadow-lg shadow-[#F4C542]/20 flex items-center space-x-2 transition-all"
           >
             <CheckCheck className="w-4 h-4" />
             <span>Mark All Read</span>
@@ -139,14 +139,14 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
       </div>
 
       {/* Filter Tabs Bar */}
-      <div className="bg-[#0F172A] border border-[#27324A] rounded-3xl p-3 shadow-lg flex items-center justify-between">
+      <div className="bg-[#181818] border border-[#2A2A2A] rounded-3xl p-3 shadow-lg flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setFilterUnread(false)}
             className={`py-2.5 px-5 rounded-2xl text-xs font-extrabold transition-all ${
               !filterUnread
-                ? 'bg-[#F4C542] text-[#0F172A] shadow-md'
-                : 'bg-[#151B2B] text-[#94A3B8] hover:text-[#F8FAFC] border border-[#27324A]'
+                ? 'bg-[#F4C542] text-[#121212] shadow-md'
+                : 'bg-[#202020] text-[#94A3B8] hover:text-[#F8FAFC] border border-[#2A2A2A]'
             }`}
           >
             All Notifications
@@ -156,8 +156,8 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
             onClick={() => setFilterUnread(true)}
             className={`py-2.5 px-5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
               filterUnread
-                ? 'bg-[#F4C542] text-[#0F172A] shadow-md'
-                : 'bg-[#151B2B] text-[#94A3B8] hover:text-[#F8FAFC] border border-[#27324A]'
+                ? 'bg-[#F4C542] text-[#121212] shadow-md'
+                : 'bg-[#202020] text-[#94A3B8] hover:text-[#F8FAFC] border border-[#2A2A2A]'
             }`}
           >
             <span>Unread</span>
@@ -171,7 +171,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
 
         <button
           onClick={fetchNotifications}
-          className="p-2.5 bg-[#151B2B] hover:bg-[#242D40] border border-[#27324A] rounded-2xl text-[#94A3B8] hover:text-[#F8FAFC] transition-colors"
+          className="p-2.5 bg-[#202020] hover:bg-[#262626] border border-[#2A2A2A] rounded-2xl text-[#94A3B8] hover:text-[#F8FAFC] transition-colors"
           title="Refresh notifications"
         >
           <RefreshCw className="w-5 h-5" />
@@ -180,12 +180,12 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
 
       {/* Main Notification List */}
       {loading ? (
-        <div className="bg-[#0F172A] rounded-3xl p-12 border border-[#27324A] text-center shadow-lg">
+        <div className="bg-[#181818] rounded-3xl p-12 border border-[#2A2A2A] text-center shadow-lg">
           <RefreshCw className="w-10 h-10 text-[#F4C542] animate-spin mx-auto mb-3" />
           <p className="text-[#CBD5E1] font-bold text-lg">Loading notifications...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-[#0F172A] rounded-3xl p-8 border border-red-500/30 text-center shadow-lg space-y-4">
+        <div className="bg-[#181818] rounded-3xl p-8 border border-red-500/30 text-center shadow-lg space-y-4">
           <AlertTriangle className="w-12 h-12 text-[#EF4444] mx-auto" />
           <div>
             <h3 className="text-xl font-bold text-[#F8FAFC] mb-1">We Couldn't Load Notifications</h3>
@@ -193,14 +193,14 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
           </div>
           <button
             onClick={fetchNotifications}
-            className="px-6 py-3 bg-[#151B2B] hover:bg-[#242D40] text-[#F8FAFC] font-bold text-sm rounded-2xl border border-[#27324A] transition-all inline-flex items-center space-x-2"
+            className="px-6 py-3 bg-[#202020] hover:bg-[#262626] text-[#F8FAFC] font-bold text-sm rounded-2xl border border-[#2A2A2A] transition-all inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
           </button>
         </div>
       ) : notifications.length === 0 ? (
-        <div className="bg-[#0F172A] rounded-3xl p-12 border border-[#27324A] text-center shadow-lg space-y-4">
+        <div className="bg-[#181818] rounded-3xl p-12 border border-[#2A2A2A] text-center shadow-lg space-y-4">
           <div className="w-16 h-16 bg-[#F4C542]/10 border border-[#F4C542]/30 rounded-full flex items-center justify-center mx-auto text-[#F4C542]">
             <Bell className="w-8 h-8" />
           </div>

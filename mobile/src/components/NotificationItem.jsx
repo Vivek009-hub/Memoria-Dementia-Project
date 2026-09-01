@@ -23,13 +23,13 @@ const TYPE_ICONS = {
 };
 
 const TYPE_STYLES = {
-  REMINDER: 'bg-[#F4C542]/20 text-[#FFD75A] border-[#F4C542]/40',
-  COMMUNITY_SESSION: 'bg-[#6366F1]/20 text-[#818CF8] border-[#6366F1]/40',
-  MEETING: 'bg-[#14B8A6]/20 text-[#2DD4BF] border-[#14B8A6]/40',
-  SOS: 'bg-[#EF4444]/20 text-[#FCA5A5] border-[#EF4444]/40',
-  POSSIBLE_FALL: 'bg-[#EF4444]/20 text-[#FCA5A5] border-[#EF4444]/40',
-  GEOFENCE: 'bg-[#F59E0B]/20 text-[#FCD34D] border-[#F59E0B]/40',
-  SYSTEM: 'bg-[#818CF8]/20 text-[#A78BFA] border-[#818CF8]/40',
+  REMINDER: 'bg-[#F4C542]/10 text-[#F4C542] border-[#F4C542]/20',
+  COMMUNITY_SESSION: 'bg-[#A78BFA]/10 text-[#A78BFA] border-[#A78BFA]/20',
+  MEETING: 'bg-[#14B8A6]/10 text-[#14B8A6] border-[#14B8A6]/20',
+  SOS: 'bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20',
+  POSSIBLE_FALL: 'bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20',
+  GEOFENCE: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
+  SYSTEM: 'bg-[#6366F1]/10 text-[#6366F1] border-[#6366F1]/20',
 };
 
 export function NotificationItem({ notification, onMarkRead, onClick }) {
@@ -73,10 +73,10 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
   return (
     <div
       onClick={() => onClick && onClick(notification)}
-      className={`group relative bg-[#0F172A] border rounded-3xl p-5 shadow-lg transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
+      className={`group relative bg-[#181818] border rounded-3xl p-5 shadow-lg transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
         !notification.isRead
-          ? 'border-[#6366F1]/50 bg-[#6366F1]/10'
-          : 'border-[#27324A] opacity-75 hover:opacity-100 hover:border-[#3B4C6E]'
+          ? 'border-[#6366F1]/40 bg-[#6366F1]/5'
+          : 'border-[#2A2A2A] opacity-80 hover:opacity-100 hover:border-[#383838]'
       }`}
       role="button"
       tabIndex={0}
@@ -95,7 +95,7 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
                   {notification.type?.replace('_', ' ')}
                 </span>
                 {notification.priority === 'CRITICAL' && (
-                  <span className="px-2 py-0.5 bg-[#EF4444]/20 text-[#FCA5A5] text-xs font-black rounded-lg border border-[#EF4444]/40 uppercase">
+                  <span className="px-2 py-0.5 bg-[#EF4444]/20 text-[#EF4444] text-xs font-black rounded-lg border border-[#EF4444]/40 uppercase">
                     Critical
                   </span>
                 )}
@@ -118,7 +118,7 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
       </div>
 
       {/* Footer Timestamp + Actions */}
-      <div className="pt-3 border-t border-[#27324A] flex items-center justify-between text-xs text-[#94A3B8]">
+      <div className="pt-3 border-t border-[#2A2A2A] flex items-center justify-between text-xs text-[#94A3B8]">
         <span className="font-mono font-bold">{formatTimestamp(notification.createdAt)}</span>
 
         <div className="flex items-center space-x-2">
@@ -126,7 +126,7 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
             <button
               onClick={handleMarkReadClick}
               disabled={marking}
-              className="px-3 py-1.5 bg-[#151B2B] hover:bg-[#242D40] text-[#CBD5E1] text-xs font-extrabold rounded-xl border border-[#27324A] flex items-center space-x-1.5 transition-colors"
+              className="px-3 py-1.5 bg-[#202020] hover:bg-[#262626] text-[#CBD5E1] text-xs font-extrabold rounded-xl border border-[#2A2A2A] flex items-center space-x-1.5 transition-colors"
             >
               <Check className="w-3.5 h-3.5 text-[#10B981]" />
               <span>Mark Read</span>

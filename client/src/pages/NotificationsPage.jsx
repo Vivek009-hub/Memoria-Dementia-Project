@@ -239,5 +239,6 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
         isOpen={prefsModalOpen}
         onClose={() => setPrefsModalOpen(false)}
       />
+    </div>
   );
 }

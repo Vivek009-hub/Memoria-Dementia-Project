@@ -63,7 +63,7 @@ export function SafetyDashboardScreen() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header Banner */}
-      <div className="bg-[#0F172A] border border-[#27324A] rounded-3xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-[#181818] border border-[#2A2A2A] rounded-3xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center space-x-2 text-[#EF4444] mb-2">
             <Shield className="w-6 h-6" />
@@ -77,7 +77,7 @@ export function SafetyDashboardScreen() {
 
         <button
           onClick={refreshSafetyData}
-          className="p-3 bg-[#151B2B] hover:bg-[#242D40] text-[#CBD5E1] hover:text-[#F8FAFC] rounded-2xl border border-[#27324A] transition-all shadow-sm self-start md:self-auto"
+          className="p-3 bg-[#202020] hover:bg-[#262626] text-[#CBD5E1] hover:text-[#F8FAFC] rounded-2xl border border-[#2A2A2A] transition-all shadow-sm self-start md:self-auto"
           title="Refresh safety status"
         >
           <RefreshCw className="w-5 h-5" />
@@ -85,10 +85,10 @@ export function SafetyDashboardScreen() {
       </div>
 
       {/* Primary Emergency SOS Action Card */}
-      <div className="bg-[#0F172A] border-2 border-[#EF4444]/40 rounded-3xl p-6 shadow-2xl space-y-6 text-center">
+      <div className="bg-[#181818] border-2 border-[#EF4444]/40 rounded-3xl p-6 shadow-2xl space-y-6 text-center">
         {activeSOS ? (
-          <div className="bg-[#EF4444]/20 border-2 border-[#EF4444] rounded-3xl p-6 space-y-4 animate-pulse">
-            <div className="w-16 h-16 bg-[#EF4444]/30 border border-[#EF4444] rounded-full flex items-center justify-center mx-auto text-[#EF4444]">
+          <div className="bg-[#EF4444]/10 border-2 border-[#EF4444] rounded-3xl p-6 space-y-4 animate-pulse">
+            <div className="w-16 h-16 bg-[#EF4444]/20 border border-[#EF4444] rounded-full flex items-center justify-center mx-auto text-[#EF4444]">
               <ShieldAlert className="w-10 h-10" />
             </div>
             <div>
@@ -134,7 +134,7 @@ export function SafetyDashboardScreen() {
       <FallDetector />
 
       {/* Geofence Map Visualizer */}
-      <div className="bg-[#0F172A] rounded-3xl p-4 border border-[#27324A] shadow-lg overflow-hidden">
+      <div className="bg-[#181818] rounded-3xl p-4 border border-[#2A2A2A] shadow-lg overflow-hidden">
         <GeofenceMap
           safeZone={geofences?.[0] || null}
           patientLocation={location || { latitude: 28.6139, longitude: 77.209, accuracy: 10 }}
