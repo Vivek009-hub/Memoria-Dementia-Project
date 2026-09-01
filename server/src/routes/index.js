@@ -13,6 +13,7 @@ import notificationsRouter from '../modules/notifications/notification.routes.js
 import { analyticsRouter, adminAnalyticsRouter } from '../modules/analytics/analytics.routes.js';
 import aiRouter from '../modules/ai/ai.routes.js';
 import safetyRouter from '../modules/safety/safety.routes.js';
+import sihDemoRouter from '../modules/integration/sihDemo.routes.js';
 
 import adminUserRouter from '../modules/users/adminUser.routes.js';
 import { trafficLogger } from '../middleware/trafficLogger.middleware.js';
@@ -70,5 +71,8 @@ router.use('/ai', aiRouter);
 
 // B12 — Safety, Emergency & Location Backend
 router.use('/safety', safetyRouter);
+
+// Prompt 4 — SIH Pre-Finale Demonstration & Verification
+router.use('/integration/sih-demo', sihDemoRouter);
 
 export default router;

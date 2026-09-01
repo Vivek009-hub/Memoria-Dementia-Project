@@ -159,6 +159,35 @@ describe('Safety, Emergency & Location Backend (B12)', () => {
     const breachEvent = eventsRes.body.data.find((e) => e.type === 'GEOFENCE_EXIT');
     expect(breachEvent).toBeDefined();
     expect(breachEvent.metadata.geofenceId).toBe(geofenceId);
+
+    // 3. Location moves back inside safe zone -> triggers GEOFENCE_REENTRY event
+    const locReentry = await request(app)
+      .post('/api/v1/safety/location')
+      .set('Cookie', patient.cookie)
+      .send({ latitude: 28.6139, longitude: 77.209, accuracy: 5 });
+    expect(locReentry.status).toBe(200);
+    expect(locReentry.body.data.breachesDetected).toBe(1);
+
+    const reentryEventsRes = await request(app).get('/api/v1/safety/events').set('Cookie', patient.cookie);
+    const reentryEvent = reentryEventsRes.body.data.find((e) => e.type === 'GEOFENCE_REENTRY');
+    expect(reentryEvent).toBeDefined();
+
+    // 4. Test deterministic safety status endpoint
+    const statusRes = await request(app).get('/api/v1/safety/status').set('Cookie', patient.cookie);
+    expect(statusRes.status).toBe(200);
+    expect(statusRes.body.data.status).toBe('SAFE');
+
+    // 5. Test invalid geofence radius validation
+    const invalidGfRes = await request(app)
+      .post('/api/v1/safety/geofences')
+      .set('Cookie', patient.cookie)
+      .send({
+        name: 'Invalid Radius Zone',
+        centerLatitude: 28.6139,
+        centerLongitude: 77.209,
+        radiusMeters: 10, // < 50m
+      });
+    expect(invalidGfRes.status).toBe(422);
   });
 
   it('allows patient to ingest fall event and confirm safe to cancel it', async () => {

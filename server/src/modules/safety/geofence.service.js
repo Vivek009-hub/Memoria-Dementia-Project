@@ -25,6 +25,14 @@ export function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
 export async function createGeofence(patientId, creatorId, data) {
   const { name, centerLatitude, centerLongitude, radiusMeters } = data;
 
+  if (radiusMeters !== undefined && (radiusMeters < 50 || radiusMeters > 10000)) {
+    throw new AppError('Safe zone radius must be between 50m and 10,000m', 422, 'VALIDATION_ERROR');
+  }
+
+  if (centerLatitude < -90 || centerLatitude > 90 || centerLongitude < -180 || centerLongitude > 180) {
+    throw new AppError('Invalid coordinates supplied for safe zone', 422, 'VALIDATION_ERROR');
+  }
+
   const geofence = await Geofence.create({
     patientId,
     name: name.trim(),
@@ -51,6 +59,18 @@ export async function updateGeofence(geofenceId, data) {
   const geofence = await Geofence.findById(geofenceId);
   if (!geofence || !geofence.isActive) {
     throw new AppError('Geofence not found', 404, 'NOT_FOUND');
+  }
+
+  if (data.radiusMeters !== undefined && (data.radiusMeters < 50 || data.radiusMeters > 10000)) {
+    throw new AppError('Safe zone radius must be between 50m and 10,000m', 422, 'VALIDATION_ERROR');
+  }
+
+  if (data.centerLatitude !== undefined && (data.centerLatitude < -90 || data.centerLatitude > 90)) {
+    throw new AppError('Invalid latitude coordinate', 422, 'VALIDATION_ERROR');
+  }
+
+  if (data.centerLongitude !== undefined && (data.centerLongitude < -180 || data.centerLongitude > 180)) {
+    throw new AppError('Invalid longitude coordinate', 422, 'VALIDATION_ERROR');
   }
 
   if (data.name !== undefined) geofence.name = data.name.trim();
@@ -84,7 +104,7 @@ export async function deleteGeofence(geofenceId) {
 
 /**
  * Evaluate patient location against all active geofences.
- * Returns any detected breach events (`INSIDE` -> `OUTSIDE` transitions).
+ * Returns any detected breach events (`INSIDE` -> `OUTSIDE` exit transitions or `OUTSIDE` -> `INSIDE` re-entry transitions).
  */
 export async function evaluatePatientGeofences(patientId, latitude, longitude, accuracy = 0) {
   const geofences = await Geofence.find({ patientId, isActive: true });
@@ -116,9 +136,18 @@ export async function evaluatePatientGeofences(patientId, latitude, longitude, a
       gf.currentState = newState;
       await gf.save();
 
-      // Trigger breach alert ONLY on transition from INSIDE -> OUTSIDE
+      // Trigger transition event for INSIDE -> OUTSIDE (GEOFENCE_EXIT) or OUTSIDE -> INSIDE (GEOFENCE_REENTRY)
       if (previousState === 'INSIDE' && newState === 'OUTSIDE') {
         breaches.push({
+          type: 'GEOFENCE_EXIT',
+          geofenceId: gf._id,
+          name: gf.name,
+          distance: Math.round(distance),
+          radiusMeters: gf.radiusMeters,
+        });
+      } else if (previousState === 'OUTSIDE' && newState === 'INSIDE') {
+        breaches.push({
+          type: 'GEOFENCE_REENTRY',
           geofenceId: gf._id,
           name: gf.name,
           distance: Math.round(distance),

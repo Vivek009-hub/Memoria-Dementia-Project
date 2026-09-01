@@ -134,6 +134,16 @@ export async function getCurrentLocation(req, res, next) {
   }
 }
 
+export async function getDeterministicSafetyStatus(req, res, next) {
+  try {
+    const patientId = req.query?.patientId || req.user.id;
+    const result = await safetyService.getDeterministicSafetyStatus(patientId, req.user);
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+}
+
 // ── GEOFENCE HANDLERS ─────────────────────────────────────────────────────────
 
 export async function createGeofence(req, res, next) {

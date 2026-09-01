@@ -67,7 +67,8 @@ router.post(
 router.post('/events/:eventId/resolve', caregiverSafetyScope, controller.resolveSafetyEvent);
 router.post('/events/:eventId/cancel', caregiverSafetyScope, controller.cancelSafetyEvent);
 
-// Current location endpoint
+// Current location & deterministic status endpoints
+router.get('/status', caregiverSafetyScope, controller.getDeterministicSafetyStatus);
 router.get('/location/current', caregiverSafetyScope, controller.getCurrentLocation);
 
 // Geofence management

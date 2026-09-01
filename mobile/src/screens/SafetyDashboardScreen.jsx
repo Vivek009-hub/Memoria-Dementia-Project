@@ -15,7 +15,9 @@ import { GeofenceStatus } from '../components/GeofenceStatus.jsx';
 import { FallDetector } from '../components/FallDetector.jsx';
 import { EmergencyContacts } from '../components/EmergencyContacts.jsx';
 import { SafetyHistory } from '../components/SafetyHistory.jsx';
+import { GeofenceMap } from '../components/GeofenceMap.jsx';
 import { useSafety } from '../context/SafetyContext.jsx';
+import { locationService, PERMISSION_STATES } from '../services/location.service.js';
 import * as safetyApi from '../api/safetyApi.js';
 
 export function SafetyDashboardScreen() {
@@ -130,6 +132,14 @@ export function SafetyDashboardScreen() {
 
       {/* Fall Detector Container */}
       <FallDetector />
+
+      {/* Geofence Map Visualizer */}
+      <GeofenceMap
+        safeZone={geofences?.[0] || null}
+        patientLocation={location || { latitude: 28.6139, longitude: 77.209, accuracy: 10 }}
+        status={activeSOS ? 'SOS_ACTIVE' : geofences?.some(g => g.currentState === 'OUTSIDE') ? 'OUTSIDE_ZONE' : 'SAFE'}
+        height="220px"
+      />
 
       {/* Geofence Boundaries Status */}
       <GeofenceStatus geofences={geofences} />

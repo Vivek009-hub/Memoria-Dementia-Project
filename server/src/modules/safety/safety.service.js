@@ -135,11 +135,12 @@ export async function ingestLocation(patientId, locationData) {
   const breaches = await evaluatePatientGeofences(patientId, latitude, longitude, accuracy);
 
   for (const breach of breaches) {
+    const isExit = breach.type === 'GEOFENCE_EXIT';
     const breachEvent = await SafetyEvent.create({
       patientId,
-      type: 'GEOFENCE_EXIT',
+      type: breach.type,
       status: 'TRIGGERED',
-      severity: 'HIGH',
+      severity: isExit ? 'HIGH' : 'LOW',
       source: 'SYSTEM',
       location: { latitude, longitude, accuracy },
       metadata: {
@@ -151,19 +152,21 @@ export async function ingestLocation(patientId, locationData) {
     });
 
     await recordHistory(breachEvent._id, 'TRIGGERED', patientId, null, 'TRIGGERED', {
-      type: 'GEOFENCE_EXIT',
+      type: breach.type,
     });
 
-    // Send B9 Geofence Alert
+    // Send caregiver Geofence Alert
     try {
       const { recipientIds } = await resolveSafetyRecipients(patientId);
       for (const recipientId of recipientIds) {
         await notificationService.sendNotification({
           recipientUserId: recipientId,
           type: NOTIFICATION_TYPES.GEOFENCE,
-          title: '⚠️ GEOFENCE BREACH ALERT',
-          message: `Patient exited safe boundary: ${breach.name}`,
-          priority: NOTIFICATION_PRIORITIES.HIGH,
+          title: isExit ? '⚠️ GEOFENCE BREACH ALERT' : '🟢 GEOFENCE RE-ENTRY NOTICE',
+          message: isExit
+            ? `Patient exited safe boundary: ${breach.name}`
+            : `Patient has returned to safe boundary: ${breach.name}`,
+          priority: isExit ? NOTIFICATION_PRIORITIES.HIGH : NOTIFICATION_PRIORITIES.NORMAL,
           relatedResourceType: 'SafetyEvent',
           relatedResourceId: breachEvent._id,
         });
@@ -395,4 +398,44 @@ export async function getSafetyEventById(eventId, patientId = null) {
     throw new AppError('Safety event not found', 404, 'NOT_FOUND');
   }
   return event;
+}
+
+import Geofence from './geofence.model.js';
+
+/**
+ * Get deterministic safety status for a patient.
+ * Returns status: SAFE | OUTSIDE_ZONE | SOS_ACTIVE | LOCATION_UNAVAILABLE
+ */
+export async function getDeterministicSafetyStatus(patientId, requestingUser = null) {
+  const [activeSOS, currentLocation, geofences] = await Promise.all([
+    SafetyEvent.findOne({
+      patientId,
+      type: 'SOS',
+      status: { $in: ['TRIGGERED', 'OPEN', 'ESCALATED'] },
+    }).sort({ createdAt: -1 }).lean(),
+    getCurrentLocation(patientId, requestingUser).catch(() => null),
+    Geofence.find({ patientId, isActive: true }).lean(),
+  ]);
+
+  let status = 'SAFE';
+
+  if (activeSOS) {
+    status = 'SOS_ACTIVE';
+  } else if (!currentLocation) {
+    status = 'LOCATION_UNAVAILABLE';
+  } else {
+    const isAnyOutside = geofences.some((gf) => gf.currentState === 'OUTSIDE');
+    if (isAnyOutside) {
+      status = 'OUTSIDE_ZONE';
+    }
+  }
+
+  return {
+    status,
+    patientId,
+    activeSOS,
+    currentLocation,
+    geofences,
+    updatedAt: new Date(),
+  };
 }

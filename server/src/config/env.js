@@ -23,4 +23,7 @@ export const env = {
   // Default Admin Credentials (Seed)
   adminEmail: process.env.ADMIN_EMAIL || 'admin@memora.com',
   adminPassword: process.env.ADMIN_PASSWORD || 'Admin@123456',
+
+  // Gemini AI Agent Configuration (Server-Side Only)
+  geminiApiKey: process.env.GEMINI_API_KEY || '',
 };
