@@ -1,5 +1,5 @@
 /**
- * AdminUserEditModal.jsx — Admin User Role & Status Modal Dialog
+ * AdminUserEditModal.jsx — Memora Admin User Role & Status Modal Dialog
  */
 
 import React, { useState, useEffect } from 'react';
@@ -37,40 +37,37 @@ export function AdminUserEditModal({ user, isOpen, onClose, onSaveSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
-        {/* Close button */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#151515]/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 max-w-md w-full shadow-2xl space-y-5 relative">
         <button
           onClick={onClose}
           disabled={submitting}
-          className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-950 border border-slate-800 transition-colors"
+          className="absolute top-5 right-5 p-1.5 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Header */}
         <div className="flex items-center space-x-3">
-          <div className="p-3 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl text-indigo-400">
-            <UserCheck className="w-6 h-6" />
+          <div className="p-2.5 bg-[#D8B24C]/10 border border-[#D8B24C]/30 rounded-lg text-[#D8B24C]">
+            <UserCheck className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-white tracking-tight">Edit User Account</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{user.name} ({user.email})</p>
+            <h2 className="text-xl font-semibold text-[#F5F5F0]">Edit User Account</h2>
+            <p className="text-xs text-[#A7A7A2] mt-0.5">{user.name} ({user.email})</p>
           </div>
         </div>
 
         {errorMsg && (
-          <div className="p-3.5 bg-red-950/80 border border-red-500/50 rounded-2xl text-xs font-bold text-red-300 flex items-center space-x-2">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+          <div className="p-3 bg-[#D95C5C]/10 border border-[#D95C5C]/30 rounded-lg text-xs font-medium text-[#D95C5C] flex items-center space-x-2">
+            <AlertTriangle className="w-4 h-4 shrink-0 text-[#D95C5C]" />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Role Selection */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider mb-2">
               User Role
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -79,10 +76,10 @@ export function AdminUserEditModal({ user, isOpen, onClose, onSaveSuccess }) {
                   type="button"
                   key={r}
                   onClick={() => setRole(r)}
-                  className={`p-3 rounded-2xl border font-bold text-xs transition-all ${
+                  className={`p-2.5 rounded-lg border text-xs font-semibold transition-all ${
                     role === r
-                      ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                      ? 'bg-[#D8B24C] border-[#D8B24C] text-[#151515] shadow-xs'
+                      : 'bg-[#151515] border-[#343434] text-[#A7A7A2] hover:text-[#F5F5F0]'
                   }`}
                 >
                   {r}
@@ -91,21 +88,20 @@ export function AdminUserEditModal({ user, isOpen, onClose, onSaveSuccess }) {
             </div>
           </div>
 
-          {/* Account Status Toggle */}
-          <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-between">
+          <div className="p-3.5 bg-[#151515] border border-[#343434] rounded-lg flex items-center justify-between">
             <div>
-              <span className="text-xs font-bold text-slate-200 block">Account Access Status</span>
-              <span className="text-[11px] text-slate-400">
+              <span className="text-xs font-semibold text-[#F5F5F0] block">Account Access Status</span>
+              <span className="text-[11px] text-[#A7A7A2]">
                 {isActive ? 'Account active and allowed to log in' : 'Account suspended'}
               </span>
             </div>
             <button
               type="button"
               onClick={() => setIsActive(!isActive)}
-              className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
                 isActive
-                  ? 'bg-emerald-600/20 text-emerald-300 border border-emerald-500/30'
-                  : 'bg-red-950 text-red-300 border border-red-500/30'
+                  ? 'bg-[#45B982]/10 text-[#45B982] border border-[#45B982]/30'
+                  : 'bg-[#D95C5C]/10 text-[#D95C5C] border border-[#D95C5C]/30'
               }`}
             >
               {isActive ? 'Active' : 'Suspended'}
@@ -113,21 +109,20 @@ export function AdminUserEditModal({ user, isOpen, onClose, onSaveSuccess }) {
           </div>
 
           {user.role === 'ADMIN' && role !== 'ADMIN' && (
-            <div className="p-3 bg-amber-950/40 border border-amber-500/30 rounded-2xl text-[11px] font-semibold text-amber-300 flex items-start space-x-2">
-              <ShieldAlert className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+            <div className="p-3 bg-[#E5A83B]/10 border border-[#E5A83B]/30 rounded-lg text-xs text-[#E5A83B] flex items-start space-x-2">
+              <ShieldAlert className="w-4 h-4 shrink-0 text-[#E5A83B] mt-0.5" />
               <span>
                 Revoking Admin role requires at least one other active Administrator account.
               </span>
             </div>
           )}
 
-          {/* Actions */}
           <div className="pt-2 flex items-center justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-5 py-3 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold text-xs rounded-2xl border border-slate-800 transition-colors"
+              className="px-4 py-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-xs font-medium rounded-lg border border-[#343434] transition-colors"
             >
               Cancel
             </button>
@@ -135,11 +130,11 @@ export function AdminUserEditModal({ user, isOpen, onClose, onSaveSuccess }) {
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-extrabold text-xs rounded-2xl shadow-lg transition-all flex items-center space-x-2 touch-target-xl"
+              className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-2 touch-target"
             >
               {submitting ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   <span>Saving...</span>
                 </>
               ) : (

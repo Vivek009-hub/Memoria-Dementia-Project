@@ -1,10 +1,10 @@
 /**
- * NotificationsPage.jsx — Notifications & Activity Feed Page (Phase F10 / B9)
+ * NotificationsPage.jsx — Memora Activity Center & Notifications Page
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Bell, CheckCheck, Settings, RefreshCw, AlertTriangle, Filter, ChevronLeft, ChevronRight
+  Bell, CheckCheck, Settings, RefreshCw, AlertTriangle, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { NotificationItem } from '../components/NotificationItem.jsx';
 import { NotificationPreferencesModal } from '../components/NotificationPreferencesModal.jsx';
@@ -100,14 +100,14 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-indigo-400 mb-1">
-            <Bell className="w-6 h-6" />
-            <span className="text-xs font-black uppercase tracking-wider">Activity Center</span>
+          <div className="flex items-center space-x-2 text-[#D8B24C] mb-1">
+            <Bell className="w-5 h-5" />
+            <span className="text-xs font-semibold uppercase tracking-wider">Activity Center</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Notifications</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold text-[#F5F5F0] tracking-tight">Notifications</h1>
+          <p className="text-xs text-[#A7A7A2] mt-1">
             Real-time activity alerts, routine reminders, and community updates.
           </p>
         </div>
@@ -116,23 +116,23 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
           <button
             onClick={handleMarkAllRead}
             disabled={markingAll}
-            className="px-4 py-3 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 font-bold text-sm rounded-2xl border border-slate-700 flex items-center space-x-2 transition-all"
+            className="px-4 py-2.5 bg-[#151515] hover:bg-[#242424] disabled:opacity-50 text-[#F5F5F0] font-medium text-xs rounded-lg border border-[#343434] flex items-center space-x-2 transition-colors"
           >
-            <CheckCheck className="w-4 h-4 text-emerald-400" />
+            <CheckCheck className="w-4 h-4 text-[#45B982]" />
             <span>Mark All Read</span>
           </button>
 
           <button
             onClick={() => setPrefsModalOpen(true)}
-            className="p-3 bg-slate-950 hover:bg-slate-800 text-slate-300 rounded-2xl border border-slate-800 transition-colors"
+            className="p-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg border border-[#343434] transition-colors"
             title="Notification Settings"
           >
-            <Settings className="w-5 h-5" />
+            <Settings className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
           {TYPE_FILTERS.map((cat) => (
             <button
@@ -141,10 +141,10 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
                 setSelectedType(cat.id);
                 setPage(1);
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                 selectedType === cat.id
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#D8B24C] text-[#151515] shadow-xs'
+                  : 'bg-[#151515] border border-[#343434] text-[#A7A7A2] hover:text-[#F5F5F0]'
               }`}
             >
               {cat.label}
@@ -152,7 +152,7 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
           ))}
         </div>
 
-        <label className="flex items-center space-x-2 text-xs font-bold text-slate-300 cursor-pointer shrink-0">
+        <label className="flex items-center space-x-2 text-xs font-medium text-[#A7A7A2] cursor-pointer shrink-0">
           <input
             type="checkbox"
             checked={unreadOnly}
@@ -160,37 +160,37 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
               setUnreadOnly(e.target.checked);
               setPage(1);
             }}
-            className="w-4 h-4 rounded text-indigo-600 bg-slate-950 border-slate-800"
+            className="w-4 h-4 rounded text-[#D8B24C] bg-[#151515] border-[#343434] focus:ring-[#D8B24C]"
           />
           <span>Unread Only</span>
         </label>
       </div>
 
       {loading ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
-          <RefreshCw className="w-10 h-10 text-indigo-400 animate-spin mx-auto mb-3" />
-          <p className="text-slate-300 font-bold text-lg">Loading notifications...</p>
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center shadow-xs">
+          <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin mx-auto mb-3" />
+          <p className="text-[#A7A7A2] font-medium text-sm">Loading notifications...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-slate-900 border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
-          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
+        <div className="bg-[#202020] border border-[#D95C5C]/30 rounded-xl p-8 text-center shadow-xs space-y-4">
+          <AlertTriangle className="w-10 h-10 text-[#D95C5C] mx-auto" />
           <div>
-            <h3 className="text-xl font-bold text-white mb-1">Could Not Load Notifications</h3>
-            <p className="text-sm text-slate-400">{errorMsg}</p>
+            <h3 className="text-lg font-semibold text-[#F5F5F0] mb-1">Could Not Load Notifications</h3>
+            <p className="text-xs text-[#A7A7A2]">{errorMsg}</p>
           </div>
           <button
             onClick={fetchNotifications}
-            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl border border-slate-700 transition-all inline-flex items-center space-x-2"
+            className="px-5 py-2.5 bg-[#151515] hover:bg-[#242424] text-[#F5F5F0] font-medium text-xs rounded-lg border border-[#343434] transition-colors inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
           </button>
         </div>
       ) : notifications.length === 0 ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg space-y-3">
-          <Bell className="w-12 h-12 text-indigo-400 mx-auto opacity-50" />
-          <h3 className="text-xl font-bold text-white">No Notifications Found</h3>
-          <p className="text-slate-400 text-sm max-w-sm mx-auto">
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center shadow-xs space-y-3">
+          <Bell className="w-10 h-10 text-[#D8B24C] mx-auto opacity-50 stroke-1" />
+          <h3 className="text-lg font-semibold text-[#F5F5F0]">No Notifications Found</h3>
+          <p className="text-[#A7A7A2] text-xs max-w-sm mx-auto">
             You're all caught up! New routine alerts and activity updates will appear here.
           </p>
         </div>
@@ -206,24 +206,24 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
           ))}
 
           {pagination.pages > 1 && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between text-sm mt-4">
-              <span className="text-slate-400 text-xs font-bold">
+            <div className="bg-[#202020] border border-[#343434] rounded-xl p-4 flex items-center justify-between text-xs mt-4">
+              <span className="text-[#A7A7A2] font-medium">
                 Page {pagination.page} of {pagination.pages} ({pagination.total} total)
               </span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page <= 1}
-                  className="p-2 bg-slate-950 border border-slate-800 disabled:opacity-40 rounded-xl text-white font-bold"
+                  className="p-2 bg-[#151515] border border-[#343434] disabled:opacity-40 rounded-lg text-[#F5F5F0]"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
                   disabled={page >= pagination.pages}
-                  className="p-2 bg-slate-950 border border-slate-800 disabled:opacity-40 rounded-xl text-white font-bold"
+                  className="p-2 bg-[#151515] border border-[#343434] disabled:opacity-40 rounded-lg text-[#F5F5F0]"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>

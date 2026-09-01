@@ -1,9 +1,9 @@
 /**
- * AdminScheduleSessionModal.jsx — Modal for Admins to Schedule Approved Community Sessions
+ * AdminScheduleSessionModal.jsx — Memora Admin Modal to Schedule Approved Community Sessions
  */
 
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Clock, Users, User, ShieldCheck } from 'lucide-react';
+import { X, Calendar, ShieldCheck } from 'lucide-react';
 
 export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit, onScheduleSession }) {
   const [title, setTitle] = useState('');
@@ -49,16 +49,16 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-lg shadow-2xl space-y-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-emerald-400">
+    <div className="fixed inset-0 z-50 bg-[#151515]/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 w-full max-w-lg shadow-2xl space-y-5">
+        <div className="flex items-center justify-between border-b border-[#343434] pb-3">
+          <div className="flex items-center space-x-2 text-[#45B982]">
             <Calendar className="w-5 h-5" />
-            <h3 className="text-xl font-black text-white">Schedule Community Session</h3>
+            <h3 className="text-xl font-semibold text-[#F5F5F0]">Schedule Community Session</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-950 border border-slate-800"
+            className="p-1.5 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -66,21 +66,21 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
-              Session Title
+            <label className="block text-xs font-semibold uppercase text-[#A7A7A2] mb-1">
+              Session Title *
             </label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-indigo-500"
+              className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase text-[#A7A7A2] mb-1">
                 Date
               </label>
               <input
@@ -88,11 +88,11 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
                 required
                 value={scheduledDate}
                 onChange={(e) => setScheduledDate(e.target.value)}
-                className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase text-[#A7A7A2] mb-1">
                 Time
               </label>
               <input
@@ -101,14 +101,14 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
                 value={scheduledTime}
                 onChange={(e) => setScheduledTime(e.target.value)}
                 placeholder="10:00 AM"
-                className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase text-[#A7A7A2] mb-1">
                 Host / Speaker Name
               </label>
               <input
@@ -116,11 +116,11 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
                 required
                 value={hostName}
                 onChange={(e) => setHostName(e.target.value)}
-                className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase text-[#A7A7A2] mb-1">
                 Host Role / Specialization
               </label>
               <input
@@ -128,13 +128,13 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
                 required
                 value={hostRole}
                 onChange={(e) => setHostRole(e.target.value)}
-                className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase text-[#A7A7A2] mb-1">
               Max Patient Capacity
             </label>
             <input
@@ -144,7 +144,7 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
               required
               value={maxCapacity}
               onChange={(e) => setMaxCapacity(e.target.value)}
-              className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-indigo-500"
+              className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
             />
           </div>
 
@@ -152,14 +152,14 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-3 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold text-sm rounded-2xl border border-slate-800"
+              className="px-4 py-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-xs font-medium rounded-lg border border-[#343434]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!title.trim() || submitting}
-              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2"
+              className="px-5 py-2.5 bg-[#45B982] hover:bg-[#45B982]/90 disabled:opacity-50 text-[#151515] font-semibold text-xs rounded-lg shadow-xs flex items-center space-x-2 transition-colors touch-target"
             >
               <ShieldCheck className="w-4 h-4" />
               <span>{submitting ? 'Publishing...' : 'Publish to Schedule'}</span>
