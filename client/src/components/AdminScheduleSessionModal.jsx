@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Clock, Users, User, ShieldCheck } from 'lucide-react';
 
-export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit }) {
+export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit, onScheduleSession }) {
   const [title, setTitle] = useState('');
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('10:00 AM');
@@ -26,9 +26,12 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit 
     e.preventDefault();
     if (!title.trim() || submitting) return;
 
+    const submitFn = onSubmit || onScheduleSession;
+    if (!submitFn) return;
+
     setSubmitting(true);
     try {
-      await onSubmit({
+      await submitFn({
         ideaId: proposal?._id,
         title,
         scheduledAt: `${scheduledDate} ${scheduledTime}`,
