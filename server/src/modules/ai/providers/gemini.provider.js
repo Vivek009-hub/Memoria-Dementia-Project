@@ -16,7 +16,7 @@ import { GoogleGenAI } from '@google/genai';
 import { BaseAIProvider } from '../ai.provider.js';
 import { AppError } from '../../../utils/AppError.js';
 
-const MODEL = 'gemini-2.0-flash';
+const MODEL = 'gemini-3.6-flash';
 
 export class GeminiProvider extends BaseAIProvider {
   constructor(apiKey) {

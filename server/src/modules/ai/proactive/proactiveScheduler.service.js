@@ -147,7 +147,7 @@ export async function runSchedulerTick() {
       const bodyText = r.description || `It's time for your ${r.title.toLowerCase()}!`;
 
       await Notification.create({
-        userId: patientId,
+        recipientUserId: patientId,
         patientId,
         title: titleText,
         message: bodyText,

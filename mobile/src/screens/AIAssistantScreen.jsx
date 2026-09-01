@@ -30,9 +30,10 @@ import {
 import * as aiApi from '../api/ai.api.js';
 import { PersonalizedRecommendationsCard } from '../components/PersonalizedRecommendationsCard.jsx';
 
-// 5 Explicit Companion States per Prompt 2 §13
+// 5 Explicit Companion States per Memora Voice Spec
 export const COMPANION_STATES = {
-  IDLE: 'IDLE',
+  READY: 'READY',
+  IDLE: 'READY', // Alias for backward compatibility
   LISTENING: 'LISTENING',
   PROCESSING: 'PROCESSING',
   SPEAKING: 'SPEAKING',
@@ -40,7 +41,7 @@ export const COMPANION_STATES = {
 };
 
 export function AIAssistantScreen({ onNavigate }) {
-  const [companionState, setCompanionState] = useState(COMPANION_STATES.IDLE);
+  const [companionState, setCompanionState] = useState(COMPANION_STATES.READY);
   const [conversationId, setConversationId] = useState(null);
   const [selectedLang, setSelectedLang] = useState('en');
   const [speakEnabled, setSpeakEnabled] = useState(true);
@@ -66,7 +67,7 @@ export function AIAssistantScreen({ onNavigate }) {
   // Text-To-Speech Output via SpeechSynthesis
   const speakText = (text) => {
     if (!speakEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      setCompanionState(COMPANION_STATES.IDLE);
+      setCompanionState(COMPANION_STATES.READY);
       return;
     }
 
@@ -80,16 +81,16 @@ export function AIAssistantScreen({ onNavigate }) {
       if (selectedLang === 'hi') utterance.lang = 'hi-IN';
 
       utterance.onend = () => {
-        setCompanionState(COMPANION_STATES.IDLE);
+        setCompanionState(COMPANION_STATES.READY);
       };
 
       utterance.onerror = () => {
-        setCompanionState(COMPANION_STATES.IDLE);
+        setCompanionState(COMPANION_STATES.READY);
       };
 
       window.speechSynthesis.speak(utterance);
     } catch {
-      setCompanionState(COMPANION_STATES.IDLE);
+      setCompanionState(COMPANION_STATES.READY);
     }
   };
 
@@ -138,10 +139,10 @@ export function AIAssistantScreen({ onNavigate }) {
     }
   };
 
-  // Speech Recognition trigger
-  const toggleSpeechRecognition = () => {
+  // Speech Recognition trigger with explicit permission requesting & retry capability
+  const toggleSpeechRecognition = async () => {
     if (companionState === COMPANION_STATES.LISTENING) {
-      setCompanionState(COMPANION_STATES.IDLE);
+      setCompanionState(COMPANION_STATES.READY);
       return;
     }
 
@@ -149,7 +150,19 @@ export function AIAssistantScreen({ onNavigate }) {
       typeof window === 'undefined' ||
       (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))
     ) {
-      alert('Voice recognition is not supported on this browser. Please type your message below.');
+      setCompanionState(COMPANION_STATES.ERROR);
+      setErrorDetails('Voice recognition is not supported on this browser. Please type your message below.');
+      return;
+    }
+
+    // Request microphone permission explicitly if supported
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      }
+    } catch (permErr) {
+      setCompanionState(COMPANION_STATES.ERROR);
+      setErrorDetails('Microphone permission denied. Please allow microphone access in your settings and tap the microphone again.');
       return;
     }
 
@@ -169,14 +182,18 @@ export function AIAssistantScreen({ onNavigate }) {
         handleSendMessage(transcript);
       };
 
-      recognition.onerror = () => {
+      recognition.onerror = (event) => {
         setCompanionState(COMPANION_STATES.ERROR);
-        setErrorDetails('Voice input interrupted. Please try tapping the microphone again.');
+        setErrorDetails(
+          event.error === 'not-allowed'
+            ? 'Microphone permission denied. Please allow microphone access and try again.'
+            : 'Voice input interrupted. Please tap the microphone again to speak.'
+        );
       };
 
       recognition.onend = () => {
         if (companionState === COMPANION_STATES.LISTENING) {
-          setCompanionState(COMPANION_STATES.IDLE);
+          setCompanionState(COMPANION_STATES.READY);
         }
       };
 
@@ -218,6 +235,7 @@ export function AIAssistantScreen({ onNavigate }) {
             <span>● Connection Issue</span>
           </div>
         );
+      case COMPANION_STATES.READY:
       case COMPANION_STATES.IDLE:
       default:
         return (

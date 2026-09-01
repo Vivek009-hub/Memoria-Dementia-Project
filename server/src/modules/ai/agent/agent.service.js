@@ -200,6 +200,8 @@ export async function companionChat(user, { message, conversationId = null, lang
     const provider = getProvider();
     const hasGemini = provider.name === 'gemini';
 
+    logger.info({ provider: provider.name, model: provider.model, userId }, `Executing companion chat turn with ${provider.name} provider`);
+
     // -- Agentic loop --------------------------------------------------------
     let finalText = null;
     let iterations = 0;
@@ -216,7 +218,7 @@ export async function companionChat(user, { message, conversationId = null, lang
         iterations++;
 
         const response = await provider._client.models.generateContent({
-          model: 'gemini-2.0-flash',
+          model: provider.model || 'gemini-3.6-flash',
           contents,
           config: {
             systemInstruction: systemPrompt,

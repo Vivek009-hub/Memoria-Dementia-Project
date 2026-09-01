@@ -755,3 +755,6 @@ async function _handleMeetingEnded(payload) {
   }));
   await createBulkNotifications(notificationsData);
 }
+
+// Backward compatibility alias
+export const sendNotification = createNotification;
