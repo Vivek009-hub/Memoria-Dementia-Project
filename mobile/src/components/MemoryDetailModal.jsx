@@ -1,14 +1,14 @@
-/**
- * MemoryDetailModal.jsx — Detailed View Modal for a Memory
- */
-
 import React, { useState } from 'react';
-import { X, Calendar, MapPin, Tag, Edit3, Trash2, User, Image, Sparkles, AlertCircle } from 'lucide-react';
+import { X, Calendar, MapPin, Tag, Edit3, Trash2, User, Image, Sparkles, AlertCircle, Mic } from 'lucide-react';
+import { VoiceNotePlayer } from './VoiceNotePlayer.jsx';
 
 export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
   const [imageError, setImageError] = useState(false);
 
   if (!memory) return null;
+
+  const audioTargetUrl = memory.voiceNote?.audioUrl || memory.audioUrl;
+  const audioDurationVal = memory.voiceNote?.duration || memory.audioDuration || 0;
 
   // Format date display
   let formattedDate = 'Not specified';
@@ -36,17 +36,23 @@ export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
       aria-modal="true"
       aria-labelledby="memory-detail-title"
     >
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
         {/* Header Bar */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950/60">
+        <div className="flex items-center justify-between p-4 border-b border-memora-border bg-memora-surface-secondary">
           <div className="flex items-center space-x-2">
             <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-extrabold rounded-full border border-indigo-500/30 uppercase">
               {memory.type}
             </span>
+            {audioTargetUrl && (
+              <span className="px-3 py-1 bg-[#8B5CF6]/20 text-[#8B5CF6] text-xs font-extrabold rounded-full border border-[#8B5CF6]/30 flex items-center space-x-1">
+                <Mic className="w-3 h-3" />
+                <span>Voice Note</span>
+              </span>
+            )}
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-colors"
+            className="p-2 text-memora-text-muted hover:text-memora-text rounded-xl bg-memora-surface-secondary border border-memora-border transition-colors"
             aria-label="Close details"
           >
             <X className="w-5 h-5" />
@@ -57,7 +63,7 @@ export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
         <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
           {/* Media Container */}
           {(memory.mediaUrl || memory.thumbnailUrl) && (
-            <div className="w-full max-h-72 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center">
+            <div className="w-full max-h-72 bg-memora-bg rounded-2xl overflow-hidden border border-memora-border flex items-center justify-center">
               {!imageError ? (
                 <img
                   src={memory.mediaUrl || memory.thumbnailUrl}
@@ -66,7 +72,7 @@ export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
                   className="w-full h-full object-contain max-h-72"
                 />
               ) : (
-                <div className="p-6 flex flex-col items-center text-slate-500">
+                <div className="p-6 flex flex-col items-center text-memora-text-muted">
                   <Image className="w-12 h-12 mb-2" />
                   <p className="text-sm">Unable to display photo preview</p>
                 </div>
@@ -75,17 +81,22 @@ export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
           )}
 
           {/* Title */}
-          <h2 id="memory-detail-title" className="text-2xl font-black text-white tracking-tight leading-tight">
+          <h2 id="memory-detail-title" className="text-2xl font-black text-memora-text tracking-tight leading-tight">
             {memory.title}
           </h2>
 
           {/* Description */}
           {memory.description ? (
-            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-slate-200 text-base leading-relaxed whitespace-pre-wrap">
+            <div className="bg-memora-surface-secondary p-4 rounded-2xl border border-memora-border text-memora-text text-base leading-relaxed whitespace-pre-wrap">
               {memory.description}
             </div>
           ) : (
-            <p className="text-sm text-slate-500 italic">No detailed description provided.</p>
+            <p className="text-sm text-memora-text-muted italic">No detailed description provided.</p>
+          )}
+
+          {/* Voice Note Player */}
+          {audioTargetUrl && (
+            <VoiceNotePlayer audioUrl={audioTargetUrl} duration={audioDurationVal} />
           )}
 
           {/* Metadata Grid */}

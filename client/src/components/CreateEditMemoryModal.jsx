@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Save, AlertCircle, Camera, User, MapPin, BookOpen, Calendar, Heart } from 'lucide-react';
+import { VoiceNoteRecorder } from './VoiceNoteRecorder.jsx';
 
 const MEMORY_TYPES = [
   { id: 'PHOTO', label: 'Photo', icon: Camera },
@@ -30,6 +31,11 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
   const [mediaUrl, setMediaUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  const [selectedAudioBlob, setSelectedAudioBlob] = useState(null);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const [existingAudioUrl, setExistingAudioUrl] = useState('');
+
   const [relatedPlace, setRelatedPlace] = useState('');
   const [importantDate, setImportantDate] = useState('');
   const [datePrecision, setDatePrecision] = useState('exact');
@@ -45,6 +51,7 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
       setDescription(memory.description || '');
       setType(memory.type || 'PHOTO');
       setMediaUrl(memory.mediaUrl || memory.thumbnailUrl || '');
+      setExistingAudioUrl(memory.voiceNote?.audioUrl || memory.audioUrl || '');
       setRelatedPlace(memory.relatedPlace || '');
       setDatePrecision(memory.datePrecision || 'exact');
       setRelatedPersonId(
@@ -73,6 +80,7 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
       setDescription('');
       setType('PHOTO');
       setMediaUrl('');
+      setExistingAudioUrl('');
       setRelatedPlace('');
       setImportantDate('');
       setDatePrecision('exact');
@@ -81,6 +89,8 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
     }
     setSelectedFile(null);
     setPreviewUrl(null);
+    setSelectedAudioBlob(null);
+    setAudioDuration(0);
     setErrorMsg('');
   }, [memory, isOpen]);
 
@@ -113,6 +123,17 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
     }
   };
 
+  const handleAudioRecorded = (blob, durationSec, mimeType) => {
+    setSelectedAudioBlob(blob);
+    setAudioDuration(durationSec);
+  };
+
+  const handleAudioRemoved = () => {
+    setSelectedAudioBlob(null);
+    setAudioDuration(0);
+    setExistingAudioUrl('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
@@ -136,9 +157,15 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
       .filter((t) => t.length > 0);
 
     try {
-      if (selectedFile) {
+      if (selectedFile || selectedAudioBlob) {
         const formData = new FormData();
-        formData.append('photo', selectedFile);
+        if (selectedFile) formData.append('photo', selectedFile);
+        if (selectedAudioBlob) {
+          const ext = selectedAudioBlob.type.includes('mp4') ? 'mp4' : 'webm';
+          formData.append('voiceNote', selectedAudioBlob, `voice-note.${ext}`);
+          formData.append('audioDuration', audioDuration);
+        }
+
         formData.append('title', title.trim());
         if (description.trim()) formData.append('description', description.trim());
         formData.append('type', type);
@@ -154,14 +181,15 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
       } else {
         const payload = {
           title: title.trim(),
-          description: description.trim() || undefined,
+          description: description.trim() ? description.trim() : null,
           type,
-          mediaUrl: mediaUrl.trim() || undefined,
-          relatedPlace: relatedPlace.trim() || undefined,
-          importantDate: importantDate ? new Date(importantDate).toISOString() : undefined,
+          mediaUrl: mediaUrl.trim() ? mediaUrl.trim() : null,
+          audioUrl: existingAudioUrl ? existingAudioUrl : null,
+          relatedPlace: relatedPlace.trim() ? relatedPlace.trim() : null,
+          importantDate: importantDate ? new Date(importantDate).toISOString() : null,
           datePrecision,
-          relatedPersonId: relatedPersonId || undefined,
-          tags: parsedTags.length > 0 ? parsedTags : undefined,
+          relatedPersonId: relatedPersonId ? relatedPersonId : null,
+          tags: parsedTags.length > 0 ? parsedTags : [],
         };
 
         await onSave(payload, memory?._id);
@@ -314,6 +342,13 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
               </details>
             )}
           </div>
+
+          {/* Voice Note Recorder Section */}
+          <VoiceNoteRecorder
+            onAudioRecorded={handleAudioRecorded}
+            onAudioRemoved={handleAudioRemoved}
+            existingAudioUrl={existingAudioUrl}
+          />
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">

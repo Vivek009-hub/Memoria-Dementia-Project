@@ -26,11 +26,16 @@ function photoUploadMiddleware(req, res, next) {
     { name: 'photo', maxCount: 1 },
     { name: 'image', maxCount: 1 },
     { name: 'file', maxCount: 1 },
+    { name: 'voiceNote', maxCount: 1 },
+    { name: 'audio', maxCount: 1 },
   ])(req, res, (err) => {
     if (err) return next(err);
     if (req.files) {
-      const file = req.files.photo?.[0] || req.files.image?.[0] || req.files.file?.[0];
-      if (file) req.file = file;
+      const photoFile = req.files.photo?.[0] || req.files.image?.[0] || req.files.file?.[0];
+      if (photoFile) req.file = photoFile;
+
+      const audioFile = req.files.voiceNote?.[0] || req.files.audio?.[0];
+      if (audioFile) req.audioFile = audioFile;
     }
     next();
   });

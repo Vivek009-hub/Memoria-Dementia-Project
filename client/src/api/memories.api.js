@@ -21,16 +21,55 @@ export async function getMemory(id, client = defaultApiClient) {
   return await client.get(`/memories/${id}`);
 }
 
-export async function createMemory(data, client = defaultApiClient) {
-  return await client.post('/memories', data);
+export async function createMemory(data, patientIdOrClient = defaultApiClient, maybeClient = defaultApiClient) {
+  let client = defaultApiClient;
+  let patientId = null;
+
+  if (patientIdOrClient && typeof patientIdOrClient.post === 'function') {
+    client = patientIdOrClient;
+  } else if (typeof patientIdOrClient === 'string') {
+    patientId = patientIdOrClient;
+    if (maybeClient && typeof maybeClient.post === 'function') {
+      client = maybeClient;
+    }
+  }
+
+  const query = patientId ? `?patientId=${patientId}` : '';
+  return await client.post(`/memories${query}`, data);
 }
 
-export async function updateMemory(id, data, client = defaultApiClient) {
-  return await client.patch(`/memories/${id}`, data);
+export async function updateMemory(id, data, patientIdOrClient = defaultApiClient, maybeClient = defaultApiClient) {
+  let client = defaultApiClient;
+  let patientId = null;
+
+  if (patientIdOrClient && typeof patientIdOrClient.patch === 'function') {
+    client = patientIdOrClient;
+  } else if (typeof patientIdOrClient === 'string') {
+    patientId = patientIdOrClient;
+    if (maybeClient && typeof maybeClient.patch === 'function') {
+      client = maybeClient;
+    }
+  }
+
+  const query = patientId ? `?patientId=${patientId}` : '';
+  return await client.patch(`/memories/${id}${query}`, data);
 }
 
-export async function deleteMemory(id, client = defaultApiClient) {
-  return await client.delete(`/memories/${id}`);
+export async function deleteMemory(id, patientIdOrClient = defaultApiClient, maybeClient = defaultApiClient) {
+  let client = defaultApiClient;
+  let patientId = null;
+
+  if (patientIdOrClient && typeof patientIdOrClient.delete === 'function') {
+    client = patientIdOrClient;
+  } else if (typeof patientIdOrClient === 'string') {
+    patientId = patientIdOrClient;
+    if (maybeClient && typeof maybeClient.delete === 'function') {
+      client = maybeClient;
+    }
+  }
+
+  const query = patientId ? `?patientId=${patientId}` : '';
+  return await client.delete(`/memories/${id}${query}`);
 }
 
 export async function askMemoryAssistant(query, patientId, client = defaultApiClient) {

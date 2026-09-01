@@ -358,6 +358,30 @@ describe('GET /api/v1/memories', () => {
     expect(res.body.data[0].isActive).toBe(false);
   });
 
+  it('supports sorting by oldest first (createdAt) and newest first (-createdAt)', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    await createMemoryViaApi(patient.cookie, { title: 'First Memory' });
+    await createMemoryViaApi(patient.cookie, { title: 'Second Memory' });
+
+    // Oldest First
+    const resOldest = await request(app)
+      .get('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .query({ sort: 'createdAt' });
+    expect(resOldest.status).toBe(200);
+    expect(resOldest.body.data[0].title).toBe('First Memory');
+    expect(resOldest.body.data[1].title).toBe('Second Memory');
+
+    // Newest First
+    const resNewest = await request(app)
+      .get('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .query({ sort: '-createdAt' });
+    expect(resNewest.status).toBe(200);
+    expect(resNewest.body.data[0].title).toBe('Second Memory');
+    expect(resNewest.body.data[1].title).toBe('First Memory');
+  });
+
   it('rejects limit greater than 100 (422)', async () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const res = await request(app)
@@ -937,5 +961,49 @@ describe('POST /api/v1/memories (Local Photo Upload)', () => {
       .attach('photo', mockFile, { filename: 'script.exe', contentType: 'application/x-msdownload' });
 
     expect(res.status).toBe(422);
+  });
+});
+
+// ── Voice Note Memory Upload & Playback ────────────────────────────────────────
+
+describe('POST /api/v1/memories (Voice Note Upload & Playback)', () => {
+  it('allows Patient to upload a voice note audio file along with memory details', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const mockAudioBuffer = Buffer.from('fake-webm-audio-bytes');
+
+    const res = await request(app)
+      .post('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .field('title', 'Voice Note Memory Test')
+      .field('type', 'STORY')
+      .field('description', 'Grandpa telling a story about the summer farm.')
+      .field('audioDuration', 25)
+      .attach('voiceNote', mockAudioBuffer, { filename: 'voice-note.webm', contentType: 'audio/webm' });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.title).toBe('Voice Note Memory Test');
+    expect(res.body.data.voiceNote).toBeDefined();
+    expect(res.body.data.voiceNote.audioUrl).toMatch(/^\/uploads\/memories\//);
+    expect(res.body.data.voiceNote.duration).toBe(25);
+
+    // Verify static audio file serving endpoint
+    const staticAudioRes = await request(app).get(res.body.data.voiceNote.audioUrl);
+    expect(staticAudioRes.status).toBe(200);
+  });
+
+  it('renders old memories without voiceNote (voiceNote = null / audioUrl = null) cleanly', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+
+    const res = await request(app)
+      .post('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .send({
+        title: 'Old Legacy Memory',
+        type: 'PHOTO',
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.voiceNote).toBeNull();
+    expect(res.body.data.audioUrl).toBeNull();
   });
 });

@@ -106,14 +106,19 @@ export function MemoriesScreen({ patientId }) {
     fetchFamilyMembers();
   }, [fetchFamilyMembers]);
 
-  // Handlers
   const handleSaveMemory = async (formData, memoryId) => {
+    let res;
     if (memoryId) {
-      await memoriesApi.updateMemory(memoryId, formData);
+      res = await memoriesApi.updateMemory(memoryId, formData);
+      if (selectedMemory && selectedMemory._id === memoryId && res?.data) {
+        setSelectedMemory(res.data);
+      }
     } else {
-      await memoriesApi.createMemory({ ...formData, patientId });
+      res = await memoriesApi.createMemory({ ...formData, patientId });
     }
-    fetchMemories();
+    setCreateEditModalOpen(false);
+    setMemoryToEdit(null);
+    await fetchMemories();
   };
 
   const handleDeleteMemory = async (memoryId) => {
@@ -217,8 +222,10 @@ export function MemoriesScreen({ patientId }) {
               onChange={(e) => setSortOrder(e.target.value)}
               className="bg-memora-surface-secondary border border-memora-border text-memora-text text-xs font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-memora-accent"
             >
-              <option value="-createdAt">Newest First</option>
-              <option value="createdAt">Oldest First</option>
+              <option value="-createdAt">Newest Added First</option>
+              <option value="createdAt">Oldest Added First</option>
+              <option value="-importantDate">Memory Date (Newest)</option>
+              <option value="importantDate">Memory Date (Oldest)</option>
               <option value="title">Title (A-Z)</option>
             </select>
           </div>

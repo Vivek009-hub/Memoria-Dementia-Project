@@ -88,12 +88,16 @@ export async function createMemory(patientId, createdBy, body) {
  * @param {object} query - validated listMemoriesSchema output
  */
 export async function listMemories(patientId, query = {}) {
-  const { type, isActive, relatedPersonId, from, to, page = 1, limit = 20 } = query;
+  const { type, isActive, relatedPersonId, from, to, sort, search, page = 1, limit = 20 } = query;
 
   const filter = { patientId: new mongoose.Types.ObjectId(patientId) };
 
   if (type !== undefined) filter.type = type;
-  if (isActive !== undefined) filter.isActive = isActive;
+  if (isActive !== undefined) {
+    filter.isActive = isActive;
+  } else {
+    filter.isActive = true;
+  }
   if (relatedPersonId) filter.relatedPersonId = new mongoose.Types.ObjectId(relatedPersonId);
   if (from || to) {
     filter.importantDate = {};
@@ -101,9 +105,37 @@ export async function listMemories(patientId, query = {}) {
     if (to) filter.importantDate.$lte = new Date(to);
   }
 
+  if (search && typeof search === 'string' && search.trim() !== '') {
+    const searchRegex = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    filter.$or = [
+      { title: searchRegex },
+      { description: searchRegex },
+      { relatedPlace: searchRegex },
+      { tags: searchRegex },
+    ];
+  }
+
+  // Parse sort order
+  let sortOption = { createdAt: -1 }; // default: newest created first
+  if (sort) {
+    if (sort === 'createdAt' || sort === 'oldest' || sort === 'asc') {
+      sortOption = { createdAt: 1 };
+    } else if (sort === '-createdAt' || sort === 'newest' || sort === 'desc') {
+      sortOption = { createdAt: -1 };
+    } else if (sort === 'importantDate' || sort === 'date-asc') {
+      sortOption = { importantDate: 1, createdAt: 1 };
+    } else if (sort === '-importantDate' || sort === 'date-desc') {
+      sortOption = { importantDate: -1, createdAt: -1 };
+    } else if (sort === 'title' || sort === 'title-asc') {
+      sortOption = { title: 1 };
+    } else if (sort === '-title' || sort === 'title-desc') {
+      sortOption = { title: -1 };
+    }
+  }
+
   const skip = (page - 1) * limit;
   const [memories, total] = await Promise.all([
-    Memory.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+    Memory.find(filter).sort(sortOption).skip(skip).limit(limit).lean(),
     Memory.countDocuments(filter),
   ]);
 
@@ -185,6 +217,26 @@ export async function deleteMemory(memoryId, patientId) {
       const filePath = path.join(__dirname, '../../../uploads/memories', filename);
       if (fs.existsSync(filePath)) {
         const otherRef = await Memory.findOne({ mediaUrl: memory.mediaUrl, isActive: true });
+        if (!otherRef) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    } catch {
+      // Non-blocking cleanup error
+    }
+  }
+
+  // If voiceNote / audioUrl is a local uploaded file, clean up disk if no active memory references it
+  const audioTarget = memory.audioUrl || memory.voiceNote?.audioUrl;
+  if (audioTarget && audioTarget.startsWith('/uploads/memories/')) {
+    try {
+      const filename = path.basename(audioTarget);
+      const filePath = path.join(__dirname, '../../../uploads/memories', filename);
+      if (fs.existsSync(filePath)) {
+        const otherRef = await Memory.findOne({
+          $or: [{ audioUrl: audioTarget }, { 'voiceNote.audioUrl': audioTarget }],
+          isActive: true,
+        });
         if (!otherRef) {
           fs.unlinkSync(filePath);
         }
