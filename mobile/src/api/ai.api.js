@@ -27,6 +27,17 @@ export async function searchMemoriesNL(query, client = defaultApiClient) {
 }
 
 /**
+ * Send chat message to Gemini agentic companion.
+ * @param {string} message - Patient message
+ * @param {string} [conversationId] - Session ID
+ * @param {string} [language='en'] - Preferred language
+ * @param {Object} [client=defaultApiClient]
+ */
+export async function sendCompanionChat(message, conversationId = null, language = 'en', client = defaultApiClient) {
+  return await client.post('/ai/companion/chat', { message, conversationId, language });
+}
+
+/**
  * Send chat message to elder AI companion.
  * @param {string} message - User chat message
  * @param {Object} [client=defaultApiClient]
