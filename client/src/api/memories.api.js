@@ -51,7 +51,15 @@ export async function updateMemory(id, data, patientIdOrClient = defaultApiClien
     }
   }
 
-  const query = patientId ? `?patientId=${patientId}` : '';
+  if (!patientId && data) {
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      patientId = data.get('patientId');
+    } else if (typeof data === 'object' && data.patientId) {
+      patientId = data.patientId;
+    }
+  }
+
+  const query = patientId ? `?patientId=${encodeURIComponent(patientId)}` : '';
   return await client.patch(`/memories/${id}${query}`, data);
 }
 

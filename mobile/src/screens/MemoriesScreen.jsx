@@ -106,15 +106,29 @@ export function MemoriesScreen({ patientId }) {
     fetchFamilyMembers();
   }, [fetchFamilyMembers]);
 
-  const handleSaveMemory = async (formData, memoryId) => {
+  const handleSaveMemory = async (formDataOrPayload, memoryId) => {
     let res;
-    if (memoryId) {
-      res = await memoriesApi.updateMemory(memoryId, formData);
-      if (selectedMemory && selectedMemory._id === memoryId && res?.data) {
-        setSelectedMemory(res.data);
+    if (typeof FormData !== 'undefined' && formDataOrPayload instanceof FormData) {
+      if (patientId) formDataOrPayload.append('patientId', patientId);
+      if (memoryId) {
+        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload, patientId);
+      } else {
+        res = await memoriesApi.createMemory(formDataOrPayload, patientId);
       }
     } else {
-      res = await memoriesApi.createMemory({ ...formData, patientId });
+      const payload = { ...formDataOrPayload };
+      if (patientId) payload.patientId = patientId;
+      if (memoryId) {
+        res = await memoriesApi.updateMemory(memoryId, payload, patientId);
+      } else {
+        res = await memoriesApi.createMemory(payload, patientId);
+      }
+    }
+
+    if (memoryId && res?.data) {
+      if (selectedMemory && selectedMemory._id === memoryId) {
+        setSelectedMemory(res.data);
+      }
     }
     setCreateEditModalOpen(false);
     setMemoryToEdit(null);

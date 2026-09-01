@@ -23,7 +23,8 @@ const DATE_PRECISION_OPTIONS = [
 ];
 
 export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onClose, onSave }) {
-  const isEditing = Boolean(memory && memory._id);
+  const targetMemoryId = memory?._id || memory?.id;
+  const isEditing = Boolean(memory && targetMemoryId);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -167,17 +168,21 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
         }
 
         formData.append('title', title.trim());
-        if (description.trim()) formData.append('description', description.trim());
+        formData.append('description', description.trim());
         formData.append('type', type);
-        if (relatedPlace.trim()) formData.append('relatedPlace', relatedPlace.trim());
-        if (importantDate) formData.append('importantDate', new Date(importantDate).toISOString());
+        formData.append('mediaUrl', mediaUrl.trim());
+        formData.append('audioUrl', existingAudioUrl || '');
+        formData.append('relatedPlace', relatedPlace.trim());
+        formData.append('importantDate', importantDate ? new Date(importantDate).toISOString() : '');
         formData.append('datePrecision', datePrecision);
-        if (relatedPersonId) formData.append('relatedPersonId', relatedPersonId);
+        formData.append('relatedPersonId', relatedPersonId || '');
         if (parsedTags.length > 0) {
           parsedTags.forEach((tag) => formData.append('tags', tag));
+        } else {
+          formData.append('tags', '');
         }
 
-        await onSave(formData, memory?._id);
+        await onSave(formData, targetMemoryId);
       } else {
         const payload = {
           title: title.trim(),
@@ -192,7 +197,7 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
           tags: parsedTags.length > 0 ? parsedTags : [],
         };
 
-        await onSave(payload, memory?._id);
+        await onSave(payload, targetMemoryId);
       }
       onClose();
     } catch (err) {

@@ -93,17 +93,23 @@ export function RemindersPage({ patientId }) {
   };
 
   const handleCompleteReminder = async (reminder) => {
-    await remindersApi.completeReminder(reminder._id, { date: selectedDate });
+    const remId = reminder?._id || reminder?.id || reminder;
+    await remindersApi.completeReminder(remId, { date: selectedDate, patientId });
     fetchReminders();
   };
 
-  const handleSkipReminder = async (reminderId, data) => {
-    await remindersApi.skipReminder(reminderId, data?.note || '');
+  const handleSkipReminder = async (reminderOrId, data) => {
+    const remId = typeof reminderOrId === 'object' ? (reminderOrId._id || reminderOrId.id) : reminderOrId;
+    await remindersApi.skipReminder(remId, { note: data?.note || '', date: selectedDate, patientId });
     fetchReminders();
   };
 
   const getReminderStatus = (reminderId) => {
-    const occ = occurrences.find((o) => o.reminderId === reminderId);
+    if (!reminderId) return 'PENDING';
+    const occ = occurrences.find((o) => {
+      const oRemId = o.reminderId || (typeof o.reminder === 'object' ? o.reminder?.id || o.reminder?._id : o.reminder);
+      return String(oRemId) === String(reminderId);
+    });
     return occ ? occ.status : 'PENDING';
   };
 
@@ -207,19 +213,22 @@ export function RemindersPage({ patientId }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {reminders.map((rem) => (
-            <ReminderCard
-              key={rem._id}
-              reminder={rem}
-              status={getReminderStatus(rem._id)}
-              onComplete={handleCompleteReminder}
-              onSkip={(r) => {
-                setReminderToSkip(r);
-                setSkipModalOpen(true);
-              }}
-              onSelect={(r) => setSelectedReminder(r)}
-            />
-          ))}
+          {reminders.map((rem) => {
+            const targetId = rem._id || rem.id;
+            return (
+              <ReminderCard
+                key={targetId}
+                reminder={rem}
+                status={getReminderStatus(targetId)}
+                onComplete={handleCompleteReminder}
+                onSkip={(r) => {
+                  setReminderToSkip(r);
+                  setSkipModalOpen(true);
+                }}
+                onSelect={(r) => setSelectedReminder(r)}
+              />
+            );
+          })}
         </div>
       )}
 

@@ -105,17 +105,17 @@ export function MemoriesPage({ patientId }) {
     if (formDataOrPayload instanceof FormData) {
       if (patientId) formDataOrPayload.append('patientId', patientId);
       if (memoryId) {
-        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload);
+        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload, patientId);
       } else {
-        res = await memoriesApi.createMemory(formDataOrPayload);
+        res = await memoriesApi.createMemory(formDataOrPayload, patientId);
       }
     } else {
       const payload = { ...formDataOrPayload };
       if (patientId) payload.patientId = patientId;
       if (memoryId) {
-        res = await memoriesApi.updateMemory(memoryId, payload);
+        res = await memoriesApi.updateMemory(memoryId, payload, patientId);
       } else {
-        res = await memoriesApi.createMemory(payload);
+        res = await memoriesApi.createMemory(payload, patientId);
       }
     }
 

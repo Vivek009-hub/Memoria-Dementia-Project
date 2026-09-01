@@ -57,7 +57,14 @@ async function caregiverMemoryScope(req, _res, next) {
     }
 
     if (req.user.role === 'CAREGIVER') {
-      const patientId = req.query?.patientId ?? req.body?.patientId;
+      let patientId = req.query?.patientId ?? req.body?.patientId;
+      if (!patientId && req.params?.memoryId) {
+        const Memory = (await import('./memory.model.js')).default;
+        const memory = await Memory.findById(req.params.memoryId).lean();
+        if (memory) {
+          patientId = memory.patientId?.toString();
+        }
+      }
       if (!patientId) {
         throw new AppError(
           'patientId query parameter is required for caregiver access',
@@ -66,6 +73,7 @@ async function caregiverMemoryScope(req, _res, next) {
         );
       }
       await canAccessPatient(req.user, patientId, 'manageMemories');
+      req.targetPatientId = patientId;
       return next();
     }
 

@@ -120,9 +120,11 @@ export function validateCreateMemory(body) {
     };
   }
 
-  if (body.relatedPersonId !== undefined && body.relatedPersonId !== null) {
+  if (body.relatedPersonId !== undefined && body.relatedPersonId !== null && body.relatedPersonId !== '' && body.relatedPersonId !== 'null') {
     validateObjectId(body.relatedPersonId, 'relatedPersonId');
     data.relatedPersonId = body.relatedPersonId;
+  } else if (body.relatedPersonId === '' || body.relatedPersonId === 'null') {
+    data.relatedPersonId = null;
   }
 
   if (body.relatedPlace !== undefined && body.relatedPlace !== null) {
@@ -132,10 +134,10 @@ export function validateCreateMemory(body) {
     if (body.relatedPlace.length > 300) {
       throw new AppError('relatedPlace must be at most 300 characters', 422, 'VALIDATION_ERROR');
     }
-    data.relatedPlace = body.relatedPlace.trim();
+    data.relatedPlace = body.relatedPlace.trim() || null;
   }
 
-  if (body.importantDate !== undefined && body.importantDate !== null) {
+  if (body.importantDate !== undefined && body.importantDate !== null && body.importantDate !== '' && body.importantDate !== 'null') {
     const d = new Date(body.importantDate);
     if (isNaN(d.getTime())) {
       throw new AppError('importantDate must be a valid ISO date', 422, 'VALIDATION_ERROR');
@@ -162,13 +164,17 @@ export function validateCreateMemory(body) {
   }
 
   if (body.tags !== undefined && body.tags !== null) {
-    if (!Array.isArray(body.tags) || body.tags.some((t) => typeof t !== 'string')) {
+    let parsedTags = body.tags;
+    if (typeof parsedTags === 'string') {
+      parsedTags = parsedTags.split(',').map((t) => t.trim()).filter(Boolean);
+    }
+    if (!Array.isArray(parsedTags) || parsedTags.some((t) => typeof t !== 'string')) {
       throw new AppError('tags must be an array of strings', 422, 'VALIDATION_ERROR');
     }
-    if (body.tags.length > 20) {
+    if (parsedTags.length > 20) {
       throw new AppError('tags must contain at most 20 items', 422, 'VALIDATION_ERROR');
     }
-    data.tags = body.tags;
+    data.tags = parsedTags;
   }
 
   return data;
@@ -198,7 +204,7 @@ export function validateUpdateMemory(body) {
     if (body.description && body.description.length > 5000) {
       throw new AppError('description must be at most 5000 characters', 422, 'VALIDATION_ERROR');
     }
-    data.description = body.description ? body.description.trim() : null;
+    data.description = body.description && body.description.trim() ? body.description.trim() : null;
   }
 
   if (body.type !== undefined) {
@@ -282,7 +288,7 @@ export function validateUpdateMemory(body) {
   }
 
   if (body.relatedPersonId !== undefined) {
-    if (body.relatedPersonId !== null) {
+    if (body.relatedPersonId !== null && body.relatedPersonId !== '' && body.relatedPersonId !== 'null') {
       validateObjectId(body.relatedPersonId, 'relatedPersonId');
       data.relatedPersonId = body.relatedPersonId;
     } else {
@@ -295,14 +301,14 @@ export function validateUpdateMemory(body) {
       if (typeof body.relatedPlace !== 'string' || body.relatedPlace.length > 300) {
         throw new AppError('relatedPlace must be at most 300 characters', 422, 'VALIDATION_ERROR');
       }
-      data.relatedPlace = body.relatedPlace.trim();
+      data.relatedPlace = body.relatedPlace.trim() || null;
     } else {
       data.relatedPlace = null;
     }
   }
 
   if (body.importantDate !== undefined) {
-    if (body.importantDate !== null) {
+    if (body.importantDate !== null && body.importantDate !== '' && body.importantDate !== 'null') {
       const d = new Date(body.importantDate);
       if (isNaN(d.getTime())) {
         throw new AppError('importantDate must be a valid ISO date', 422, 'VALIDATION_ERROR');
@@ -332,13 +338,17 @@ export function validateUpdateMemory(body) {
   }
 
   if (body.tags !== undefined) {
-    if (!Array.isArray(body.tags) || body.tags.some((t) => typeof t !== 'string')) {
+    let parsedTags = body.tags;
+    if (typeof parsedTags === 'string') {
+      parsedTags = parsedTags.split(',').map((t) => t.trim()).filter(Boolean);
+    }
+    if (!Array.isArray(parsedTags) || parsedTags.some((t) => typeof t !== 'string')) {
       throw new AppError('tags must be an array of strings', 422, 'VALIDATION_ERROR');
     }
-    if (body.tags.length > 20) {
+    if (parsedTags.length > 20) {
       throw new AppError('tags must contain at most 20 items', 422, 'VALIDATION_ERROR');
     }
-    data.tags = body.tags;
+    data.tags = parsedTags;
   }
 
   if (body.isActive !== undefined) {

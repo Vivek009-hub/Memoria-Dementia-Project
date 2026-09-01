@@ -30,7 +30,7 @@ function resolvePatientId(req) {
   if (req.user.role === 'PATIENT') {
     return req.user.id;
   }
-  return req.query?.patientId ?? req.body?.patientId ?? req.params?.patientId;
+  return req.query?.patientId ?? req.body?.patientId ?? req.targetPatientId ?? req.params?.patientId;
 }
 
 // ── Memory handlers ───────────────────────────────────────────────────────────

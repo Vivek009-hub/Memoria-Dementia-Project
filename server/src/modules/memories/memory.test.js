@@ -522,6 +522,130 @@ describe('PATCH /api/v1/memories/:memoryId', () => {
     expect(res.body.data.tags).toEqual(['updated', 'tags']);
   });
 
+  it('updates tags sent as comma-separated string or single string (from FormData)', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const createRes = await createMemoryViaApi(patient.cookie);
+    const memId = createRes.body.data._id;
+
+    const res = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ tags: 'family, childhood, school' });
+    expect(res.status).toBe(200);
+    expect(res.body.data.tags).toEqual(['family', 'childhood', 'school']);
+  });
+
+  it('updates every field individually: title, description, date, datePrecision, location, tags, familyMember', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const fmRes = await request(app)
+      .post('/api/v1/memories/family-members')
+      .set('Cookie', patient.cookie)
+      .send({ name: 'Uncle Bob' });
+    const fmId = fmRes.body.data._id;
+
+    const createRes = await createMemoryViaApi(patient.cookie, {
+      title: 'Old Title',
+      description: 'Old Description',
+      importantDate: '2020-01-01',
+      datePrecision: 'exact',
+      relatedPlace: 'Old Location',
+      tags: ['oldtag'],
+    });
+    const memId = createRes.body.data._id;
+
+    // 1. Title only
+    let patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ title: 'New Title' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.title).toBe('New Title');
+
+    // 2. Description only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ description: 'New Description' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.description).toBe('New Description');
+
+    // 3. Date only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ importantDate: '2025-12-25' });
+    expect(patchRes.status).toBe(200);
+    expect(new Date(patchRes.body.data.importantDate).getFullYear()).toBe(2025);
+
+    // 4. Date Precision only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ datePrecision: 'year' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.datePrecision).toBe('year');
+
+    // 5. Location only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ relatedPlace: 'Mumbai' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.relatedPlace).toBe('Mumbai');
+
+    // 6. Tags only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ tags: ['mumbai', 'vacation'] });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.tags).toEqual(['mumbai', 'vacation']);
+
+    // 7. Related Person ID only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ relatedPersonId: fmId });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.relatedPersonId).toBe(fmId);
+
+    // Verify DB persistence directly
+    const Memory = (await import('./memory.model.js')).default;
+    const dbMem = await Memory.findById(memId);
+    expect(dbMem.title).toBe('New Title');
+    expect(dbMem.description).toBe('New Description');
+    expect(dbMem.relatedPlace).toBe('Mumbai');
+    expect(dbMem.datePrecision).toBe('year');
+  });
+
+  it('handles clearing optional fields (sending empty string "") without erroring', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const createRes = await createMemoryViaApi(patient.cookie, {
+      title: 'Memory To Clear',
+      description: 'Has description',
+      importantDate: '2020-01-01',
+      relatedPlace: 'Has Location',
+    });
+    const memId = createRes.body.data._id;
+
+    const patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({
+        description: '',
+        importantDate: '',
+        relatedPlace: '',
+        relatedPersonId: '',
+        tags: '',
+      });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.description).toBeNull();
+    expect(patchRes.body.data.importantDate).toBeNull();
+    expect(patchRes.body.data.relatedPlace).toBeNull();
+    expect(patchRes.body.data.relatedPersonId).toBeNull();
+    expect(patchRes.body.data.tags).toEqual([]);
+  });
+
   it('can deactivate memory via isActive false', async () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const createRes = await createMemoryViaApi(patient.cookie);

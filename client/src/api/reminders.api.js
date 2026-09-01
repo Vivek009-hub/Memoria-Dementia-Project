@@ -32,15 +32,20 @@ export async function deleteReminder(id, client = defaultApiClient) {
 }
 
 export async function completeReminder(id, completionData = {}, client = defaultApiClient) {
-  return await client.post(`/reminders/${id}/complete`, completionData);
+  const patientId = completionData?.patientId;
+  const query = patientId ? `?patientId=${encodeURIComponent(patientId)}` : '';
+  return await client.post(`/reminders/${id}/complete${query}`, completionData);
 }
 
 export async function snoozeReminder(id, snoozeMinutes = 15, client = defaultApiClient) {
   return await client.post(`/reminders/${id}/snooze`, { snoozeMinutes });
 }
 
-export async function skipReminder(id, reason = '', client = defaultApiClient) {
-  return await client.post(`/reminders/${id}/skip`, { reason });
+export async function skipReminder(id, reasonOrData = '', client = defaultApiClient) {
+  const body = typeof reasonOrData === 'string' ? { reason: reasonOrData } : { ...reasonOrData };
+  const patientId = body.patientId;
+  const query = patientId ? `?patientId=${encodeURIComponent(patientId)}` : '';
+  return await client.post(`/reminders/${id}/skip${query}`, body);
 }
 
 export async function getTodayReminders(client = defaultApiClient) {
