@@ -63,21 +63,21 @@ export function SafetyDashboardScreen() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2 text-red-400 mb-1">
             <Shield className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-wider">Memora Safety Hub</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Safety & Emergency Center</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-memora-text tracking-tight">Safety & Emergency Center</h1>
+          <p className="text-sm text-memora-text-muted mt-1">
             Instant SOS emergency alert, mobile companion status, and fall detection monitoring.
           </p>
         </div>
 
         <button
           onClick={refreshSafetyData}
-          className="p-3 bg-slate-800 border border-slate-700 rounded-2xl text-slate-300 hover:text-white transition-colors self-start md:self-auto"
+          className="p-3 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text-secondary hover:text-memora-text transition-colors self-start md:self-auto"
           title="Refresh safety status"
         >
           <RefreshCw className="w-4 h-4" />
@@ -85,7 +85,7 @@ export function SafetyDashboardScreen() {
       </div>
 
       {/* Primary Emergency SOS Action Card */}
-      <div className="bg-slate-900 border-2 border-red-500/40 rounded-3xl p-6 shadow-2xl space-y-6 text-center">
+      <div className="bg-memora-surface border-2 border-red-500/40 rounded-3xl p-6 shadow-2xl space-y-6 text-center">
         {activeSOS ? (
           <div className="bg-red-950/80 border-2 border-red-500 rounded-2xl p-6 space-y-4 animate-pulse">
             <div className="w-16 h-16 bg-red-600/30 border border-red-500 rounded-full flex items-center justify-center mx-auto text-red-400">

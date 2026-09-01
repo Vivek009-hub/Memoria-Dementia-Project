@@ -35,21 +35,21 @@ export function ActivityProgressCard({ title, value, subtext, icon: Icon, color 
   const scheme = colorMap[color] || colorMap.indigo;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-3">
+    <div className="bg-memora-surface border border-memora-border rounded-3xl p-5 shadow-xl space-y-3">
       <div className="flex items-center justify-between">
         <div className={`p-3 rounded-2xl ${scheme.bg} ${scheme.border} ${scheme.text}`}>
           <Icon className="w-5 h-5" />
         </div>
-        <span className="text-xs font-black text-slate-400 uppercase tracking-wider">{title}</span>
+        <span className="text-xs font-black text-memora-text-muted uppercase tracking-wider">{title}</span>
       </div>
 
       <div>
-        <h4 className="text-2xl font-black text-white">{value}</h4>
-        <p className="text-xs text-slate-400 mt-0.5">{subtext}</p>
+        <h4 className="text-2xl font-black text-memora-text">{value}</h4>
+        <p className="text-xs text-memora-text-muted mt-0.5">{subtext}</p>
       </div>
 
       {/* Visual Progress Bar */}
-      <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+      <div className="w-full bg-memora-surface-secondary h-2 rounded-full overflow-hidden border border-memora-border">
         <div
           className={`h-full ${scheme.bar} transition-all duration-500 rounded-full`}
           style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}

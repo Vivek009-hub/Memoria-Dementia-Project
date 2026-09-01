@@ -104,14 +104,14 @@ export function CaregiverDashboardScreen() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header & Patient Switcher */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-indigo-400 mb-1">
+          <div className="flex items-center space-x-2 text-memora-accent mb-1">
             <Users className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-wider">Caregiver Support Hub</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Caregiver Dashboard</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-memora-text tracking-tight">Caregiver Dashboard</h1>
+          <p className="text-sm text-memora-text-muted mt-1">
             Monitor and support your authorized patient's daily routine, memories, and safety status.
           </p>
         </div>
@@ -128,7 +128,7 @@ export function CaregiverDashboardScreen() {
               fetchRelationships();
               if (selectedPatientId) fetchPatientDetails(selectedPatientId);
             }}
-            className="p-3 bg-slate-800 border border-slate-700 rounded-2xl text-slate-300 hover:text-white transition-colors"
+            className="p-3 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text-secondary hover:text-memora-text transition-colors"
             title="Refresh patient data"
           >
             <RefreshCw className="w-4 h-4" />

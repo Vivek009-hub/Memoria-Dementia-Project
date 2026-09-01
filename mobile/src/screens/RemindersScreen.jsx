@@ -148,14 +148,14 @@ export function RemindersScreen({ patientId }) {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-indigo-400 mb-1">
+          <div className="flex items-center space-x-2 text-memora-accent mb-1">
             <Clock className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-wider">Daily Routine</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">My Reminders</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-memora-text tracking-tight">My Reminders</h1>
+          <p className="text-sm text-memora-text-muted mt-1">
             Stay on track with your medications, appointments, and daily routines.
           </p>
         </div>
@@ -166,7 +166,7 @@ export function RemindersScreen({ patientId }) {
               setReminderToEdit(null);
               setCreateEditModalOpen(true);
             }}
-            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
+            className="px-5 py-3 bg-memora-accent hover:bg-memora-accent-bright text-memora-bg font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
           >
             <Plus className="w-5 h-5" />
             <span>Add Reminder</span>
@@ -175,16 +175,16 @@ export function RemindersScreen({ patientId }) {
       </div>
 
       {/* Navigation View Tabs & Filters */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-lg space-y-4">
-        <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-3">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-4 shadow-lg space-y-4">
+        <div className="flex items-center justify-between gap-2 border-b border-memora-border pb-3">
           {/* Main View Tabs */}
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setViewTab('today')}
               className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
                 viewTab === 'today'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-md font-black'
+                  : 'bg-memora-surface-secondary text-memora-text-muted hover:text-memora-text border border-memora-border'
               }`}
             >
               <Sun className="w-4 h-4 text-amber-400" />
@@ -195,8 +195,8 @@ export function RemindersScreen({ patientId }) {
               onClick={() => setViewTab('all')}
               className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
                 viewTab === 'all'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-md font-black'
+                  : 'bg-memora-surface-secondary text-memora-text-muted hover:text-memora-text border border-memora-border'
               }`}
             >
               <Clock className="w-4 h-4" />
@@ -207,8 +207,8 @@ export function RemindersScreen({ patientId }) {
               onClick={() => setViewTab('history')}
               className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
                 viewTab === 'history'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-md font-black'
+                  : 'bg-memora-surface-secondary text-memora-text-muted hover:text-memora-text border border-memora-border'
               }`}
             >
               <History className="w-4 h-4" />
@@ -218,7 +218,7 @@ export function RemindersScreen({ patientId }) {
 
           <button
             onClick={fetchReminders}
-            className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors"
+            className="p-2.5 bg-memora-surface-secondary border border-memora-border rounded-xl text-memora-text-muted hover:text-memora-text transition-colors"
             title="Refresh reminders"
           >
             <RefreshCw className="w-4 h-4" />
@@ -233,8 +233,8 @@ export function RemindersScreen({ patientId }) {
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 selectedCategory === cat.id
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-memora-accent text-memora-bg font-black'
+                  : 'bg-memora-surface-secondary border border-memora-border text-memora-text-muted hover:text-memora-text'
               }`}
             >
               {cat.label}
@@ -245,20 +245,20 @@ export function RemindersScreen({ patientId }) {
 
       {/* Main Content Area */}
       {loading ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
-          <RefreshCw className="w-10 h-10 text-indigo-400 animate-spin mx-auto mb-3" />
-          <p className="text-slate-300 font-bold text-lg">Loading your schedule...</p>
+        <div className="bg-memora-surface border border-memora-border rounded-3xl p-12 text-center shadow-lg">
+          <RefreshCw className="w-10 h-10 text-memora-accent animate-spin mx-auto mb-3" />
+          <p className="text-memora-text font-bold text-lg">Loading your schedule...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-slate-900 border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
+        <div className="bg-memora-surface border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
           <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
           <div>
-            <h3 className="text-xl font-bold text-white mb-1">We Couldn't Load Your Reminders</h3>
-            <p className="text-sm text-slate-400">{errorMsg}</p>
+            <h3 className="text-xl font-bold text-memora-text mb-1">We Couldn't Load Your Reminders</h3>
+            <p className="text-sm text-memora-text-muted">{errorMsg}</p>
           </div>
           <button
             onClick={fetchReminders}
-            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl border border-slate-700 transition-all inline-flex items-center space-x-2"
+            className="px-6 py-3 bg-memora-surface-secondary hover:bg-memora-surface-hover text-memora-text font-bold text-sm rounded-2xl border border-memora-border transition-all inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
@@ -266,23 +266,23 @@ export function RemindersScreen({ patientId }) {
         </div>
       ) : viewTab === 'history' ? (
         /* History Log View */
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-lg space-y-4">
-          <h2 className="text-xl font-bold text-white flex items-center space-x-2">
-            <History className="w-5 h-5 text-indigo-400" />
+        <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-lg space-y-4">
+          <h2 className="text-xl font-bold text-memora-text flex items-center space-x-2">
+            <History className="w-5 h-5 text-memora-accent" />
             <span>Recent Occurrence History</span>
           </h2>
 
           {historyLogs.length === 0 ? (
-            <p className="text-sm text-slate-500 py-6 text-center">No occurrence history recorded yet.</p>
+            <p className="text-sm text-memora-text-muted py-6 text-center">No occurrence history recorded yet.</p>
           ) : (
             <div className="space-y-3">
               {historyLogs.map((log) => (
-                <div key={log._id} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-between">
+                <div key={log._id} className="p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl flex items-center justify-between">
                   <div>
-                    <h4 className="text-base font-bold text-white">
+                    <h4 className="text-base font-bold text-memora-text">
                       {log.reminderId?.title || 'Reminder Occurrence'}
                     </h4>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-memora-text-muted">
                       Scheduled: {new Date(log.scheduledAt).toLocaleString()}
                     </span>
                   </div>
@@ -292,7 +292,7 @@ export function RemindersScreen({ patientId }) {
                         ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
                         : log.status === 'CANCELLED' || log.status === 'SKIPPED'
                         ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                        : 'bg-slate-800 text-slate-300 border-slate-700'
+                        : 'bg-memora-surface text-memora-text-muted border-memora-border'
                     }`}
                   >
                     {log.status}
@@ -304,13 +304,13 @@ export function RemindersScreen({ patientId }) {
         </div>
       ) : reminders.length === 0 ? (
         /* Empty State */
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg space-y-4">
-          <div className="w-20 h-20 bg-indigo-500/10 border border-indigo-500/20 rounded-full flex items-center justify-center mx-auto text-indigo-400">
+        <div className="bg-memora-surface border border-memora-border rounded-3xl p-12 text-center shadow-lg space-y-4">
+          <div className="w-20 h-20 bg-memora-accent/10 border border-memora-accent/20 rounded-full flex items-center justify-center mx-auto text-memora-accent">
             <Clock className="w-10 h-10" />
           </div>
           <div>
-            <h3 className="text-2xl font-black text-white mb-2">No Reminders Found</h3>
-            <p className="text-slate-400 max-w-md mx-auto text-sm leading-relaxed">
+            <h3 className="text-2xl font-black text-memora-text mb-2">No Reminders Found</h3>
+            <p className="text-memora-text-muted max-w-md mx-auto text-sm leading-relaxed">
               You have no reminders set for this category. Add a reminder for medications, meals, or events to keep your day organized.
             </p>
           </div>
@@ -319,7 +319,7 @@ export function RemindersScreen({ patientId }) {
               setReminderToEdit(null);
               setCreateEditModalOpen(true);
             }}
-            className="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-base rounded-2xl shadow-lg inline-flex items-center space-x-2 transition-all touch-target-xl"
+            className="px-6 py-3.5 bg-memora-accent hover:bg-memora-accent-bright text-memora-bg font-extrabold text-base rounded-2xl shadow-lg inline-flex items-center space-x-2 transition-all touch-target-xl"
           >
             <Plus className="w-5 h-5" />
             <span>Add Your First Reminder</span>
@@ -333,7 +333,7 @@ export function RemindersScreen({ patientId }) {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-amber-400">
                 <Sun className="w-5 h-5" />
-                <h2 className="text-lg font-black text-white uppercase tracking-wider">Morning Routine</h2>
+                <h2 className="text-lg font-black text-memora-text uppercase tracking-wider">Morning Routine</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {morning.map((r) => (
@@ -358,7 +358,7 @@ export function RemindersScreen({ patientId }) {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-orange-400">
                 <Sunset className="w-5 h-5" />
-                <h2 className="text-lg font-black text-white uppercase tracking-wider">Afternoon Routine</h2>
+                <h2 className="text-lg font-black text-memora-text uppercase tracking-wider">Afternoon Routine</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {afternoon.map((r) => (
@@ -381,9 +381,9 @@ export function RemindersScreen({ patientId }) {
           {/* Evening */}
           {evening.length > 0 && (
             <div className="space-y-3">
-              <div className="flex items-center space-x-2 text-indigo-400">
+              <div className="flex items-center space-x-2 text-memora-accent">
                 <Moon className="w-5 h-5" />
-                <h2 className="text-lg font-black text-white uppercase tracking-wider">Evening Routine</h2>
+                <h2 className="text-lg font-black text-memora-text uppercase tracking-wider">Evening Routine</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {evening.map((r) => (

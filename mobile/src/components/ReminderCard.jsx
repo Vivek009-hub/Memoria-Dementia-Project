@@ -32,7 +32,7 @@ const TYPE_STYLES = {
   IMPORTANT_EVENT: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
   COMMUNITY_SESSION: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
   MEETING_CIRCLE: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
-  OTHER: 'bg-slate-800 text-slate-300 border-slate-700',
+  OTHER: 'bg-memora-surface-secondary text-memora-text-muted border-memora-border',
 };
 
 export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip, onSelect }) {
@@ -83,12 +83,12 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
   return (
     <div
       onClick={() => onSelect && onSelect(reminder)}
-      className={`group relative bg-slate-900 border rounded-3xl p-5 shadow-lg transition-all cursor-pointer flex flex-col justify-between ${
+      className={`group relative bg-memora-surface border rounded-3xl p-5 shadow-lg transition-all cursor-pointer flex flex-col justify-between ${
         isCompleted
           ? 'border-emerald-500/40 bg-emerald-950/10'
           : isSkipped
-          ? 'border-slate-800 opacity-65'
-          : 'border-slate-800 hover:border-indigo-500/50'
+          ? 'border-memora-border opacity-65'
+          : 'border-memora-border hover:border-memora-accent/50'
       }`}
       role="button"
       tabIndex={0}
@@ -104,11 +104,11 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
         {/* Top Bar: Time + Category Badge + Voice Indicator */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
-            <span className="text-2xl font-black text-white tracking-tight">
+            <span className="text-2xl font-black text-memora-text tracking-tight">
               {formatTime(reminder.schedule?.time)}
             </span>
             {reminder.voiceEnabled && (
-              <span className="p-1 bg-indigo-500/20 text-indigo-300 rounded-md" title="Voice assistance enabled">
+              <span className="p-1 bg-memora-accent/20 text-memora-accent rounded-md" title="Voice assistance enabled">
                 <Volume2 className="w-3.5 h-3.5" />
               </span>
             )}
@@ -121,22 +121,22 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
         </div>
 
         {/* Title */}
-        <h3 className={`text-xl font-bold mb-1 line-clamp-1 ${isCompleted ? 'line-through text-slate-400' : 'text-white group-hover:text-indigo-400 transition-colors'}`}>
+        <h3 className={`text-xl font-bold mb-1 line-clamp-1 ${isCompleted ? 'line-through text-memora-text-subtle' : 'text-memora-text group-hover:text-memora-accent transition-colors'}`}>
           {reminder.title}
         </h3>
 
         {/* Description */}
         {reminder.description && (
-          <p className="text-sm text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+          <p className="text-sm text-memora-text-muted line-clamp-2 mb-3 leading-relaxed">
             {reminder.description}
           </p>
         )}
 
         {/* Recurrence & Status Badges */}
-        <div className="flex flex-wrap gap-2 text-xs text-slate-400 mb-4">
+        <div className="flex flex-wrap gap-2 text-xs text-memora-text-muted mb-4">
           {reminder.recurrence ? (
-            <div className="flex items-center space-x-1 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-bold text-slate-300">
-              <Repeat className="w-3 h-3 text-indigo-400" />
+            <div className="flex items-center space-x-1 bg-memora-surface-secondary px-2.5 py-1 rounded-lg border border-memora-border font-bold text-memora-text">
+              <Repeat className="w-3 h-3 text-memora-accent" />
               <span>
                 {reminder.recurrence.frequency}
                 {reminder.recurrence.frequency === 'WEEKLY' && reminder.recurrence.weekdays?.length > 0 && (
@@ -145,7 +145,7 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
               </span>
             </div>
           ) : (
-            <div className="flex items-center space-x-1 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 text-slate-400 font-medium">
+            <div className="flex items-center space-x-1 bg-memora-surface-secondary px-2.5 py-1 rounded-lg border border-memora-border text-memora-text-muted font-medium">
               <span>One-Time</span>
             </div>
           )}
@@ -158,7 +158,7 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
           )}
 
           {isSkipped && (
-            <span className="px-2.5 py-1 bg-slate-800 text-slate-400 text-xs font-bold rounded-lg border border-slate-700 flex items-center space-x-1">
+            <span className="px-2.5 py-1 bg-memora-surface-secondary text-memora-text-muted text-xs font-bold rounded-lg border border-memora-border flex items-center space-x-1">
               <XCircle className="w-3 h-3" />
               <span>SKIPPED</span>
             </span>
@@ -168,7 +168,7 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
 
       {/* Footer Action Buttons */}
       {!isCompleted && !isSkipped && (onComplete || onSkip) && (
-        <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+        <div className="pt-3 border-t border-memora-border flex items-center justify-between gap-2">
           {onComplete && (
             <button
               onClick={handleCompleteClick}
@@ -184,7 +184,7 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
             <button
               onClick={handleSkipClick}
               disabled={acting}
-              className="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-300 hover:text-white font-bold text-sm rounded-xl border border-slate-700 transition-colors"
+              className="py-2.5 px-4 bg-memora-surface-secondary hover:bg-memora-surface-hover disabled:opacity-50 text-memora-text-muted hover:text-memora-text font-bold text-sm rounded-xl border border-memora-border transition-colors"
             >
               <span>Skip</span>
             </button>

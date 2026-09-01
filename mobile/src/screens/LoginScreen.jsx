@@ -30,79 +30,51 @@ export function LoginScreen({ onLoginSuccess }) {
   };
 
   return (
-    <div
-      style={{
-        padding: '28px',
-        backgroundColor: colors.background,
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        maxWidth: '480px',
-        margin: '0 auto',
-      }}
-    >
-      <h1 style={{ fontSize: '32px', color: colors.primary, marginBottom: '24px' }}>Memora Patient Login</h1>
+    <div className="w-full max-w-md mx-auto min-h-screen flex flex-col items-center justify-center p-6 bg-memora-bg">
+      <div className="w-full bg-memora-surface border border-memora-border rounded-3xl p-8 shadow-2xl space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-black text-memora-accent uppercase tracking-wider">Memora Login</h1>
+          <p className="text-sm text-memora-text-muted">Sign in to your Memora patient or caregiver account</p>
+        </div>
 
-      <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {errorMsg && (
-          <div
-            style={{
-              padding: '16px',
-              backgroundColor: '#FEE2E2',
-              color: colors.danger,
-              borderRadius: '12px',
-              fontSize: '18px',
-              fontWeight: 'bold',
-            }}
-          >
-            {errorMsg}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {errorMsg && (
+            <div className="p-4 bg-red-950/40 border border-red-500/40 text-red-300 rounded-2xl text-sm font-bold">
+              {errorMsg}
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-memora-text block">
+              Email Address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="user@memora.com"
+              className="w-full p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text font-medium focus:outline-none focus:border-memora-accent transition-colors"
+            />
           </div>
-        )}
 
-        <div>
-          <label style={{ fontSize: '18px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>
-            Email Address
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{
-              width: '100%',
-              padding: '16px',
-              fontSize: '20px',
-              borderRadius: '10px',
-              border: `2px solid ${colors.border}`,
-              boxSizing: 'border-box',
-            }}
-          />
-        </div>
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-memora-text block">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+              className="w-full p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text font-medium focus:outline-none focus:border-memora-accent transition-colors"
+            />
+          </div>
 
-        <div>
-          <label style={{ fontSize: '18px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>
-            Password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{
-              width: '100%',
-              padding: '16px',
-              fontSize: '20px',
-              borderRadius: '10px',
-              border: `2px solid ${colors.border}`,
-              boxSizing: 'border-box',
-            }}
-          />
-        </div>
-
-        <ElderButton title={submitting ? 'Logging in...' : 'Log In'} onClick={handleSubmit} disabled={submitting} />
-      </form>
+          <ElderButton title={submitting ? 'Logging in...' : 'Log In'} onClick={handleSubmit} disabled={submitting} />
+        </form>
+      </div>
     </div>
   );
 }

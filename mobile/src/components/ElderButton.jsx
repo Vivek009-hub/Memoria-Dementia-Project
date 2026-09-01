@@ -3,45 +3,27 @@
  */
 
 import React from 'react';
-import { colors } from '../theme/colors.js';
-import { typography } from '../theme/typography.js';
 
-export function ElderButton({ title, onClick, variant = 'primary', icon, style = {}, disabled = false }) {
-  let bgColor = colors.primary;
-  let textColor = colors.white;
+export function ElderButton({ title, onClick, variant = 'primary', icon, style = {}, disabled = false, className = '' }) {
+  let variantClasses = 'bg-memora-accent hover:bg-memora-accent-bright text-memora-bg font-black border-transparent';
 
   if (variant === 'danger') {
-    bgColor = colors.danger;
+    variantClasses = 'bg-memora-danger hover:bg-red-600 text-white font-black border-transparent shadow-red-950/40';
   } else if (variant === 'success') {
-    bgColor = colors.success;
-  } else if (variant === 'secondary') {
-    bgColor = colors.cardBg;
-    textColor = colors.textPrimary;
+    variantClasses = 'bg-memora-success hover:bg-emerald-600 text-white font-black border-transparent';
+  } else if (variant === 'secondary' || variant === 'outline') {
+    variantClasses = 'bg-memora-surface hover:bg-memora-surface-hover text-memora-text font-bold border-memora-border';
   }
 
-  const buttonStyle = {
-    minHeight: '64px',
-    padding: '16px 24px',
-    backgroundColor: disabled ? colors.border : bgColor,
-    color: textColor,
-    fontSize: typography.button.fontSize,
-    fontWeight: typography.button.fontWeight,
-    borderRadius: '12px',
-    border: variant === 'secondary' ? `2px solid ${colors.border}` : 'none',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '12px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    width: '100%',
-    textAlign: 'center',
-    ...style,
-  };
-
   return (
-    <button style={buttonStyle} onClick={onClick} disabled={disabled} type="button">
-      {icon && <span style={{ fontSize: '24px' }}>{icon}</span>}
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={style}
+      className={`min-h-[60px] min-w-[60px] px-6 py-4 rounded-2xl border text-lg flex items-center justify-center gap-3 w-full text-center transition-all shadow-lg active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed touch-target-xl ${variantClasses} ${className}`}
+    >
+      {icon && <span className="text-xl flex items-center shrink-0">{icon}</span>}
       <span>{title}</span>
     </button>
   );

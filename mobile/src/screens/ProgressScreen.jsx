@@ -56,41 +56,44 @@ export function ProgressScreen({ patientId }) {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
-      {/* Top Header Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Page Hero Header */}
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-indigo-400 mb-1">
+          <div className="flex items-center space-x-2 text-memora-accent mb-1">
             <BarChart3 className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-wider">Activity Engagement</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Activity & Progress</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-memora-text tracking-tight">Activity & Progress</h1>
+          <p className="text-sm text-memora-text-muted mt-1">
             Track daily routine completion, cognitive activity scores, and community participation.
           </p>
         </div>
 
-        {/* Date Range Selector */}
-        <div className="flex items-center space-x-2 self-start md:self-auto">
-          <span className="text-xs font-bold text-slate-400">Period:</span>
-          <div className="flex items-center bg-slate-950 border border-slate-800 p-1 rounded-2xl space-x-1">
-            {['WEEK', 'MONTH', 'ALL'].map((range) => (
+        {/* Period Selector */}
+        <div className="flex items-center space-x-2 self-start md:self-auto w-full md:w-auto justify-between md:justify-end">
+          <div className="flex items-center bg-memora-surface-secondary border border-memora-border p-1.5 rounded-2xl space-x-1">
+            {[
+              { id: 'WEEK', label: '7 Days' },
+              { id: 'MONTH', label: '30 Days' },
+              { id: 'ALL', label: 'All Time' },
+            ].map((range) => (
               <button
-                key={range}
-                onClick={() => setDateRange(range)}
+                key={range.id}
+                onClick={() => setDateRange(range.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                  dateRange === range
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white'
+                  dateRange === range.id
+                    ? 'bg-memora-accent text-memora-bg shadow-md'
+                    : 'text-memora-text-muted hover:text-memora-text'
                 }`}
               >
-                {range === 'WEEK' ? '7 Days' : range === 'MONTH' ? '30 Days' : 'All Time'}
+                {range.label}
               </button>
             ))}
           </div>
 
           <button
             onClick={fetchProgressData}
-            className="p-2.5 bg-slate-950 border border-slate-800 rounded-2xl text-slate-400 hover:text-white"
+            className="p-2.5 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text-muted hover:text-memora-text transition-colors"
             title="Refresh progress data"
           >
             <RefreshCw className="w-4 h-4" />
@@ -99,14 +102,14 @@ export function ProgressScreen({ patientId }) {
       </div>
 
       {loading ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
-          <RefreshCw className="w-10 h-10 text-indigo-400 animate-spin mx-auto mb-3" />
-          <p className="text-slate-300 font-bold text-lg">Calculating activity progress...</p>
+        <div className="bg-memora-surface border border-memora-border rounded-3xl p-12 text-center shadow-lg">
+          <RefreshCw className="w-10 h-10 text-memora-accent animate-spin mx-auto mb-3" />
+          <p className="text-memora-text font-bold text-lg">Calculating activity progress...</p>
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Key Activity Summary Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Key Activity Summary Grid — Responsive 1-col (mobile), 2-col (tablet), 4-col (desktop) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <ActivityProgressCard
               title="Routine Reminders"
               value={`${reminderPercentage}%`}
@@ -145,21 +148,21 @@ export function ProgressScreen({ patientId }) {
           </div>
 
           {/* Cognitive Activity Trend Panel */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-                <TrendingUp className="w-5 h-5 text-indigo-400" />
+              <h3 className="text-xl font-bold text-memora-text flex items-center space-x-2">
+                <TrendingUp className="w-5 h-5 text-memora-accent" />
                 <span>Cognitive Activity Performance Trend</span>
               </h3>
             </div>
 
-            <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-2">
-              <p className="text-sm text-slate-300 leading-relaxed">
+            <div className="p-5 bg-memora-surface-secondary border border-memora-border rounded-2xl space-y-2">
+              <p className="text-sm text-memora-text leading-relaxed">
                 Activity participation increased during this period. Routine completion rate is currently at{' '}
                 <strong className="text-amber-400">{reminderPercentage}%</strong> with{' '}
-                <strong className="text-indigo-400">{overview?.gamesCompleted || 8} cognitive game sessions</strong> completed.
+                <strong className="text-memora-accent">{overview?.gamesCompleted || 8} cognitive game sessions</strong> completed.
               </p>
-              <p className="text-xs text-slate-500 italic">
+              <p className="text-xs text-memora-text-subtle italic">
                 * Activity trends reflect engagement levels and routine adherence.
               </p>
             </div>

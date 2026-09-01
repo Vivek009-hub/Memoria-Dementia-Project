@@ -153,16 +153,16 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl my-8">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl my-8">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-950/80">
-          <h2 id="modal-title" className="text-xl font-extrabold text-white flex items-center space-x-2">
+        <div className="flex items-center justify-between p-5 border-b border-memora-border bg-memora-surface-secondary">
+          <h2 id="modal-title" className="text-xl font-extrabold text-memora-text flex items-center space-x-2">
             <span>{isEditing ? '✏️ Edit Reminder' : '⏰ Add a Reminder'}</span>
           </h2>
           <button
             onClick={onClose}
             disabled={submitting}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-colors"
+            className="p-2 text-memora-text-muted hover:text-memora-text rounded-xl bg-memora-surface hover:bg-memora-surface-hover transition-colors"
             aria-label="Cancel"
           >
             <X className="w-5 h-5" />
@@ -180,7 +180,7 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
 
           {/* Title */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-memora-text-muted mb-2">
               Reminder Title <span className="text-red-400">*</span>
             </label>
             <input
@@ -190,13 +190,13 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Take morning heart medication"
-              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text font-medium text-base focus:outline-none focus:border-memora-accent transition-colors"
             />
           </div>
 
           {/* Category Type Pills */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-memora-text-muted mb-2">
               Reminder Category <span className="text-red-400">*</span>
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -210,8 +210,8 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
                     onClick={() => setType(item.id)}
                     className={`p-3 rounded-2xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
                       isSelected
-                        ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                        ? 'bg-memora-accent border-memora-accent text-memora-bg font-black shadow-lg'
+                        : 'bg-memora-surface-secondary border-memora-border text-memora-text-muted hover:text-memora-text'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -225,7 +225,7 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
           {/* Time & Timezone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-memora-text-muted mb-2">
                 Time (24-Hour) <span className="text-red-400">*</span>
               </label>
               <input
@@ -233,12 +233,12 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
                 required
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-bold text-lg focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text font-bold text-lg focus:outline-none focus:border-memora-accent transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-memora-text-muted mb-2">
                 Timezone <span className="text-red-400">*</span>
               </label>
               <input
@@ -247,14 +247,14 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
                 placeholder="Asia/Kolkata"
-                className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text font-medium text-base focus:outline-none focus:border-memora-accent transition-colors"
               />
             </div>
           </div>
 
           {/* Recurrence Selection */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-memora-text-muted mb-2">
               Repeat Schedule
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -270,8 +270,8 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
                   onClick={() => setRecurrenceFreq(opt.id)}
                   className={`p-3 rounded-2xl border text-xs font-bold transition-all ${
                     recurrenceFreq === opt.id
-                      ? 'bg-purple-600 border-purple-400 text-white shadow-lg'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                      ? 'bg-memora-accent border-memora-accent text-memora-bg font-black shadow-lg'
+                      : 'bg-memora-surface-secondary border-memora-border text-memora-text-muted hover:text-memora-text'
                   }`}
                 >
                   {opt.label}
@@ -283,7 +283,7 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
           {/* Weekdays picker for WEEKLY recurrence */}
           {recurrenceFreq === 'WEEKLY' && (
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-memora-text-muted mb-2">
                 Select Repeat Days
               </label>
               <div className="flex flex-wrap gap-2">
@@ -296,8 +296,8 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
                       onClick={() => toggleWeekday(day.id)}
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                         isSelected
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-slate-950 border border-slate-800 text-slate-500'
+                          ? 'bg-memora-accent text-memora-bg font-black'
+                          : 'bg-memora-surface-secondary border border-memora-border text-memora-text-subtle'
                       }`}
                     >
                       {day.label}
@@ -310,7 +310,7 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-memora-text-muted mb-2">
               Description / Notes
             </label>
             <textarea
@@ -319,38 +319,38 @@ export function CreateEditReminderModal({ reminder, isOpen, onClose, onSave }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g. Take 1 pill after breakfast with water..."
-              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text font-medium text-base focus:outline-none focus:border-memora-accent transition-colors"
             />
           </div>
 
           {/* Voice Prompt Toggle */}
-          <div className="flex items-center space-x-3 p-4 bg-slate-950 border border-slate-800 rounded-2xl">
+          <div className="flex items-center space-x-3 p-4 bg-memora-surface-secondary border border-memora-border rounded-2xl">
             <input
               type="checkbox"
               id="voiceEnabled"
               checked={voiceEnabled}
               onChange={(e) => setVoiceEnabled(e.target.checked)}
-              className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+              className="w-5 h-5 rounded text-memora-accent focus:ring-memora-accent bg-memora-surface border-memora-border"
             />
-            <label htmlFor="voiceEnabled" className="text-sm font-bold text-slate-200 cursor-pointer">
+            <label htmlFor="voiceEnabled" className="text-sm font-bold text-memora-text cursor-pointer">
               Enable Voice Prompt Announcement
             </label>
           </div>
 
           {/* Footer Save Buttons */}
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-end space-x-3">
+          <div className="pt-4 border-t border-memora-border flex items-center justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-base font-bold rounded-2xl transition-colors"
+              className="px-5 py-3 bg-memora-surface-secondary hover:bg-memora-surface-hover text-memora-text-muted text-base font-bold rounded-2xl transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-base font-extrabold rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
+              className="px-6 py-3 bg-memora-accent hover:bg-memora-accent-bright disabled:opacity-50 text-memora-bg text-base font-extrabold rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
             >
               <Save className="w-5 h-5" />
               <span>{submitting ? 'Saving...' : isEditing ? 'Update Reminder' : 'Add Reminder'}</span>

@@ -70,14 +70,14 @@ export function AdminDashboardScreen() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-indigo-400 mb-1">
-            <ShieldAlert className="w-6 h-6 text-purple-400" />
+          <div className="flex items-center space-x-2 text-memora-accent mb-1">
+            <ShieldAlert className="w-6 h-6 text-memora-accent" />
             <span className="text-xs font-black uppercase tracking-wider">Memora Admin Portal</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Platform Control Center</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-memora-text tracking-tight">Platform Control Center</h1>
+          <p className="text-sm text-memora-text-muted mt-1">
             Manage community voting proposals, approve winner sessions, and configure platform activities.
           </p>
         </div>
@@ -85,7 +85,7 @@ export function AdminDashboardScreen() {
         <div className="flex items-center space-x-2 self-start md:self-auto">
           <button
             onClick={() => setIsProposalModalOpen(true)}
-            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black rounded-2xl shadow-lg flex items-center space-x-2 transition-all"
+            className="px-4 py-2.5 bg-memora-accent hover:bg-memora-accent-bright text-memora-bg text-xs font-black rounded-2xl shadow-lg flex items-center space-x-2 transition-all"
           >
             <PlusCircle className="w-4 h-4" />
             <span>New Proposal</span>
@@ -93,7 +93,7 @@ export function AdminDashboardScreen() {
 
           <button
             onClick={fetchProposalsData}
-            className="p-2.5 bg-slate-950 border border-slate-800 rounded-2xl text-slate-400 hover:text-white"
+            className="p-2.5 bg-memora-surface-secondary border border-memora-border rounded-2xl text-memora-text-muted hover:text-memora-text"
             title="Refresh admin data"
           >
             <RefreshCw className="w-4 h-4" />
@@ -102,13 +102,13 @@ export function AdminDashboardScreen() {
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <div className="flex items-center space-x-2 border-b border-memora-border pb-2">
         <button
           onClick={() => setActiveTab('proposals')}
           className={`px-4 py-2 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
             activeTab === 'proposals'
-              ? 'bg-indigo-600 text-white shadow-lg'
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-memora-accent text-memora-bg shadow-lg'
+              : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface'
           }`}
         >
           <Sparkles className="w-4 h-4" />
@@ -119,8 +119,8 @@ export function AdminDashboardScreen() {
           onClick={() => setActiveTab('schedule')}
           className={`px-4 py-2 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
             activeTab === 'schedule'
-              ? 'bg-indigo-600 text-white shadow-lg'
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-memora-accent text-memora-bg shadow-lg'
+              : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface'
           }`}
         >
           <Calendar className="w-4 h-4" />

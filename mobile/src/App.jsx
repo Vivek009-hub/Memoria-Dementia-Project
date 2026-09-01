@@ -89,35 +89,60 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center p-4 pb-16 font-sans selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-memora-bg text-memora-text flex flex-col items-center p-3 sm:p-6 pb-24 font-sans selection:bg-memora-accent selection:text-memora-bg">
       {/* Header Bar */}
-      <header className="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between py-4 border-b border-slate-800 mb-6 gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl">
-            <BookOpen className="w-7 h-7 text-indigo-400" />
+      <header className="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between py-4 border-b border-memora-border mb-6 gap-4">
+        <div className="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
+          <div className="flex items-center space-x-3">
+            <div className="p-2.5 bg-memora-accent-bg border border-memora-accent/30 rounded-2xl">
+              <BookOpen className="w-7 h-7 text-memora-accent" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black tracking-tight text-memora-text">Memora</h1>
+              <p className="text-xs text-memora-text-muted font-medium">
+                {isAdmin
+                  ? 'Platform Administration Control Center'
+                  : isCaregiver
+                  ? 'Caregiver Authorized Support Hub'
+                  : 'Patient & Caregiver Safety Platform'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-black tracking-tight text-white">Memora</h1>
-            <p className="text-xs text-slate-400 font-medium">
-              {isAdmin
-                ? 'Platform Administration Control Center'
-                : isCaregiver
-                ? 'Caregiver Authorized Support Hub'
-                : 'Patient & Caregiver Safety Platform'}
-            </p>
+
+          {/* Online / Offline Status Badge */}
+          <div className="flex items-center space-x-2">
+            {isOnline ? (
+              <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-full border border-emerald-500/40 flex items-center space-x-1">
+                <Wifi className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">ONLINE</span>
+              </span>
+            ) : (
+              <span className="px-3 py-1 bg-amber-500/20 text-amber-300 text-xs font-bold rounded-full border border-amber-500/40 flex items-center space-x-1">
+                <WifiOff className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">OFFLINE ({pendingQueueCount})</span>
+              </span>
+            )}
+
+            <button
+              onClick={refreshSafetyData}
+              className="p-2 bg-memora-surface border border-memora-border rounded-xl text-memora-text-secondary hover:text-memora-text active:rotate-180 transition-transform"
+              aria-label="Refresh safety data"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Responsive Header Navigation Tabs */}
         {user && (
-          <nav className="flex items-center bg-slate-900 border border-slate-800 p-1.5 rounded-2xl space-x-1 overflow-x-auto">
+          <nav className="w-full sm:w-auto flex items-center bg-memora-surface border border-memora-border p-1.5 rounded-2xl space-x-1 overflow-x-auto no-scrollbar scroll-smooth">
             {isAdmin && (
               <button
                 onClick={() => setActiveTab('admin')}
-                className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+                className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                   activeTab === 'admin'
                     ? 'bg-purple-600 text-white shadow-lg'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
                 }`}
               >
                 <ShieldAlert className="w-4 h-4 text-purple-400" />
@@ -128,10 +153,10 @@ function Dashboard() {
             {isCaregiver && (
               <button
                 onClick={() => setActiveTab('caregiver')}
-                className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+                className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                   activeTab === 'caregiver'
                     ? 'bg-indigo-600 text-white shadow-lg'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
                 }`}
               >
                 <UserCheck className="w-4 h-4 text-emerald-400" />
@@ -141,10 +166,10 @@ function Dashboard() {
 
             <button
               onClick={() => setActiveTab('assistant')}
-              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'assistant'
-                  ? 'bg-indigo-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
+                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
               }`}
             >
               <Bot className="w-4 h-4 text-emerald-400" />
@@ -153,10 +178,10 @@ function Dashboard() {
 
             <button
               onClick={() => setActiveTab('progress')}
-              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'progress'
-                  ? 'bg-indigo-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
+                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
               }`}
             >
               <BarChart3 className="w-4 h-4 text-indigo-400" />
@@ -165,10 +190,10 @@ function Dashboard() {
 
             <button
               onClick={() => setActiveTab('reminders')}
-              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'reminders'
-                  ? 'bg-indigo-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
+                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
               }`}
             >
               <Clock className="w-4 h-4 text-amber-400" />
@@ -177,10 +202,10 @@ function Dashboard() {
 
             <button
               onClick={() => setActiveTab('memories')}
-              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'memories'
-                  ? 'bg-indigo-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
+                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
               }`}
             >
               <BookOpen className="w-4 h-4 text-indigo-400" />
@@ -189,10 +214,10 @@ function Dashboard() {
 
             <button
               onClick={() => setActiveTab('community')}
-              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'community'
-                  ? 'bg-indigo-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
+                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
               }`}
             >
               <Users className="w-4 h-4 text-purple-400" />
@@ -201,10 +226,10 @@ function Dashboard() {
 
             <button
               onClick={() => setActiveTab('notifications')}
-              className={`relative px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+              className={`relative px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'notifications'
-                  ? 'bg-indigo-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
+                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
               }`}
             >
               <Bell className="w-4 h-4 text-indigo-400" />
@@ -218,10 +243,10 @@ function Dashboard() {
 
             <button
               onClick={() => setActiveTab('safety')}
-              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'safety'
                   ? 'bg-red-600 text-white shadow-lg'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
               }`}
             >
               <Shield className="w-4 h-4 text-red-400" />
@@ -229,29 +254,6 @@ function Dashboard() {
             </button>
           </nav>
         )}
-
-        {/* Online / Offline Status Badge */}
-        <div className="flex items-center space-x-2">
-          {isOnline ? (
-            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-full border border-emerald-500/40 flex items-center space-x-1">
-              <Wifi className="w-3.5 h-3.5" />
-              <span>ONLINE</span>
-            </span>
-          ) : (
-            <span className="px-3 py-1 bg-amber-500/20 text-amber-300 text-xs font-bold rounded-full border border-amber-500/40 flex items-center space-x-1">
-              <WifiOff className="w-3.5 h-3.5" />
-              <span>OFFLINE ({pendingQueueCount})</span>
-            </span>
-          )}
-
-          <button
-            onClick={refreshSafetyData}
-            className="p-2 bg-slate-900 border border-slate-800 rounded-xl text-slate-300 hover:text-white active:rotate-180 transition-transform"
-            aria-label="Refresh safety data"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
-        </div>
       </header>
 
       {/* Patient / Caregiver / Admin Auth Check */}

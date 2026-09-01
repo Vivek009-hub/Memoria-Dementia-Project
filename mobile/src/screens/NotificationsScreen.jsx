@@ -106,14 +106,14 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-indigo-400 mb-1">
+          <div className="flex items-center space-x-2 text-memora-accent mb-1">
             <Bell className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-wider">Activity & Notifications</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Notification Center</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-memora-text tracking-tight">Notification Center</h1>
+          <p className="text-sm text-memora-text-muted mt-1">
             View important updates, reminders, and community alerts.
           </p>
         </div>
@@ -121,7 +121,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setPrefModalOpen(true)}
-            className="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm rounded-2xl border border-slate-700 flex items-center space-x-2 transition-all"
+            className="px-4 py-3 bg-memora-surface-secondary hover:bg-memora-surface-hover text-memora-text-secondary font-bold text-sm rounded-2xl border border-memora-border flex items-center space-x-2 transition-all"
           >
             <Settings className="w-4 h-4" />
             <span>Settings</span>
@@ -130,7 +130,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
           <button
             onClick={handleMarkAllRead}
             disabled={markingAll || unreadCount === 0}
-            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
+            className="px-5 py-3 bg-memora-accent hover:bg-memora-accent-bright disabled:opacity-40 text-memora-bg font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
           >
             <CheckCheck className="w-4 h-4" />
             <span>Mark All Read</span>
@@ -139,30 +139,28 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
       </div>
 
       {/* Filter Tabs Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-3 shadow-lg flex items-center justify-between">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-3 shadow-lg flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setFilterUnread(false)}
-            className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold transition-all ${
-              !filterUnread
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-            }`}
+            className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold transition-all ${!filterUnread
+                ? 'bg-memora-accent text-memora-bg shadow-md'
+                : 'bg-memora-surface-secondary text-memora-text-muted hover:text-memora-text border border-memora-border'
+              }`}
           >
             All Notifications
           </button>
 
           <button
             onClick={() => setFilterUnread(true)}
-            className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${
-              filterUnread
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-            }`}
+            className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold flex items-center space-x-1.5 transition-all ${filterUnread
+                ? 'bg-memora-accent text-memora-bg shadow-md'
+                : 'bg-memora-surface-secondary text-memora-text-muted hover:text-memora-text border border-memora-border'
+              }`}
           >
             <span>Unread</span>
             {unreadCount > 0 && (
-              <span className="px-2 py-0.5 bg-indigo-400 text-slate-950 font-black text-[10px] rounded-full">
+              <span className="px-2 py-0.5 bg-red-500 text-white font-black text-[10px] rounded-full">
                 {unreadCount}
               </span>
             )}
@@ -171,7 +169,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
 
         <button
           onClick={fetchNotifications}
-          className="p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors"
+          className="p-2.5 bg-memora-surface-secondary border border-memora-border rounded-xl text-memora-text-muted hover:text-memora-text transition-colors"
           title="Refresh notifications"
         >
           <RefreshCw className="w-4 h-4" />

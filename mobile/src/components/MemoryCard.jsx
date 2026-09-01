@@ -53,7 +53,7 @@ export function MemoryCard({ memory, onSelect }) {
   return (
     <div
       onClick={() => onSelect && onSelect(memory)}
-      className="group relative bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-2xl p-4 shadow-lg transition-all cursor-pointer flex flex-col justify-between"
+      className="group relative bg-memora-surface border border-memora-border hover:border-memora-accent/50 rounded-2xl p-4 shadow-lg transition-all cursor-pointer flex flex-col justify-between"
       role="button"
       tabIndex={0}
       aria-label={`Open memory: ${memory.title}`}
@@ -66,7 +66,7 @@ export function MemoryCard({ memory, onSelect }) {
     >
       <div>
         {/* Media Thumbnail Container */}
-        <div className="w-full h-44 bg-slate-950 rounded-xl overflow-hidden mb-3 border border-slate-800 relative flex items-center justify-center">
+        <div className="w-full h-44 bg-memora-surface-secondary rounded-xl overflow-hidden mb-3 border border-memora-border relative flex items-center justify-center">
           {memory.mediaUrl || memory.thumbnailUrl ? (
             !imageError ? (
               <img
@@ -76,15 +76,15 @@ export function MemoryCard({ memory, onSelect }) {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center text-slate-500 p-4">
+              <div className="flex flex-col items-center justify-center text-memora-text-muted p-4">
                 <Image className="w-10 h-10 mb-1 stroke-1" />
                 <span className="text-xs">Photo unavailable</span>
               </div>
             )
           ) : (
-            <div className="flex flex-col items-center justify-center text-slate-500 p-4">
-              <TypeIcon className="w-12 h-12 stroke-1 text-slate-600 mb-1" />
-              <span className="text-xs uppercase font-bold tracking-wider text-slate-500">{memory.type}</span>
+            <div className="flex flex-col items-center justify-center text-memora-text-muted p-4">
+              <TypeIcon className="w-12 h-12 stroke-1 text-memora-text-subtle mb-1" />
+              <span className="text-xs uppercase font-bold tracking-wider text-memora-text-subtle">{memory.type}</span>
             </div>
           )}
 
@@ -96,28 +96,28 @@ export function MemoryCard({ memory, onSelect }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-white mb-1 line-clamp-1 group-hover:text-indigo-400 transition-colors">
+        <h3 className="text-lg font-bold text-memora-text mb-1 line-clamp-1 group-hover:text-memora-accent transition-colors">
           {memory.title}
         </h3>
 
         {/* Short Description */}
         {memory.description && (
-          <p className="text-sm text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+          <p className="text-sm text-memora-text-muted line-clamp-2 mb-3 leading-relaxed">
             {memory.description}
           </p>
         )}
 
         {/* Metadata pills (Date, Place) */}
-        <div className="flex flex-wrap gap-2 text-xs text-slate-400 mb-2">
+        <div className="flex flex-wrap gap-2 text-xs text-memora-text-muted mb-2">
           {formattedDate && (
-            <div className="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-md border border-slate-800">
-              <Calendar className="w-3 h-3 text-slate-500" />
+            <div className="flex items-center space-x-1 bg-memora-surface-secondary px-2 py-1 rounded-md border border-memora-border">
+              <Calendar className="w-3 h-3 text-memora-text-subtle" />
               <span>{formattedDate}</span>
             </div>
           )}
           {memory.relatedPlace && (
-            <div className="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-md border border-slate-800 line-clamp-1">
-              <MapPin className="w-3 h-3 text-slate-500" />
+            <div className="flex items-center space-x-1 bg-memora-surface-secondary px-2 py-1 rounded-md border border-memora-border line-clamp-1">
+              <MapPin className="w-3 h-3 text-memora-text-subtle" />
               <span>{memory.relatedPlace}</span>
             </div>
           )}
@@ -125,7 +125,7 @@ export function MemoryCard({ memory, onSelect }) {
       </div>
 
       {/* Footer Open Button */}
-      <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-indigo-400 font-bold text-sm">
+      <div className="pt-2 border-t border-memora-border flex items-center justify-between text-memora-accent font-bold text-sm">
         <span>View Details</span>
         <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
       </div>

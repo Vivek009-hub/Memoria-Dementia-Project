@@ -1,18 +1,21 @@
 /**
- * colors.js — High-Contrast Accessible Color Palette for Elders
+ * colors.js — Memora High-Contrast Dark & Gold Design Tokens
  */
 
 export const colors = {
-  primary: '#1E40AF',     // High contrast deep blue
-  primaryHover: '#1E3A8A',
-  danger: '#DC2626',      // Prominent emergency red
-  dangerHover: '#B91C1C',
-  success: '#166534',     // Clear positive green
-  warning: '#D97706',     // Amber alert
-  background: '#F8FAFC',  // Clean light background
-  cardBg: '#FFFFFF',
-  textPrimary: '#0F172A', // Dark charcoal text (contrast ratio > 7:1)
-  textSecondary: '#475569',
-  border: '#CBD5E1',
+  primary: '#D8B24C',           // Memora Gold Accent
+  primaryHover: '#F0C75E',      // Bright Gold
+  danger: '#D95C5C',           // Emergency / Danger Red
+  dangerHover: '#E8688A',
+  success: '#45B982',          // Positive Green
+  warning: '#E5A83B',          // Warning Amber
+  background: '#151515',       // Deep Dark Background
+  surface: '#202020',          // Elevated Card Surface
+  surfaceSecondary: '#242424', // Secondary Surface
+  cardBg: '#202020',
+  textPrimary: '#F5F5F0',      // Soft Off-White Text
+  textSecondary: '#A7A7A2',    // Muted Text
+  textMuted: '#A7A7A2',
+  border: '#343434',           // Subtle Dark Border
   white: '#FFFFFF',
 };

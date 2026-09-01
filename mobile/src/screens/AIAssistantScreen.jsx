@@ -250,14 +250,14 @@ export function AIAssistantScreen({ onNavigate }) {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-5">
       {/* Top Header & Companion Status Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-emerald-400 mb-1">
+          <div className="flex items-center space-x-2 text-memora-accent mb-1">
             <Bot className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-wider">Memora Voice Companion</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">AI Companion</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-memora-text tracking-tight">AI Companion</h1>
+          <p className="text-sm text-memora-text-muted mt-1">
             Speak naturally to ask about your routine, set reminders, or talk about memories.
           </p>
         </div>
@@ -269,7 +269,7 @@ export function AIAssistantScreen({ onNavigate }) {
           <select
             value={selectedLang}
             onChange={(e) => setSelectedLang(e.target.value)}
-            className="p-2.5 bg-slate-950 border border-slate-800 rounded-2xl text-xs font-bold text-white focus:outline-none focus:border-indigo-500"
+            className="p-2.5 bg-memora-surface-secondary border border-memora-border rounded-2xl text-xs font-bold text-memora-text focus:outline-none focus:border-memora-accent"
           >
             <option value="en">English</option>
             <option value="hi">हिंदी (Hindi)</option>
@@ -278,19 +278,19 @@ export function AIAssistantScreen({ onNavigate }) {
       </div>
 
       {/* Bluetooth Earbuds Guidance Banner */}
-      <div className="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-xs text-indigo-200">
+      <div className="bg-memora-surface-secondary border border-memora-border rounded-2xl p-4 flex items-center justify-between gap-3 text-xs text-memora-text-secondary">
         <div className="flex items-center space-x-2.5">
-          <Headphones className="w-5 h-5 text-indigo-400 shrink-0" />
+          <Headphones className="w-5 h-5 text-memora-accent shrink-0" />
           <span>
-            <strong>Bluetooth Earbuds:</strong> Connect your Bluetooth earbuds to your phone for comfortable hands-free audio.
+            <strong className="text-memora-text">Bluetooth Earbuds:</strong> Connect your Bluetooth earbuds to your phone for comfortable hands-free audio.
           </span>
         </div>
         <button
           onClick={() => setSpeakEnabled(!speakEnabled)}
-          className={`px-3 py-1.5 rounded-xl border font-extrabold flex items-center space-x-1.5 transition-all ${
+          className={`px-3.5 py-2 rounded-xl border font-extrabold flex items-center space-x-1.5 transition-all ${
             speakEnabled
-              ? 'bg-indigo-600 border-indigo-400 text-white shadow'
-              : 'bg-slate-950 border-slate-800 text-slate-400'
+              ? 'bg-memora-accent text-memora-bg border-memora-accent-bright shadow'
+              : 'bg-memora-surface border-memora-border text-memora-text-muted'
           }`}
         >
           {speakEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -299,7 +299,7 @@ export function AIAssistantScreen({ onNavigate }) {
       </div>
 
       {/* Main Big Voice Microphone Controller */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl text-center space-y-4">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl text-center space-y-4">
         <div className="flex justify-center">
           <button
             onClick={toggleSpeechRecognition}
@@ -308,7 +308,7 @@ export function AIAssistantScreen({ onNavigate }) {
               companionState === COMPANION_STATES.LISTENING
                 ? 'bg-red-600 text-white border-4 border-red-300 animate-pulse shadow-red-600/60 ring-8 ring-red-500/20'
                 : companionState === COMPANION_STATES.SPEAKING
-                ? 'bg-indigo-600 text-white border-4 border-indigo-300 ring-8 ring-indigo-500/20 animate-bounce'
+                ? 'bg-memora-accent text-memora-bg border-4 border-memora-accent-bright ring-8 ring-memora-accent/20 animate-bounce'
                 : 'bg-emerald-600 hover:bg-emerald-500 text-white border-4 border-emerald-400 shadow-emerald-600/40'
             }`}
             aria-label="Tap to speak with Memora"
@@ -324,7 +324,7 @@ export function AIAssistantScreen({ onNavigate }) {
         </div>
 
         <div>
-          <p className="text-lg font-black text-white tracking-wide">
+          <p className="text-lg font-black text-memora-text tracking-wide">
             {companionState === COMPANION_STATES.LISTENING
               ? 'Listening to you... Tap when done'
               : companionState === COMPANION_STATES.SPEAKING
@@ -333,15 +333,15 @@ export function AIAssistantScreen({ onNavigate }) {
               ? 'Thinking...'
               : 'Tap Microphone to Speak'}
           </p>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-memora-text-muted mt-0.5">
             Try saying: "Remind me to turn off the stove in 15 minutes" or "What is my routine today?"
           </p>
         </div>
       </div>
 
       {/* Quick Reminder / Routine Prompts */}
-      <div className="flex items-center space-x-2 overflow-x-auto pb-1">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider shrink-0">Try saying:</span>
+      <div className="flex items-center space-x-2 overflow-x-auto pb-1 no-scrollbar">
+        <span className="text-xs font-bold text-memora-text-subtle uppercase tracking-wider shrink-0">Try saying:</span>
         {[
           'Remind me to turn off the stove in 15 minutes',
           'What is my routine today?',
@@ -351,7 +351,7 @@ export function AIAssistantScreen({ onNavigate }) {
           <button
             key={i}
             onClick={() => handleSendMessage(prompt)}
-            className="px-3.5 py-2 bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-2xl text-xs font-medium text-slate-300 hover:text-white transition-all whitespace-nowrap"
+            className="px-3.5 py-2 bg-memora-surface border border-memora-border hover:border-memora-accent/50 rounded-2xl text-xs font-medium text-memora-text-secondary hover:text-memora-text transition-all whitespace-nowrap"
           >
             {prompt}
           </button>
@@ -367,7 +367,7 @@ export function AIAssistantScreen({ onNavigate }) {
           </div>
           <button
             onClick={() => setErrorDetails('')}
-            className="text-slate-400 hover:text-white font-bold text-xs"
+            className="text-memora-text-muted hover:text-memora-text font-bold text-xs"
           >
             Dismiss
           </button>
@@ -375,7 +375,7 @@ export function AIAssistantScreen({ onNavigate }) {
       )}
 
       {/* Conversation Thread */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 min-h-[300px] max-h-[450px] overflow-y-auto">
+      <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl space-y-4 min-h-[300px] max-h-[450px] overflow-y-auto">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -384,8 +384,8 @@ export function AIAssistantScreen({ onNavigate }) {
             <div
               className={`max-w-[85%] rounded-3xl p-5 shadow-md space-y-2 ${
                 msg.sender === 'user'
-                  ? 'bg-indigo-600 text-white rounded-br-none'
-                  : 'bg-slate-950 border border-slate-800 text-slate-100 rounded-bl-none'
+                  ? 'bg-memora-accent text-memora-bg font-medium rounded-br-none'
+                  : 'bg-memora-surface-secondary border border-memora-border text-memora-text rounded-bl-none'
               }`}
             >
               <div className="flex items-center justify-between text-xs opacity-75 mb-1">
@@ -394,7 +394,7 @@ export function AIAssistantScreen({ onNavigate }) {
               </div>
               <p className="text-base leading-relaxed">{msg.text}</p>
               {msg.toolsUsed && msg.toolsUsed.length > 0 && (
-                <div className="flex items-center space-x-1.5 text-[11px] text-emerald-400 font-mono mt-1 pt-1 border-t border-slate-800/60">
+                <div className="flex items-center space-x-1.5 text-[11px] text-emerald-400 font-mono mt-1 pt-1 border-t border-memora-border/60">
                   <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                   <span>Action: {msg.toolsUsed.join(', ')}</span>
                 </div>
@@ -405,7 +405,7 @@ export function AIAssistantScreen({ onNavigate }) {
 
         {companionState === COMPANION_STATES.PROCESSING && (
           <div className="flex justify-start">
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-4 text-slate-400 text-sm font-bold flex items-center space-x-2">
+            <div className="bg-memora-surface-secondary border border-memora-border rounded-3xl p-4 text-memora-text-muted text-sm font-bold flex items-center space-x-2">
               <RefreshCw className="w-4 h-4 animate-spin text-emerald-400" />
               <span>Memora is thinking...</span>
             </div>
@@ -421,19 +421,19 @@ export function AIAssistantScreen({ onNavigate }) {
           e.preventDefault();
           handleSendMessage();
         }}
-        className="flex items-center space-x-3 bg-slate-900 border border-slate-800 p-2.5 rounded-3xl shadow-xl"
+        className="flex items-center space-x-3 bg-memora-surface border border-memora-border p-2.5 rounded-3xl shadow-xl"
       >
         <input
           type="text"
           value={inputQuery}
           onChange={(e) => setInputQuery(e.target.value)}
           placeholder="Or type a message to Memora..."
-          className="flex-1 p-3 bg-transparent text-white font-medium text-base focus:outline-none placeholder-slate-500"
+          className="flex-1 p-3 bg-transparent text-memora-text font-medium text-base focus:outline-none placeholder-memora-text-subtle"
         />
         <button
           type="submit"
           disabled={!inputQuery.trim() || companionState === COMPANION_STATES.PROCESSING}
-          className="p-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-2xl shadow-lg transition-all touch-target-xl"
+          className="p-4 bg-memora-accent hover:bg-memora-accent-bright disabled:opacity-40 text-memora-bg font-bold rounded-2xl shadow-lg transition-all touch-target-xl"
         >
           <Send className="w-5 h-5" />
         </button>
