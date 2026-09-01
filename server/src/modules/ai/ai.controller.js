@@ -7,6 +7,7 @@ import {
   validateMemoryAssistantInput,
   validateMemorySearchInput,
   validateChatInput,
+  validateCompanionChatInput,
 } from './ai.validation.js';
 
 export async function askMemoryAssistant(req, res, next) {
@@ -51,6 +52,18 @@ export async function getRecommendations(req, res, next) {
 export async function getUsage(req, res, next) {
   try {
     const result = await aiService.getAIUsageStats(req.user);
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// ── Prompt 1: Gemini Agent companion chat ────────────────────────────────────
+
+export async function companionChat(req, res, next) {
+  try {
+    validateCompanionChatInput(req.body);
+    const result = await aiService.companionChat(req.user, req.body);
     res.status(200).json({ success: true, data: result });
   } catch (err) {
     next(err);

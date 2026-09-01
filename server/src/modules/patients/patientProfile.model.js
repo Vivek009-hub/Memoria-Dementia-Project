@@ -31,6 +31,18 @@ const patientProfileSchema = new mongoose.Schema(
       fallDetectionEnabled: { type: Boolean, default: false },
       sosEnabled: { type: Boolean, default: true },
     },
+    companionSettings: {
+      quietHours: {
+        enabled: { type: Boolean, default: true },
+        start: { type: String, default: '22:00' },
+        end: { type: String, default: '07:00' },
+      },
+      interactionFrequency: {
+        type: String,
+        enum: ['LOW', 'MEDIUM', 'HIGH'],
+        default: 'MEDIUM',
+      },
+    },
   },
   {
     timestamps: true,

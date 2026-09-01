@@ -3,6 +3,8 @@
  *
  * Coordinates memory retrieval, guardrail safety checks, provider abstraction,
  * prompt management, and interaction audit logging.
+ *
+ * New in Prompt 1: companionChat() delegates to the Gemini agentic agent.
  */
 
 import mockAIProvider from './mockAIProvider.js';
@@ -24,6 +26,10 @@ import { buildMemoryAssistantSystemPrompt } from './prompts/memoryAssistant.prom
 import { buildChatSystemPrompt } from './prompts/chat.prompt.js';
 import { buildRecommendationsSystemPrompt } from './prompts/recommendations.prompt.js';
 import { AppError } from '../../utils/AppError.js';
+
+// ── Prompt 1: Gemini Agent companion chat ────────────────────────────────────
+export { companionChat } from './agent/agent.service.js';
+// ─────────────────────────────────────────────────────────────────────────────
 
 function getAIProvider(_providerName = 'mock') {
   return mockAIProvider;
