@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Mic, MicOff, Sparkles, Volume2, VolumeX } from 'lucide-react';
+import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 
 export function VoiceAssistantBar({
   onVoiceInput,
@@ -89,33 +89,33 @@ export function VoiceAssistantBar({
     >
       {/* Floating Audio Feedback / Transcript Tooltip */}
       {(isListening || liveTranscript || voiceStatus === 'Processing...') && (
-        <div className="bg-slate-900/95 backdrop-blur-xl border border-indigo-500/40 rounded-3xl p-4 shadow-2xl max-w-xs sm:max-w-sm text-white animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="flex items-center justify-between space-x-3 mb-2 border-b border-slate-800 pb-2">
+        <div className="bg-[#1B1B1B] border border-[#343434] rounded-xl p-4 shadow-xl max-w-xs sm:max-w-sm text-[#E8E8E8] transition-all">
+          <div className="flex items-center justify-between space-x-3 mb-2 border-b border-[#343434] pb-2">
             <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-[#DDBB55] animate-pulse" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#DDBB55]">
                 {voiceStatus}
               </span>
             </div>
             {isListening && (
               <div className="flex items-center space-x-1">
-                <span className="w-1.5 h-4 bg-emerald-400 rounded-full animate-bounce" />
-                <span className="w-1.5 h-6 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.15s]" />
-                <span className="w-1.5 h-3 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.3s]" />
+                <span className="w-1 h-3 bg-[#DDBB55] rounded-full animate-bounce" />
+                <span className="w-1 h-4 bg-[#DDBB55] rounded-full animate-bounce [animation-delay:0.15s]" />
+                <span className="w-1 h-2 bg-[#DDBB55] rounded-full animate-bounce [animation-delay:0.3s]" />
               </div>
             )}
           </div>
 
-          <p className="text-sm font-medium text-slate-200 min-h-[2.5rem] italic">
+          <p className="text-xs text-[#A0A0A0] min-h-[2rem] italic">
             {liveTranscript
               ? `"${liveTranscript}"`
               : isListening
-              ? 'Speak your question clearly...'
-              : 'Processing your voice request...'}
+              ? 'Speak clearly...'
+              : 'Processing request...'}
           </p>
 
-          <div className="mt-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
-            <span>Memora Voice AI</span>
+          <div className="mt-2 text-[10px] text-[#747474] font-medium uppercase tracking-wider flex items-center justify-between">
+            <span>Memora Voice Assistant</span>
             <span>Tap mic to stop</span>
           </div>
         </div>
@@ -123,32 +123,29 @@ export function VoiceAssistantBar({
 
       {/* Floating Microphone Action Button */}
       <div className="relative group">
-        {/* Pulsing ring animation when active */}
+        {/* Subtle pulsing ring animation when active */}
         {isListening && (
-          <>
-            <span className="absolute -inset-2 rounded-full bg-emerald-500/40 animate-ping pointer-events-none" />
-            <span className="absolute -inset-4 rounded-full bg-emerald-500/20 animate-pulse pointer-events-none" />
-          </>
+          <span className="absolute -inset-2 rounded-full bg-[#DDBB55]/20 animate-ping pointer-events-none" />
         )}
 
         <button
           onClick={toggleListening}
-          className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-full flex flex-col items-center justify-center shadow-2xl transition-all transform hover:scale-105 active:scale-95 border-4 touch-target-xl ${
+          className={`relative w-16 h-16 sm:w-18 sm:h-18 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-150 transform hover:scale-105 active:scale-95 border-2 ${
             isListening
-              ? 'bg-gradient-to-br from-red-600 via-rose-600 to-pink-700 border-rose-300 text-white shadow-rose-600/60 animate-pulse'
-              : 'bg-gradient-to-br from-emerald-600 via-teal-600 to-indigo-700 border-emerald-300 text-white shadow-emerald-600/50 hover:shadow-emerald-500/70'
+              ? 'bg-[#C95C5C] border-[#E88888] text-[#1E1E1E]'
+              : 'bg-[#DDBB55] hover:bg-[#E8C968] border-[#E8C968] text-[#1E1E1E]'
           }`}
           aria-label={isListening ? 'Stop voice recording' : 'Tap to speak'}
           title={isListening ? 'Stop voice recording' : 'Tap to speak'}
         >
           {isListening ? (
-            <MicOff className="w-8 h-8 sm:w-9 sm:h-9 animate-bounce" />
+            <MicOff className="w-6 h-6" />
           ) : (
-            <Mic className="w-8 h-8 sm:w-9 sm:h-9" />
+            <Mic className="w-6 h-6" />
           )}
 
-          <span className="text-[11px] sm:text-xs font-black uppercase tracking-tight mt-0.5 text-center leading-none px-1">
-            {isListening ? 'Stop' : 'Tap to speak'}
+          <span className="text-[10px] font-semibold uppercase tracking-tight mt-0.5 text-center leading-none">
+            {isListening ? 'Stop' : 'Speak'}
           </span>
         </button>
       </div>
@@ -157,15 +154,15 @@ export function VoiceAssistantBar({
       {setSpeakEnabled && (
         <button
           onClick={() => setSpeakEnabled(!speakEnabled)}
-          className={`px-3 py-1.5 rounded-full border text-[11px] font-bold flex items-center space-x-1.5 backdrop-blur-md shadow-lg transition-colors ${
+          className={`px-3 py-1 rounded-md border text-[11px] font-medium flex items-center space-x-1.5 shadow-md transition-colors ${
             speakEnabled
-              ? 'bg-indigo-900/80 border-indigo-500/50 text-indigo-200'
-              : 'bg-slate-900/80 border-slate-800 text-slate-400'
+              ? 'bg-[#252525] border-[#343434] text-[#DDBB55]'
+              : 'bg-[#1B1B1B] border-[#343434] text-[#747474]'
           }`}
           title={speakEnabled ? 'Mute AI voice responses' : 'Enable AI voice responses'}
         >
           {speakEnabled ? (
-            <Volume2 className="w-3.5 h-3.5 text-indigo-400" />
+            <Volume2 className="w-3.5 h-3.5 text-[#DDBB55]" />
           ) : (
             <VolumeX className="w-3.5 h-3.5" />
           )}
@@ -175,3 +172,4 @@ export function VoiceAssistantBar({
     </aside>
   );
 }
+

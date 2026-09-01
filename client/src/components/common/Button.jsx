@@ -9,20 +9,20 @@ export function Button({
   className = '',
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none touch-target';
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-colors duration-150 disabled:opacity-50 disabled:pointer-events-none touch-target';
 
   const variants = {
-    primary: 'bg-brand-600 hover:bg-brand-500 text-white shadow-lg shadow-brand-900/30 border border-brand-500/30',
-    secondary: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700',
-    danger: 'bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-950/40 border border-red-500/30',
-    outline: 'bg-transparent hover:bg-slate-800 text-slate-200 border border-slate-700',
+    primary: 'bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] shadow-sm',
+    secondary: 'bg-[#252525] hover:bg-[#2A2A2A] text-[#E8E8E8] border border-[#343434]',
+    danger: 'bg-[#C95C5C] hover:bg-[#D96C6C] text-[#FFFFFF]',
+    outline: 'bg-transparent hover:bg-[#252525] text-[#E8E8E8] border border-[#343434]',
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2.5 text-base',
-    lg: 'px-6 py-3.5 text-lg',
-    xl: 'px-8 py-4 text-xl touch-target-xl',
+    sm: 'px-3 py-1.5 text-xs',
+    md: 'px-4 py-2 text-sm',
+    lg: 'px-5 py-2.5 text-base',
+    xl: 'px-6 py-3 text-lg',
   };
 
   return (
@@ -32,9 +32,10 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <span className="inline-block w-5 h-5 border-2 border-current border-r-transparent rounded-full animate-spin mr-2" />
+        <span className="inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full animate-spin mr-2" />
       ) : null}
       {children}
     </button>
   );
 }
+

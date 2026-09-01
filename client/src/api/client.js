@@ -15,7 +15,7 @@ export class ApiError extends Error {
 const ERROR_MESSAGE_MAP = {
   SAFETY_EVENT_ALREADY_RESOLVED: 'This safety alert has already been handled.',
   UNAUTHORIZED: 'Please log in to continue.',
-  FORBIDDEN: 'You are not authorized to perform this action.',
+  FORBIDDEN: 'You do not have permission to access this resource.',
   RATE_LIMIT_EXCEEDED: 'Too many requests. Please try again in a moment.',
   NOT_FOUND: 'The requested information was not found.',
   NETWORK_ERROR: 'No internet connection.',
@@ -81,9 +81,11 @@ export class ApiClient {
 
       clearTimeout(timeoutId);
 
-      const contentType = response.headers.get('content-type');
+      const contentType = response?.headers?.get ? response.headers.get('content-type') : null;
       let data = {};
       if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else if (typeof response.json === 'function') {
         data = await response.json();
       }
 

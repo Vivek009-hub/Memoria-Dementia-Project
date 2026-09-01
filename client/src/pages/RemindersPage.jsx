@@ -110,15 +110,16 @@ export function RemindersPage({ patientId }) {
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header */}
+      <div className="bg-[#252525] border border-[#343434] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-amber-400 mb-1">
-            <Clock className="w-6 h-6" />
-            <span className="text-xs font-black uppercase tracking-wider">Routine Companion</span>
+          <div className="flex items-center space-x-2 text-[#DDBB55] mb-1">
+            <Clock className="w-5 h-5" />
+            <span className="text-xs font-semibold uppercase tracking-wider">Routine Schedule</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Smart Reminders</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Stay on track with daily medications, meals, appointments, and routine activities.
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#E8E8E8] tracking-tight">Today's Reminders</h1>
+          <p className="text-sm text-[#A0A0A0] mt-1">
+            View scheduled medications, meals, appointments, and daily routines.
           </p>
         </div>
 
@@ -127,23 +128,24 @@ export function RemindersPage({ patientId }) {
             setReminderToEdit(null);
             setCreateEditModalOpen(true);
           }}
-          className="px-5 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl self-start md:self-auto"
+          className="px-4 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg shadow-sm flex items-center space-x-2 transition-colors self-start md:self-auto"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           <span>Add Reminder</span>
         </button>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Type Filters & Date Selector */}
+      <div className="bg-[#252525] border border-[#343434] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
           {TYPE_FILTERS.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setSelectedType(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
                 selectedType === cat.id
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#DDBB55] text-[#1E1E1E] font-semibold'
+                  : 'bg-[#1E1E1E] border border-[#343434] text-[#A0A0A0] hover:text-[#E8E8E8]'
               }`}
             >
               {cat.label}
@@ -152,45 +154,45 @@ export function RemindersPage({ patientId }) {
         </div>
 
         <div className="flex items-center space-x-2 shrink-0">
-          <Calendar className="w-4 h-4 text-slate-400" />
+          <Calendar className="w-4 h-4 text-[#747474]" />
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500"
+            className="bg-[#1E1E1E] border border-[#343434] text-[#E8E8E8] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#DDBB55]"
           />
         </div>
       </div>
 
       {loading ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
-          <RefreshCw className="w-10 h-10 text-amber-400 animate-spin mx-auto mb-3" />
-          <p className="text-slate-300 font-bold text-lg">Loading routine schedule...</p>
+        <div className="bg-[#252525] border border-[#343434] rounded-xl p-12 text-center">
+          <RefreshCw className="w-8 h-8 text-[#DDBB55] animate-spin mx-auto mb-3" />
+          <p className="text-[#A0A0A0] text-sm">Loading routine schedule...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-slate-900 border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
-          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
+        <div className="bg-[#252525] border border-[#C95C5C]/30 rounded-xl p-8 text-center space-y-4">
+          <AlertTriangle className="w-10 h-10 text-[#C95C5C] mx-auto" />
           <div>
-            <h3 className="text-xl font-bold text-white mb-1">Could Not Load Reminders</h3>
-            <p className="text-sm text-slate-400">{errorMsg}</p>
+            <h3 className="text-lg font-semibold text-[#E8E8E8] mb-1">Could Not Load Reminders</h3>
+            <p className="text-sm text-[#A0A0A0]">{errorMsg}</p>
           </div>
           <button
             onClick={fetchReminders}
-            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl border border-slate-700 transition-all inline-flex items-center space-x-2"
+            className="px-4 py-2 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-[#E8E8E8] font-medium text-sm rounded-lg border border-[#343434] transition-colors inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
           </button>
         </div>
       ) : reminders.length === 0 ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg space-y-4">
-          <div className="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center mx-auto text-amber-400">
-            <Clock className="w-10 h-10" />
+        <div className="bg-[#252525] border border-[#343434] rounded-xl p-12 text-center space-y-4">
+          <div className="w-16 h-16 bg-[#DDBB55]/10 border border-[#DDBB55]/20 rounded-full flex items-center justify-center mx-auto text-[#DDBB55]">
+            <Clock className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="text-2xl font-black text-white mb-2">No Reminders Scheduled</h3>
-            <p className="text-slate-400 max-w-md mx-auto text-sm leading-relaxed">
-              No daily reminders scheduled for this period. Click below to schedule medications, meals, or routine activities.
+            <h3 className="text-xl font-semibold text-[#E8E8E8] mb-2">No Reminders Scheduled</h3>
+            <p className="text-[#A0A0A0] max-w-md mx-auto text-sm leading-relaxed">
+              No reminders scheduled for this date. Click below to add a medication, meal, or activity reminder.
             </p>
           </div>
           <button
@@ -198,9 +200,9 @@ export function RemindersPage({ patientId }) {
               setReminderToEdit(null);
               setCreateEditModalOpen(true);
             }}
-            className="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-base rounded-2xl shadow-lg inline-flex items-center space-x-2 transition-all touch-target-xl"
+            className="px-5 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg inline-flex items-center space-x-2 transition-colors shadow-sm"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             <span>Add Your First Reminder</span>
           </button>
         </div>
@@ -270,3 +272,4 @@ export function RemindersPage({ patientId }) {
     </div>
   );
 }
+

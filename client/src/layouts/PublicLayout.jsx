@@ -4,14 +4,15 @@ import { Navbar } from '../components/navigation/Navbar.jsx';
 
 export function PublicLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+    <div className="min-h-screen flex flex-col bg-[#1E1E1E] text-[#E8E8E8]">
       <Navbar />
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="bg-slate-900/50 border-t border-slate-800/80 py-6 text-center text-sm text-slate-500">
-        Memora © {new Date().getFullYear()} — AI Cognitive Care & Safety Platform
+      <footer className="bg-[#1B1B1B] border-t border-[#343434] py-6 text-center text-xs text-[#747474]">
+        Memora &copy; {new Date().getFullYear()} &mdash; AI Cognitive Care & Safety Platform
       </footer>
     </div>
   );
 }
+

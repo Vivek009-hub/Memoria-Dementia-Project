@@ -4,19 +4,35 @@ export default {
   theme: {
     extend: {
       colors: {
+        memora: {
+          bg: '#1E1E1E',
+          sidebar: '#1B1B1B',
+          surface: '#252525',
+          'surface-secondary': '#2A2A2A',
+          border: '#343434',
+          text: '#E8E8E8',
+          'text-muted': '#A0A0A0',
+          'text-subtle': '#747474',
+          accent: '#DDBB55',
+          'accent-hover': '#E8C968',
+          'accent-bg': 'rgba(221, 187, 85, 0.10)',
+          danger: '#C95C5C',
+          success: '#8BAA78',
+        },
         brand: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          900: '#134e4a',
+          50: '#fcf8eb',
+          100: '#f8eece',
+          500: '#DDBB55',
+          600: '#E8C968',
+          700: '#b89938',
+          900: '#635119',
         },
       },
       fontFamily: {
-        sans: ['Outfit', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['Montserrat', 'Manrope', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
     },
   },
   plugins: [],
 };
+
