@@ -1,9 +1,9 @@
 /**
- * CreateEditMemoryModal.jsx — Elder-Friendly Create/Edit Memory Form Modal
+ * CreateEditMemoryModal.jsx — Memora Elder-Friendly Create/Edit Memory Form Modal
  */
 
 import React, { useState, useEffect } from 'react';
-import { X, Save, AlertCircle, Camera, User, MapPin, BookOpen, Calendar, Heart, Tag } from 'lucide-react';
+import { X, Save, AlertCircle, Camera, User, MapPin, BookOpen, Calendar, Heart } from 'lucide-react';
 
 const MEMORY_TYPES = [
   { id: 'PHOTO', label: 'Photo', icon: Camera },
@@ -137,7 +137,6 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
 
     try {
       if (selectedFile) {
-        // Submit using FormData for local file upload
         const formData = new FormData();
         formData.append('photo', selectedFile);
         formData.append('title', title.trim());
@@ -153,7 +152,6 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
 
         await onSave(formData, memory?._id);
       } else {
-        // Submit JSON object if no local file selected (e.g. text or URL)
         const payload = {
           title: title.trim(),
           description: description.trim() || undefined,
@@ -180,37 +178,39 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-[#151515]/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl my-8">
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-950/80">
-          <h2 id="modal-title" className="text-xl font-extrabold text-white flex items-center space-x-2">
-            <span>{isEditing ? '✏️ Edit Memory' : '💭 Add a Memory'}</span>
+      <div className="bg-[#202020] border border-[#343434] rounded-xl w-full max-w-xl overflow-hidden shadow-2xl my-8">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between p-5 border-b border-[#343434] bg-[#1B1B1B]">
+          <h2 id="modal-title" className="text-xl font-semibold text-[#F5F5F0] flex items-center space-x-2">
+            <span>{isEditing ? '✏️ Edit Memory' : '💭 Add Memory'}</span>
           </h2>
           <button
             onClick={onClose}
             disabled={submitting}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-colors"
+            className="p-2 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
             aria-label="Cancel memory creation"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Modal Body / Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
           {errorMsg && (
-            <div className="p-4 bg-red-950/80 border border-red-500/50 rounded-2xl flex items-start space-x-3 text-red-200 text-sm">
-              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+            <div className="p-4 bg-[#D95C5C]/10 border border-[#D95C5C]/30 rounded-lg flex items-start space-x-3 text-[#D95C5C] text-sm font-medium">
+              <AlertCircle className="w-5 h-5 text-[#D95C5C] shrink-0 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-              Memory Title <span className="text-red-400">*</span>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
+              Memory Title <span className="text-[#D95C5C]">*</span>
             </label>
             <input
               type="text"
@@ -219,13 +219,13 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Family Summer Picnic at the Park"
-              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full p-3.5 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] font-normal text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-              Memory Category <span className="text-red-400">*</span>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
+              Memory Category <span className="text-[#D95C5C]">*</span>
             </label>
             <div className="grid grid-cols-3 gap-2">
               {MEMORY_TYPES.map((item) => {
@@ -236,10 +236,10 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
                     key={item.id}
                     type="button"
                     onClick={() => setType(item.id)}
-                    className={`p-3 rounded-2xl border text-sm font-bold flex items-center justify-center space-x-2 transition-all ${
+                    className={`p-3 rounded-lg border text-xs font-semibold flex items-center justify-center space-x-2 transition-all ${
                       isSelected
-                        ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                        ? 'bg-[#D8B24C] border-[#D8B24C] text-[#151515] shadow-xs'
+                        : 'bg-[#151515] border-[#343434] text-[#A7A7A2] hover:text-[#F5F5F0] hover:border-[#343434]/80'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -250,21 +250,21 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
             </div>
           </div>
 
-          {/* Local Photo Upload Section */}
+          {/* Photo Upload Section */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2]">
               Memory Photo
             </label>
-            
+
             {activeImagePreview ? (
-              <div className="relative w-full h-48 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 group">
+              <div className="relative w-full h-48 bg-[#151515] rounded-lg overflow-hidden border border-[#343434] group">
                 <img
                   src={activeImagePreview}
                   alt="Memory preview"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-3">
-                  <label className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl cursor-pointer shadow-md transition-all">
+                <div className="absolute inset-0 bg-[#151515]/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-3">
+                  <label className="px-4 py-2 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-xs rounded-lg cursor-pointer transition-colors shadow-xs">
                     <span>Change Photo</span>
                     <input
                       type="file"
@@ -277,7 +277,7 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
                     <button
                       type="button"
                       onClick={handleRemoveSelectedFile}
-                      className="px-4 py-2 bg-red-600/80 hover:bg-red-600 text-white font-bold text-xs rounded-xl shadow-md transition-all"
+                      className="px-4 py-2 bg-[#D95C5C] hover:bg-[#D95C5C]/90 text-[#F5F5F0] font-semibold text-xs rounded-lg transition-colors shadow-xs"
                     >
                       Remove
                     </button>
@@ -285,11 +285,11 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
                 </div>
               </div>
             ) : (
-              <label className="w-full p-6 border-2 border-dashed border-slate-800 hover:border-indigo-500/50 rounded-2xl bg-slate-950/50 hover:bg-slate-950 flex flex-col items-center justify-center space-y-2 cursor-pointer transition-all">
-                <Camera className="w-8 h-8 text-indigo-400" />
+              <label className="w-full p-6 border border-dashed border-[#343434] hover:border-[#D8B24C]/60 rounded-lg bg-[#151515] hover:bg-[#1B1B1B] flex flex-col items-center justify-center space-y-2 cursor-pointer transition-colors">
+                <Camera className="w-8 h-8 text-[#D8B24C]" />
                 <div className="text-center">
-                  <span className="text-sm font-extrabold text-white">Click to upload a photo</span>
-                  <p className="text-xs text-slate-400 mt-1">JPEG, PNG, WEBP, GIF up to 10MB</p>
+                  <span className="text-sm font-semibold text-[#F5F5F0]">Click to upload a photo</span>
+                  <p className="text-xs text-[#A7A7A2] mt-1">JPEG, PNG, WEBP, GIF up to 10MB</p>
                 </div>
                 <input
                   type="file"
@@ -300,24 +300,23 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
               </label>
             )}
 
-            {/* Optional URL input fallback */}
             {!selectedFile && (
-              <details className="text-xs text-slate-400 mt-1">
-                <summary className="cursor-pointer hover:text-slate-300 font-bold">Or enter photo URL directly</summary>
+              <details className="text-xs text-[#A7A7A2] mt-1">
+                <summary className="cursor-pointer hover:text-[#F5F5F0] font-medium">Or enter photo URL directly</summary>
                 <input
                   type="url"
                   maxLength={2048}
                   value={mediaUrl}
                   onChange={(e) => setMediaUrl(e.target.value)}
                   placeholder="https://example.com/photo.jpg"
-                  className="w-full p-3 mt-2 bg-slate-950 border border-slate-800 rounded-xl text-white font-medium text-xs focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full p-3 mt-2 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-xs focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F]"
                 />
               </details>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
               What do you remember?
             </label>
             <textarea
@@ -326,31 +325,31 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe what happened, who was there, or how you felt..."
-              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full p-3.5 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F] resize-none"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
                 Date of Memory
               </label>
               <input
                 type="date"
                 value={importantDate}
                 onChange={(e) => setImportantDate(e.target.value)}
-                className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
                 Date Accuracy
               </label>
               <select
                 value={datePrecision}
                 onChange={(e) => setDatePrecision(e.target.value)}
-                className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
               >
                 {DATE_PRECISION_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.id}>
@@ -363,7 +362,7 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
                 Location / Place
               </label>
               <input
@@ -372,19 +371,19 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
                 value={relatedPlace}
                 onChange={(e) => setRelatedPlace(e.target.value)}
                 placeholder="e.g. Grandma's House, Chicago"
-                className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F]"
               />
             </div>
 
             {familyMembers && familyMembers.length > 0 && (
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
                   Related Family Member
                 </label>
                 <select
                   value={relatedPersonId}
                   onChange={(e) => setRelatedPersonId(e.target.value)}
-                  className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors"
                 >
                   <option value="">-- None --</option>
                   {familyMembers.map((member) => (
@@ -398,7 +397,7 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#A7A7A2] mb-2">
               Tags (comma separated)
             </label>
             <input
@@ -406,26 +405,27 @@ export function CreateEditMemoryModal({ memory, familyMembers = [], isOpen, onCl
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="e.g. summer, vacation, family"
-              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-base focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F]"
             />
           </div>
 
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-end space-x-3">
+          {/* Modal Footer */}
+          <div className="pt-4 border-t border-[#343434] flex items-center justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-base font-bold rounded-2xl transition-colors"
+              className="px-4 py-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-xs font-medium rounded-lg border border-[#343434] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-base font-extrabold rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
+              className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] text-xs font-semibold rounded-lg shadow-xs flex items-center space-x-2 transition-colors touch-target"
             >
-              <Save className="w-5 h-5" />
-              <span>{submitting ? 'Saving...' : isEditing ? 'Update Memory' : 'Add Memory'}</span>
+              <Save className="w-4 h-4" />
+              <span>{submitting ? 'Saving...' : isEditing ? 'Update Memory' : 'Save Memory'}</span>
             </button>
           </div>
         </form>

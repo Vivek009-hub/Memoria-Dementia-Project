@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import {
-  Calendar, Clock, Users, User, Video, Mic, MapPin, CheckCircle2, ChevronRight, AlertCircle
+  Calendar, Clock, Users, User, Video, Mic, MapPin, CheckCircle2
 } from 'lucide-react';
 
 export function ScheduledSessionCard({ session, onRegister, onCancelRegister, onOpenMeeting, onSelect }) {
@@ -66,14 +66,14 @@ export function ScheduledSessionCard({ session, onRegister, onCancelRegister, on
   return (
     <div
       onClick={() => onSelect && onSelect(session)}
-      className="group bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-5 shadow-lg transition-all cursor-pointer flex flex-col justify-between space-y-4"
+      className="group bg-[#202020] border border-[#343434] hover:border-[#D8B24C]/60 rounded-xl p-5 shadow-xs transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-4"
       role="button"
       tabIndex={0}
       aria-label={`Open session: ${session.title}`}
     >
       <div>
         <div className="flex items-center justify-between mb-3">
-          <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-extrabold rounded-full border border-indigo-500/30 uppercase flex items-center space-x-1">
+          <span className="px-2.5 py-0.5 bg-[#D8B24C]/10 text-[#D8B24C] text-xs font-semibold rounded-md border border-[#D8B24C]/30 uppercase flex items-center space-x-1">
             {session.meetingType === 'VIDEO' ? (
               <Video className="w-3.5 h-3.5" />
             ) : session.meetingType === 'AUDIO' ? (
@@ -85,18 +85,18 @@ export function ScheduledSessionCard({ session, onRegister, onCancelRegister, on
           </span>
 
           {session.capacity && (
-            <div className="flex items-center space-x-1 text-xs font-bold text-slate-400 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
-              <Users className="w-3.5 h-3.5 text-indigo-400" />
+            <div className="flex items-center space-x-1 text-xs font-medium text-[#A7A7A2] bg-[#151515] px-2.5 py-1 rounded-md border border-[#343434]">
+              <Users className="w-3.5 h-3.5 text-[#D8B24C]" />
               <span>
-                {session.registeredCount || 0} / {session.capacity} Registered
+                {session.registeredCount || 0} / {session.capacity}
               </span>
             </div>
           )}
         </div>
 
         {(session.hostName || session.speakerName || session.host) && (
-          <div className="flex items-center space-x-3 bg-slate-950/80 p-3 rounded-2xl border border-slate-800/80 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center shrink-0 overflow-hidden">
+          <div className="flex items-center space-x-3 bg-[#151515] p-3 rounded-lg border border-[#343434] mb-3">
+            <div className="w-9 h-9 rounded-lg bg-[#202020] border border-[#343434] flex items-center justify-center shrink-0 overflow-hidden">
               {session.speakerImage || session.hostPhoto ? (
                 <img
                   src={session.speakerImage || session.hostPhoto}
@@ -104,47 +104,42 @@ export function ScheduledSessionCard({ session, onRegister, onCancelRegister, on
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <User className="w-5 h-5 text-indigo-400" />
+                <User className="w-4 h-4 text-[#D8B24C]" />
               )}
             </div>
             <div className="min-w-0">
-              <span className="text-[10px] font-black uppercase text-indigo-400 block tracking-wider">
-                Featured Host / Speaker
+              <span className="text-[10px] font-semibold uppercase text-[#D8B24C] block tracking-wider">
+                Featured Host
               </span>
-              <h4 className="text-sm font-bold text-white truncate">
+              <h4 className="text-xs font-semibold text-[#F5F5F0] truncate">
                 {session.speakerName || session.hostName || (typeof session.host === 'object' ? session.host.name : 'Guest Host')}
               </h4>
-              {(session.speakerTitle || session.hostTitle) && (
-                <span className="text-xs text-slate-400 truncate block">
-                  {session.speakerTitle || session.hostTitle}
-                </span>
-              )}
             </div>
           </div>
         )}
 
-        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-indigo-400 transition-colors">
+        <h3 className="text-base font-semibold text-[#F5F5F0] mb-2 line-clamp-1 group-hover:text-[#D8B24C] transition-colors">
           {session.title}
         </h3>
 
-        <div className="flex flex-wrap gap-2 text-xs text-slate-300 mb-2">
-          <div className="flex items-center space-x-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-bold">
-            <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+        <div className="flex flex-wrap gap-2 text-xs text-[#A7A7A2] mb-2">
+          <div className="flex items-center space-x-1.5 bg-[#151515] px-2.5 py-1 rounded-md border border-[#343434]">
+            <Calendar className="w-3.5 h-3.5 text-[#D8B24C]" />
             <span>{formattedDate}</span>
           </div>
 
           {timeDisplay && (
-            <div className="flex items-center space-x-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-bold">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <div className="flex items-center space-x-1.5 bg-[#151515] px-2.5 py-1 rounded-md border border-[#343434]">
+              <Clock className="w-3.5 h-3.5 text-[#D8B24C]" />
               <span>{timeDisplay}</span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+      <div className="pt-3 border-t border-[#343434] flex items-center justify-between gap-2">
         {isCancelled ? (
-          <span className="w-full py-2.5 bg-red-950/60 border border-red-500/40 text-red-300 text-xs font-bold rounded-xl text-center">
+          <span className="w-full py-2 bg-[#D95C5C]/10 border border-[#D95C5C]/30 text-[#D95C5C] text-xs font-medium rounded-lg text-center">
             Session Cancelled
           </span>
         ) : (
@@ -152,17 +147,17 @@ export function ScheduledSessionCard({ session, onRegister, onCancelRegister, on
             <button
               onClick={handleRegisterClick}
               disabled={actionLoading || (isFull && !isRegistered)}
-              className={`flex-1 py-2.5 px-4 rounded-xl font-extrabold text-sm flex items-center justify-center space-x-1.5 transition-all touch-target-xl ${
+              className={`flex-1 py-2 px-3 rounded-lg font-semibold text-xs flex items-center justify-center space-x-1.5 transition-all touch-target ${
                 isRegistered
-                  ? 'bg-emerald-600/20 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-600/30'
+                  ? 'bg-[#45B982]/15 border border-[#45B982]/40 text-[#45B982] hover:bg-[#45B982]/25'
                   : isFull
-                  ? 'bg-slate-950 border border-slate-800 text-slate-500 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md'
+                  ? 'bg-[#151515] border border-[#343434] text-[#74746F] cursor-not-allowed'
+                  : 'bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] shadow-xs'
               }`}
             >
               {isRegistered ? (
                 <>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#45B982]" />
                   <span>Registered (Cancel)</span>
                 </>
               ) : isFull ? (
@@ -178,10 +173,10 @@ export function ScheduledSessionCard({ session, onRegister, onCancelRegister, on
                   e.stopPropagation();
                   onOpenMeeting(session);
                 }}
-                className="py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm rounded-xl shadow-md flex items-center space-x-1"
+                className="py-2 px-3 bg-[#45B982] hover:bg-[#45B982]/90 text-[#151515] font-semibold text-xs rounded-lg shadow-xs flex items-center space-x-1 touch-target"
               >
-                <Video className="w-4 h-4" />
-                <span>Join Meeting</span>
+                <Video className="w-3.5 h-3.5" />
+                <span>Join</span>
               </button>
             )}
           </>

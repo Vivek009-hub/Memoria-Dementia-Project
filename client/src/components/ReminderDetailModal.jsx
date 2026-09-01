@@ -1,9 +1,9 @@
 /**
- * ReminderDetailModal.jsx — Full Details View Modal for a Reminder
+ * ReminderDetailModal.jsx — Memora Full Details View Modal for a Reminder
  */
 
 import React, { useState } from 'react';
-import { X, Clock, Calendar, Globe, Repeat, Volume2, CheckCircle2, Edit3, Trash2, AlertCircle } from 'lucide-react';
+import { X, Clock, Globe, Repeat, Volume2, CheckCircle2, Edit3, Trash2 } from 'lucide-react';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -27,19 +27,19 @@ export function ReminderDetailModal({ reminder, onClose, onComplete, onSkip, onE
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-[#151515]/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="reminder-detail-title"
     >
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
-        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950/60">
-          <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-extrabold rounded-full border border-indigo-500/30 uppercase">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in duration-200">
+        <div className="flex items-center justify-between p-4 border-b border-[#343434] bg-[#1B1B1B]">
+          <span className="px-2.5 py-0.5 bg-[#D8B24C]/10 text-[#D8B24C] text-xs font-semibold rounded-md border border-[#D8B24C]/30 uppercase">
             {reminder.type?.replace('_', ' ')}
           </span>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-colors"
+            className="p-2 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
             aria-label="Close reminder details"
           >
             <X className="w-5 h-5" />
@@ -47,38 +47,38 @@ export function ReminderDetailModal({ reminder, onClose, onComplete, onSkip, onE
         </div>
 
         <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-          <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-2">
-            <div className="flex items-center space-x-2 text-indigo-400">
-              <Clock className="w-6 h-6" />
-              <span className="text-2xl font-black text-white">{formatTime(reminder.schedule?.time)}</span>
+          <div className="bg-[#151515] p-5 rounded-lg border border-[#343434] space-y-2">
+            <div className="flex items-center space-x-2 text-[#D8B24C]">
+              <Clock className="w-5 h-5" />
+              <span className="text-2xl font-semibold text-[#F5F5F0]">{formatTime(reminder.schedule?.time)}</span>
             </div>
-            <h2 id="reminder-detail-title" className="text-xl font-bold text-white leading-snug">
+            <h2 id="reminder-detail-title" className="text-xl font-semibold text-[#F5F5F0] leading-snug">
               {reminder.title}
             </h2>
           </div>
 
           {reminder.description ? (
-            <div className="p-4 bg-slate-950/60 rounded-2xl border border-slate-800 text-slate-200 text-base leading-relaxed">
+            <div className="p-4 bg-[#151515] rounded-lg border border-[#343434] text-[#F5F5F0] text-sm leading-relaxed">
               {reminder.description}
             </div>
           ) : (
-            <p className="text-sm text-slate-500 italic">No description added.</p>
+            <p className="text-xs text-[#74746F] italic">No description added.</p>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div className="flex items-center space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-              <Globe className="w-5 h-5 text-indigo-400 shrink-0" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="flex items-center space-x-3 p-3 bg-[#151515] rounded-lg border border-[#343434]">
+              <Globe className="w-4 h-4 text-[#D8B24C] shrink-0" />
               <div>
-                <span className="text-xs font-bold text-slate-500 uppercase block">Timezone</span>
-                <span className="text-slate-200 font-medium">{reminder.timezone}</span>
+                <span className="text-[10px] font-semibold text-[#74746F] uppercase block">Timezone</span>
+                <span className="text-[#F5F5F0] font-medium">{reminder.timezone}</span>
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-              <Repeat className="w-5 h-5 text-purple-400 shrink-0" />
+            <div className="flex items-center space-x-3 p-3 bg-[#151515] rounded-lg border border-[#343434]">
+              <Repeat className="w-4 h-4 text-[#D8B24C] shrink-0" />
               <div>
-                <span className="text-xs font-bold text-slate-500 uppercase block">Recurrence</span>
-                <span className="text-slate-200 font-medium">
+                <span className="text-[10px] font-semibold text-[#74746F] uppercase block">Recurrence</span>
+                <span className="text-[#F5F5F0] font-medium">
                   {reminder.recurrence ? reminder.recurrence.frequency : 'One-Time'}
                 </span>
               </div>
@@ -86,18 +86,18 @@ export function ReminderDetailModal({ reminder, onClose, onComplete, onSkip, onE
           </div>
 
           {reminder.recurrence?.frequency === 'WEEKLY' && reminder.recurrence.weekdays?.length > 0 && (
-            <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Repeats On</span>
+            <div className="p-3 bg-[#151515] rounded-lg border border-[#343434]">
+              <span className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-2">Repeats On</span>
               <div className="flex flex-wrap gap-1.5">
                 {WEEKDAYS.map((dayName, idx) => {
                   const isSelected = reminder.recurrence.weekdays.includes(idx);
                   return (
                     <span
                       key={idx}
-                      className={`px-2.5 py-1 rounded-md text-xs font-bold ${
+                      className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
                         isSelected
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-slate-900 text-slate-500 border border-slate-800'
+                          ? 'bg-[#D8B24C] text-[#151515]'
+                          : 'bg-[#202020] text-[#74746F] border border-[#343434]'
                       }`}
                     >
                       {dayName}
@@ -109,14 +109,14 @@ export function ReminderDetailModal({ reminder, onClose, onComplete, onSkip, onE
           )}
 
           {reminder.voiceEnabled && (
-            <div className="flex items-center space-x-2 text-xs font-bold text-indigo-300 p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
-              <Volume2 className="w-4 h-4 text-indigo-400" />
-              <span>Voice prompt enabled for this reminder</span>
+            <div className="flex items-center space-x-2 text-xs font-semibold text-[#D8B24C] p-3 bg-[#D8B24C]/10 rounded-lg border border-[#D8B24C]/30">
+              <Volume2 className="w-4 h-4 text-[#D8B24C]" />
+              <span>Voice prompt announcement enabled</span>
             </div>
           )}
         </div>
 
-        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex flex-wrap items-center justify-between gap-2">
+        <div className="p-4 border-t border-[#343434] bg-[#1B1B1B] flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center space-x-2">
             {onEdit && (
               <button
@@ -124,9 +124,9 @@ export function ReminderDetailModal({ reminder, onClose, onComplete, onSkip, onE
                   onClose();
                   onEdit(reminder);
                 }}
-                className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold rounded-xl border border-slate-700 flex items-center space-x-2 transition-colors"
+                className="px-4 py-2 bg-[#151515] hover:bg-[#242424] text-[#F5F5F0] text-xs font-medium rounded-lg border border-[#343434] flex items-center space-x-2 transition-colors"
               >
-                <Edit3 className="w-4 h-4" />
+                <Edit3 className="w-3.5 h-3.5" />
                 <span>Edit</span>
               </button>
             )}
@@ -137,9 +137,9 @@ export function ReminderDetailModal({ reminder, onClose, onComplete, onSkip, onE
                   onClose();
                   onDelete(reminder);
                 }}
-                className="px-4 py-2.5 bg-red-950/60 hover:bg-red-900/80 text-red-300 hover:text-white text-sm font-bold rounded-xl border border-red-800/50 flex items-center space-x-2 transition-colors"
+                className="px-4 py-2 bg-[#D95C5C]/10 hover:bg-[#D95C5C]/20 text-[#D95C5C] text-xs font-semibold rounded-lg border border-[#D95C5C]/30 flex items-center space-x-2 transition-colors"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
                 <span>Delete</span>
               </button>
             )}
@@ -157,7 +157,7 @@ export function ReminderDetailModal({ reminder, onClose, onComplete, onSkip, onE
                 }
               }}
               disabled={actionLoading}
-              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm rounded-xl shadow-lg flex items-center space-x-2 transition-all"
+              className="px-4 py-2 bg-[#45B982] hover:bg-[#45B982]/90 text-[#151515] font-semibold text-xs rounded-lg shadow-xs flex items-center space-x-2 transition-colors touch-target"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Mark Complete</span>

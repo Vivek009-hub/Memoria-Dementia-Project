@@ -6,24 +6,24 @@ export function Select({ label, error, options = [], className = '', id, ...prop
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-base font-bold text-slate-200">
+        <label htmlFor={inputId} className="block text-sm font-medium text-[#F5F5F0]">
           {label}
         </label>
       )}
       <select
         id={inputId}
-        className={`w-full px-4 py-3.5 bg-slate-900 border border-slate-700 rounded-2xl text-slate-100 text-base focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500 transition-colors touch-target ${
-          error ? 'border-red-500 focus:border-red-500' : ''
+        className={`w-full px-3.5 py-2.5 bg-[#202020] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] focus:ring-1 focus:ring-[#D8B24C] transition-colors touch-target ${
+          error ? 'border-[#D95C5C] focus:border-[#D95C5C] focus:ring-[#D95C5C]' : ''
         } ${className}`}
         {...props}
       >
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
+          <option key={opt.value} value={opt.value} className="bg-[#202020] text-[#F5F5F0]">
             {opt.label}
           </option>
         ))}
       </select>
-      {error && <p className="text-sm font-semibold text-red-400 mt-1">{error}</p>}
+      {error && <p className="text-xs font-medium text-[#D95C5C] mt-1">{error}</p>}
     </div>
   );
 }

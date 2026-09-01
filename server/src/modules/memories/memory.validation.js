@@ -287,11 +287,11 @@ export function validateListMemoriesQuery(query = {}) {
     limit: 20,
   };
 
-  if (query.patientId) {
+  if (query.patientId && query.patientId !== 'undefined' && query.patientId !== 'null') {
     result.patientId = query.patientId;
   }
 
-  if (query.type !== undefined) {
+  if (query.type !== undefined && query.type !== 'undefined' && query.type !== '' && query.type !== 'null') {
     if (!MEMORY_TYPES.includes(query.type)) {
       throw new AppError(
         `type must be one of: ${MEMORY_TYPES.join(', ')}`,

@@ -1,10 +1,10 @@
 /**
- * NotificationItem.jsx — Elder-Friendly Notification Card Component
+ * NotificationItem.jsx — Memora Notification Card Component
  */
 
 import React, { useState } from 'react';
 import {
-  Bell, Clock, Users, Video, ShieldAlert, AlertTriangle, AlertCircle, CheckCircle2, ChevronRight, Check
+  Bell, Clock, Users, Video, ShieldAlert, AlertTriangle, AlertCircle, ChevronRight, Check
 } from 'lucide-react';
 
 const TYPE_ICONS = {
@@ -20,13 +20,13 @@ const TYPE_ICONS = {
 };
 
 const TYPE_STYLES = {
-  REMINDER: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  COMMUNITY_SESSION: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  MEETING: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
-  SOS: 'bg-red-500/20 text-red-300 border-red-500/30',
-  POSSIBLE_FALL: 'bg-red-500/20 text-red-300 border-red-500/30',
-  GEOFENCE: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-  SYSTEM: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+  REMINDER: 'bg-[#D8B24C]/10 text-[#D8B24C] border-[#D8B24C]/30',
+  COMMUNITY_SESSION: 'bg-[#9B6B9E]/10 text-[#9B6B9E] border-[#9B6B9E]/30',
+  MEETING: 'bg-[#45B982]/10 text-[#45B982] border-[#45B982]/30',
+  SOS: 'bg-[#D95C5C]/10 text-[#D95C5C] border-[#D95C5C]/30',
+  POSSIBLE_FALL: 'bg-[#D95C5C]/10 text-[#D95C5C] border-[#D95C5C]/30',
+  GEOFENCE: 'bg-[#E5A83B]/10 text-[#E5A83B] border-[#E5A83B]/30',
+  SYSTEM: 'bg-[#D8B24C]/10 text-[#D8B24C] border-[#D8B24C]/30',
 };
 
 export function NotificationItem({ notification, onMarkRead, onClick }) {
@@ -69,10 +69,10 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
   return (
     <div
       onClick={() => onClick && onClick(notification)}
-      className={`group relative bg-slate-900 border rounded-3xl p-5 shadow-lg transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+      className={`group relative bg-[#202020] border rounded-xl p-4 shadow-xs transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
         !notification.isRead
-          ? 'border-indigo-500/50 bg-indigo-950/15'
-          : 'border-slate-800 opacity-75 hover:opacity-100 hover:border-slate-700'
+          ? 'border-[#D8B24C]/50 bg-[#242424]'
+          : 'border-[#343434] opacity-80 hover:opacity-100 hover:border-[#343434]/80'
       }`}
       role="button"
       tabIndex={0}
@@ -81,52 +81,52 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
       <div>
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex items-center space-x-3">
-            <div className={`p-2.5 rounded-2xl border ${typeStyle}`}>
-              <TypeIcon className="w-5 h-5" />
+            <div className={`p-2 rounded-lg border ${typeStyle}`}>
+              <TypeIcon className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-400">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#A7A7A2]">
                   {notification.type?.replace('_', ' ')}
                 </span>
                 {notification.priority === 'CRITICAL' && (
-                  <span className="px-2 py-0.5 bg-red-500/20 text-red-300 text-[10px] font-black rounded-md border border-red-500/40">
+                  <span className="px-2 py-0.5 bg-[#D95C5C]/10 text-[#D95C5C] text-[10px] font-semibold rounded border border-[#D95C5C]/30">
                     CRITICAL
                   </span>
                 )}
               </div>
-              <h3 className="text-lg font-bold text-white leading-snug group-hover:text-indigo-400 transition-colors">
+              <h3 className="text-base font-semibold text-[#F5F5F0] leading-snug group-hover:text-[#D8B24C] transition-colors">
                 {notification.title}
               </h3>
             </div>
           </div>
 
           {!notification.isRead && (
-            <span className="w-3 h-3 bg-indigo-500 rounded-full shrink-0 shadow-lg shadow-indigo-500/50 animate-pulse mt-1" />
+            <span className="w-2.5 h-2.5 bg-[#D8B24C] rounded-full shrink-0 animate-pulse mt-1" />
           )}
         </div>
 
-        <p className="text-sm text-slate-300 leading-relaxed pl-12">
+        <p className="text-xs text-[#A7A7A2] leading-relaxed pl-11">
           {notification.message}
         </p>
       </div>
 
-      <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-        <span className="font-bold">{formatTimestamp(notification.createdAt)}</span>
+      <div className="pt-2.5 border-t border-[#343434] flex items-center justify-between text-xs text-[#74746F]">
+        <span className="font-mono">{formatTimestamp(notification.createdAt)}</span>
 
         <div className="flex items-center space-x-2">
           {!notification.isRead && onMarkRead && (
             <button
               onClick={handleMarkReadClick}
               disabled={marking}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center space-x-1 transition-colors"
+              className="px-2.5 py-1 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-[11px] font-medium rounded-md border border-[#343434] flex items-center space-x-1 transition-colors"
             >
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <Check className="w-3 h-3 text-[#45B982]" />
               <span>Mark Read</span>
             </button>
           )}
 
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#74746F] group-hover:text-[#D8B24C] group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
     </div>

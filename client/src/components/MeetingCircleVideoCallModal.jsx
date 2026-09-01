@@ -151,25 +151,25 @@ export function MeetingCircleVideoCallModal({ circle, roomData, isOpen, onClose 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/90 backdrop-blur-xl animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-6xl h-[90vh] flex flex-col shadow-2xl overflow-hidden relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#151515]/90 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl w-full max-w-6xl h-[90vh] flex flex-col shadow-2xl overflow-hidden relative">
         {/* Call Top Bar */}
-        <div className="p-4 sm:p-6 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
+        <div className="p-4 sm:p-6 bg-[#1B1B1B] border-b border-[#343434] flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#45B982] animate-ping" />
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-white leading-none">
+              <h2 className="text-lg sm:text-xl font-bold text-[#F5F5F0] leading-none">
                 {circle.name}
               </h2>
-              <span className="text-xs text-slate-400 font-medium mt-0.5 block">
+              <span className="text-xs text-[#A7A7A2] font-medium mt-1 block">
                 {circle.visibility === 'INVITE_ONLY' ? 'Private Circle' : 'Discoverable Circle'} • Hosted by {circle.creatorName || 'Host'}
               </span>
             </div>
           </div>
 
           <div className="flex items-center space-x-3">
-            <div className="px-3.5 py-1.5 bg-slate-900 border border-slate-800 rounded-2xl flex items-center space-x-2 text-xs font-bold text-slate-300">
-              <Users className="w-4 h-4 text-emerald-400" />
+            <div className="px-3 py-1.5 bg-[#151515] border border-[#343434] rounded-lg flex items-center space-x-2 text-xs font-semibold text-[#A7A7A2]">
+              <Users className="w-4 h-4 text-[#D8B24C]" />
               <span>
                 {circle.activeParticipantCount || participants.length || 1} / {circle.maxParticipants || 6}
               </span>
@@ -177,7 +177,7 @@ export function MeetingCircleVideoCallModal({ circle, roomData, isOpen, onClose 
 
             <button
               onClick={handleLeaveCall}
-              className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-900 border border-slate-800 transition-colors"
+              className="p-2 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
               title="Leave room"
               aria-label="Leave room"
             >

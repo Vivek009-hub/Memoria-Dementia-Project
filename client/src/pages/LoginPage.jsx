@@ -35,7 +35,7 @@ export function LoginPage() {
     <div className="py-16 px-4 max-w-md mx-auto">
       <Card title="Sign In to Memora">
         {error && (
-          <div className="p-3 mb-4 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-sm">
+          <div className="p-3 mb-4 bg-[#C95C5C]/10 border border-[#C95C5C]/30 rounded-lg text-[#C95C5C] text-xs">
             {error}
           </div>
         )}
@@ -64,9 +64,9 @@ export function LoginPage() {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-slate-400">
+        <div className="mt-6 text-center text-xs text-[#A0A0A0]">
           Don't have an account?{' '}
-          <Link to="/register" className="text-brand-400 font-bold hover:underline">
+          <Link to="/register" className="text-[#DDBB55] font-semibold hover:underline">
             Register here
           </Link>
         </div>
@@ -74,3 +74,4 @@ export function LoginPage() {
     </div>
   );
 }
+

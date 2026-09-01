@@ -6,18 +6,18 @@ export function Input({ label, error, className = '', id, ...props }) {
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-semibold text-slate-300">
+        <label htmlFor={inputId} className="block text-sm font-medium text-[#F5F5F0]">
           {label}
         </label>
       )}
       <input
         id={inputId}
-        className={`w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors ${
-          error ? 'border-red-500/80 focus:border-red-500' : ''
+        className={`w-full px-3.5 py-2.5 bg-[#202020] border border-[#343434] rounded-lg text-[#F5F5F0] placeholder-[#74746F] focus:outline-none focus:border-[#D8B24C] focus:ring-1 focus:ring-[#D8B24C] transition-colors text-sm ${
+          error ? 'border-[#D95C5C] focus:border-[#D95C5C] focus:ring-[#D95C5C]' : ''
         } ${className}`}
         {...props}
       />
-      {error && <p className="text-xs font-semibold text-red-400 mt-1">{error}</p>}
+      {error && <p className="text-xs font-medium text-[#D95C5C] mt-1">{error}</p>}
     </div>
   );
 }

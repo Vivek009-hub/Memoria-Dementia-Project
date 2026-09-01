@@ -66,11 +66,7 @@ export function AppRoutes() {
             ) : role === 'CAREGIVER' ? (
               <CaregiverDashboardPage onNavigate={(path) => navigate(path)} />
             ) : (
-<<<<<<< HEAD
               <PatientDashboardPage />
-=======
-              <MemoriesPage patientId={user?.id || user?._id} />
->>>>>>> 43c702adb55bd2371061fb2d6ba3606f14389527
             )
           }
         />

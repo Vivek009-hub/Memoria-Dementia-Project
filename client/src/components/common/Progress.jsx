@@ -6,14 +6,14 @@ export function Progress({ value = 0, max = 100, label, className = '' }) {
   return (
     <div className={`w-full space-y-1.5 ${className}`}>
       {label && (
-        <div className="flex justify-between text-sm font-bold text-slate-300">
+        <div className="flex justify-between text-xs font-semibold text-[#A7A7A2]">
           <span>{label}</span>
-          <span>{percentage}%</span>
+          <span className="text-[#D8B24C]">{percentage}%</span>
         </div>
       )}
-      <div className="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+      <div className="w-full bg-[#151515] rounded-full h-2 overflow-hidden border border-[#343434]">
         <div
-          className="bg-brand-500 h-full rounded-full transition-all duration-300 ease-out"
+          className="bg-[#D8B24C] h-full rounded-full transition-all duration-300 ease-out"
           style={{ width: `${percentage}%` }}
         />
       </div>

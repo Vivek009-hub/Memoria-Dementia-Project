@@ -37,7 +37,7 @@ export function RegisterPage() {
     <div className="py-16 px-4 max-w-md mx-auto">
       <Card title="Create Memora Account">
         {error && (
-          <div className="p-3 mb-4 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-sm">
+          <div className="p-3 mb-4 bg-[#C95C5C]/10 border border-[#C95C5C]/30 rounded-lg text-[#C95C5C] text-xs">
             {error}
           </div>
         )}
@@ -71,11 +71,11 @@ export function RegisterPage() {
           />
 
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-1">Account Role</label>
+            <label className="block text-sm font-medium text-[#E8E8E8] mb-1">Account Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-slate-100 focus:outline-none focus:border-brand-500"
+              className="w-full px-3.5 py-2.5 bg-[#252525] border border-[#383838] rounded-lg text-[#E8E8E8] focus:outline-none focus:border-[#DDBB55] text-sm"
             >
               <option value="PATIENT">Patient Account</option>
               <option value="CAREGIVER">Caregiver Account</option>
@@ -87,9 +87,9 @@ export function RegisterPage() {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-slate-400">
+        <div className="mt-6 text-center text-xs text-[#A0A0A0]">
           Already have an account?{' '}
-          <Link to="/login" className="text-brand-400 font-bold hover:underline">
+          <Link to="/login" className="text-[#DDBB55] font-semibold hover:underline">
             Sign In here
           </Link>
         </div>
@@ -97,3 +97,4 @@ export function RegisterPage() {
     </div>
   );
 }
+

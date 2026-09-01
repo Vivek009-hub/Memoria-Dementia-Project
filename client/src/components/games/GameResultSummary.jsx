@@ -1,4 +1,5 @@
 import React from 'react';
+import { Trophy, RotateCcw, ArrowLeft } from 'lucide-react';
 
 export function GameResultSummary({ session, gameTitle, onPlayAgain, onBackToLibrary }) {
   if (!session) return null;
@@ -7,48 +8,52 @@ export function GameResultSummary({ session, gameTitle, onPlayAgain, onBackToLib
   const timeSeconds = Math.round(responseTimeMs / 1000);
 
   return (
-    <div className="fixed inset-0 bg-slate-900/80 flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-md w-full p-8 border-4 border-emerald-500 shadow-2xl text-center relative">
-        <div className="text-6xl mb-3 animate-bounce">🌟</div>
-        
-        <h2 className="text-3xl font-extrabold text-slate-900 mb-1">Great Job!</h2>
-        <p className="text-slate-600 text-lg mb-6">{gameTitle || 'Exercise Completed'}</p>
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-[#202020] rounded-xl max-w-md w-full p-6 border border-[#343434] shadow-2xl text-center relative">
+        <div className="w-14 h-14 bg-[#D8B24C]/15 border border-[#D8B24C]/30 rounded-xl flex items-center justify-center mx-auto text-[#D8B24C] mb-3">
+          <Trophy className="w-7 h-7" />
+        </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
-            <span className="text-sm font-semibold text-emerald-800 uppercase block">Score</span>
-            <span className="text-3xl font-black text-emerald-700">{score}</span>
+        <h2 className="text-2xl font-bold text-[#F5F5F0] mb-1">Great Job!</h2>
+        <p className="text-[#A7A7A2] text-sm mb-5">{gameTitle || 'Exercise Completed'}</p>
+
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="bg-[#151515] p-3.5 rounded-lg border border-[#343434]">
+            <span className="text-xs font-medium text-[#A7A7A2] uppercase block">Score</span>
+            <span className="text-2xl font-bold text-[#45B982]">{score}</span>
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-2xl border border-blue-200">
-            <span className="text-sm font-semibold text-blue-800 uppercase block">Accuracy</span>
-            <span className="text-3xl font-black text-blue-700">{Math.round(accuracy)}%</span>
+          <div className="bg-[#151515] p-3.5 rounded-lg border border-[#343434]">
+            <span className="text-xs font-medium text-[#A7A7A2] uppercase block">Accuracy</span>
+            <span className="text-2xl font-bold text-[#D8B24C]">{Math.round(accuracy)}%</span>
           </div>
 
-          <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200">
-            <span className="text-sm font-semibold text-amber-800 uppercase block">Time Taken</span>
-            <span className="text-2xl font-bold text-amber-700">{timeSeconds}s</span>
+          <div className="bg-[#151515] p-3.5 rounded-lg border border-[#343434]">
+            <span className="text-xs font-medium text-[#A7A7A2] uppercase block">Time</span>
+            <span className="text-xl font-bold text-[#F5F5F0] font-mono">{timeSeconds}s</span>
           </div>
 
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-            <span className="text-sm font-semibold text-slate-600 uppercase block">Mistakes</span>
-            <span className="text-2xl font-bold text-slate-700">{mistakes}</span>
+          <div className="bg-[#151515] p-3.5 rounded-lg border border-[#343434]">
+            <span className="text-xs font-medium text-[#A7A7A2] uppercase block">Mistakes</span>
+            <span className="text-xl font-bold text-[#F5F5F0]">{mistakes}</span>
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           <button
             onClick={onPlayAgain}
-            className="w-full min-h-[60px] bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xl font-bold rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] text-sm font-semibold rounded-lg shadow-xs transition-colors flex items-center justify-center space-x-2 touch-target"
           >
-            <span>🔄 Play Again</span>
+            <RotateCcw className="w-4 h-4" />
+            <span>Play Again</span>
           </button>
 
           <button
             onClick={onBackToLibrary}
-            className="w-full min-h-[52px] bg-slate-100 hover:bg-slate-200 text-slate-800 text-lg font-bold rounded-2xl transition-colors"
+            className="w-full py-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-xs font-semibold rounded-lg border border-[#343434] transition-colors flex items-center justify-center space-x-2"
           >
-            Back to Games Library
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Exercises Library</span>
           </button>
         </div>
       </div>

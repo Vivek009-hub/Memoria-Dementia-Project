@@ -5,14 +5,15 @@ import { Sidebar } from '../components/navigation/Sidebar.jsx';
 
 export function PatientLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+    <div className="min-h-screen flex flex-col bg-[#151515] text-[#F5F5F0]">
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 p-8 max-w-6xl">
+        <main className="flex-1 p-6 md:p-8 max-w-6xl mx-auto w-full">
           <Outlet />
         </main>
       </div>
     </div>
   );
 }
+

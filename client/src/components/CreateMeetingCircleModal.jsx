@@ -1,7 +1,7 @@
 /**
- * CreateMeetingCircleModal.jsx — Modal Form to Create a Meeting Circle
+ * CreateMeetingCircleModal.jsx — Memora Form Modal to Create a Meeting Circle
  *
- * Enforces max 6 participants maximum constraint visually and structurally.
+ * Enforces max 6 participants constraint visually and structurally.
  */
 
 import React, { useState } from 'react';
@@ -31,7 +31,7 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
         name: name.trim(),
         description: description.trim(),
         visibility,
-        maxParticipants: 6, // Always hardlocked to 6
+        maxParticipants: 6,
       });
       setName('');
       setDescription('');
@@ -45,13 +45,13 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 relative overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#151515]/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 max-w-lg w-full shadow-2xl space-y-5 relative">
         {/* Close Button */}
         <button
           onClick={onClose}
           disabled={submitting}
-          className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-950 border border-slate-800 transition-colors"
+          className="absolute top-5 right-5 p-2 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -59,30 +59,29 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
 
         {/* Header */}
         <div className="flex items-center space-x-3">
-          <div className="p-3 bg-emerald-600/20 border border-emerald-500/30 rounded-2xl text-emerald-400">
-            <Plus className="w-6 h-6" />
+          <div className="p-2.5 bg-[#D8B24C]/10 border border-[#D8B24C]/30 rounded-lg text-[#D8B24C]">
+            <Plus className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-white tracking-tight">
+            <h2 className="text-xl font-semibold text-[#F5F5F0]">
               Create Meeting Circle
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Start a video gathering for up to 6 participants.
+            <p className="text-xs text-[#A7A7A2] mt-0.5">
+              Start a live video gathering for up to 6 participants.
             </p>
           </div>
         </div>
 
         {errorMsg && (
-          <div className="p-3.5 bg-red-950/80 border border-red-500/50 rounded-2xl text-xs font-bold text-red-300 flex items-center space-x-2">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+          <div className="p-3 bg-[#D95C5C]/10 border border-[#D95C5C]/30 rounded-lg text-xs font-medium text-[#D95C5C] flex items-center space-x-2">
+            <AlertTriangle className="w-4 h-4 shrink-0 text-[#D95C5C]" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Circle Name */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider mb-1.5">
               Circle Name *
             </label>
             <input
@@ -92,13 +91,12 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
               placeholder="e.g. Morning Music & Memories"
               maxLength={150}
               required
-              className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-slate-600"
+              className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] font-normal text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F]"
             />
           </div>
 
-          {/* Description */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider mb-1.5">
               Description (Optional)
             </label>
             <textarea
@@ -107,22 +105,21 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
               placeholder="Share what this gathering is about..."
               rows={3}
               maxLength={1000}
-              className="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white font-medium text-sm focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-slate-600 resize-none"
+              className="w-full p-3 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F] resize-none"
             />
           </div>
 
-          {/* Visibility Selection */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider mb-2">
               Visibility & Discovery
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label
-                className={`p-3.5 rounded-2xl border cursor-pointer flex items-start space-x-3 transition-all ${
+                className={`p-3 rounded-lg border cursor-pointer flex items-start space-x-3 transition-all ${
                   visibility === 'DISCOVERABLE'
-                    ? 'bg-emerald-950/40 border-emerald-500/50 text-white'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                    ? 'bg-[#45B982]/10 border-[#45B982]/40 text-[#F5F5F0]'
+                    : 'bg-[#151515] border-[#343434] text-[#A7A7A2] hover:text-[#F5F5F0]'
                 }`}
               >
                 <input
@@ -131,24 +128,24 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
                   value="DISCOVERABLE"
                   checked={visibility === 'DISCOVERABLE'}
                   onChange={() => setVisibility('DISCOVERABLE')}
-                  className="mt-0.5 text-emerald-500 focus:ring-emerald-500"
+                  className="mt-0.5 text-[#45B982] focus:ring-[#45B982]"
                 />
                 <div>
-                  <div className="flex items-center space-x-1.5 font-bold text-xs text-emerald-300">
+                  <div className="flex items-center space-x-1.5 font-semibold text-xs text-[#45B982]">
                     <Globe className="w-3.5 h-3.5" />
                     <span>Discoverable</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                  <p className="text-[11px] text-[#A7A7A2] mt-1 leading-snug">
                     Visible to all patients in the Discover Circles tab.
                   </p>
                 </div>
               </label>
 
               <label
-                className={`p-3.5 rounded-2xl border cursor-pointer flex items-start space-x-3 transition-all ${
+                className={`p-3 rounded-lg border cursor-pointer flex items-start space-x-3 transition-all ${
                   visibility === 'INVITE_ONLY'
-                    ? 'bg-indigo-950/40 border-indigo-500/50 text-white'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                    ? 'bg-[#D8B24C]/10 border-[#D8B24C]/40 text-[#F5F5F0]'
+                    : 'bg-[#151515] border-[#343434] text-[#A7A7A2] hover:text-[#F5F5F0]'
                 }`}
               >
                 <input
@@ -157,14 +154,14 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
                   value="INVITE_ONLY"
                   checked={visibility === 'INVITE_ONLY'}
                   onChange={() => setVisibility('INVITE_ONLY')}
-                  className="mt-0.5 text-indigo-500 focus:ring-indigo-500"
+                  className="mt-0.5 text-[#D8B24C] focus:ring-[#D8B24C]"
                 />
                 <div>
-                  <div className="flex items-center space-x-1.5 font-bold text-xs text-indigo-300">
+                  <div className="flex items-center space-x-1.5 font-semibold text-xs text-[#D8B24C]">
                     <Lock className="w-3.5 h-3.5" />
                     <span>Invite Only</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                  <p className="text-[11px] text-[#A7A7A2] mt-1 leading-snug">
                     Private circle accessible only to invited peers.
                   </p>
                 </div>
@@ -172,24 +169,22 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
             </div>
           </div>
 
-          {/* Maximum Participants Display (Locked at 6) */}
-          <div className="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-between">
-            <div className="flex items-center space-x-2 text-slate-300 text-xs font-bold">
-              <Users className="w-4 h-4 text-amber-400" />
+          <div className="p-3 bg-[#151515] border border-[#343434] rounded-lg flex items-center justify-between">
+            <div className="flex items-center space-x-2 text-[#A7A7A2] text-xs font-medium">
+              <Users className="w-4 h-4 text-[#D8B24C]" />
               <span>Maximum Capacity</span>
             </div>
-            <span className="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-black rounded-xl">
+            <span className="px-2.5 py-0.5 bg-[#D8B24C]/10 border border-[#D8B24C]/30 text-[#D8B24C] text-xs font-semibold rounded-md">
               6 Participants Max
             </span>
           </div>
 
-          {/* Actions */}
           <div className="pt-2 flex items-center justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-5 py-3 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold text-xs rounded-2xl border border-slate-800 transition-colors"
+              className="px-4 py-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-xs font-medium rounded-lg border border-[#343434] transition-colors"
             >
               Cancel
             </button>
@@ -197,16 +192,16 @@ export function CreateMeetingCircleModal({ isOpen, onClose, onCreateSuccess }) {
             <button
               type="submit"
               disabled={submitting || !name.trim()}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white font-extrabold text-xs rounded-2xl shadow-lg transition-all flex items-center space-x-2 touch-target-xl"
+              className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] font-semibold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-2 touch-target"
             >
               {submitting ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   <span>Creating Circle...</span>
                 </>
               ) : (
                 <>
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
                   <span>Create Circle</span>
                 </>
               )}

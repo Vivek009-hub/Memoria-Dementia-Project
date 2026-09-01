@@ -1,9 +1,9 @@
 /**
- * NotificationPreferencesModal.jsx — Notification Preferences Settings Modal
+ * NotificationPreferencesModal.jsx — Memora Notification Preferences Settings Modal
  */
 
 import React, { useState, useEffect } from 'react';
-import { X, Save, Bell, Mail, Smartphone, ShieldCheck, AlertCircle } from 'lucide-react';
+import { X, Save, Bell, Mail, Smartphone, AlertCircle } from 'lucide-react';
 import * as notificationsApi from '../api/notifications.api.js';
 
 export function NotificationPreferencesModal({ isOpen, onClose }) {
@@ -86,154 +86,154 @@ export function NotificationPreferencesModal({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-[#151515]/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="pref-modal-title"
     >
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl my-8">
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-950/80">
-          <div className="flex items-center space-x-2 text-indigo-400">
-            <Bell className="w-6 h-6" />
-            <h2 id="pref-modal-title" className="text-xl font-extrabold text-white">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl w-full max-w-lg overflow-hidden shadow-2xl my-8">
+        <div className="flex items-center justify-between p-5 border-b border-[#343434] bg-[#1B1B1B]">
+          <div className="flex items-center space-x-2 text-[#D8B24C]">
+            <Bell className="w-5 h-5" />
+            <h2 id="pref-modal-title" className="text-xl font-semibold text-[#F5F5F0]">
               Notification Settings
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-colors"
+            className="p-2 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-400">
-            <Bell className="w-8 h-8 animate-bounce mx-auto mb-2 text-indigo-400" />
-            <p className="font-bold">Loading settings...</p>
+          <div className="p-12 text-center text-[#A7A7A2]">
+            <Bell className="w-8 h-8 animate-bounce mx-auto mb-2 text-[#D8B24C]" />
+            <p className="font-semibold text-sm">Loading settings...</p>
           </div>
         ) : (
           <form onSubmit={handleSave} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
             {errorMsg && (
-              <div className="p-3 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-xs font-bold flex items-center space-x-2">
+              <div className="p-3 bg-[#D95C5C]/10 border border-[#D95C5C]/30 rounded-lg text-[#D95C5C] text-xs font-medium flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
 
             {successMsg && (
-              <div className="p-3 bg-emerald-950/80 border border-emerald-500/50 rounded-xl text-emerald-300 text-xs font-bold">
+              <div className="p-3 bg-[#45B982]/10 border border-[#45B982]/30 rounded-lg text-[#45B982] text-xs font-medium">
                 {successMsg}
               </div>
             )}
 
             <div className="space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#D8B24C]">
                 Delivery Channels
               </h3>
 
               <div className="space-y-2">
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
+                <label className="flex items-center justify-between p-3.5 bg-[#151515] rounded-lg border border-[#343434] cursor-pointer">
                   <div className="flex items-center space-x-3">
-                    <Bell className="w-5 h-5 text-indigo-400" />
+                    <Bell className="w-4 h-4 text-[#D8B24C]" />
                     <div>
-                      <span className="text-sm font-bold text-white block">In-App Notifications</span>
-                      <span className="text-xs text-slate-400 block">Show alerts inside Memora</span>
+                      <span className="text-xs font-semibold text-[#F5F5F0] block">In-App Notifications</span>
+                      <span className="text-[11px] text-[#A7A7A2] block">Show alerts inside Memora</span>
                     </div>
                   </div>
                   <input
                     type="checkbox"
                     checked={inApp}
                     onChange={(e) => setInApp(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-4 h-4 rounded text-[#D8B24C] focus:ring-[#D8B24C] bg-[#202020] border-[#343434]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
+                <label className="flex items-center justify-between p-3.5 bg-[#151515] rounded-lg border border-[#343434] cursor-pointer">
                   <div className="flex items-center space-x-3">
-                    <Smartphone className="w-5 h-5 text-emerald-400" />
+                    <Smartphone className="w-4 h-4 text-[#45B982]" />
                     <div>
-                      <span className="text-sm font-bold text-white block">Mobile Push Notifications</span>
-                      <span className="text-xs text-slate-400 block">Receive alerts on companion device</span>
+                      <span className="text-xs font-semibold text-[#F5F5F0] block">Mobile Push Notifications</span>
+                      <span className="text-[11px] text-[#A7A7A2] block">Receive alerts on companion device</span>
                     </div>
                   </div>
                   <input
                     type="checkbox"
                     checked={push}
                     onChange={(e) => setPush(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-4 h-4 rounded text-[#D8B24C] focus:ring-[#D8B24C] bg-[#202020] border-[#343434]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
+                <label className="flex items-center justify-between p-3.5 bg-[#151515] rounded-lg border border-[#343434] cursor-pointer">
                   <div className="flex items-center space-x-3">
-                    <Mail className="w-5 h-5 text-amber-400" />
+                    <Mail className="w-4 h-4 text-[#E5A83B]" />
                     <div>
-                      <span className="text-sm font-bold text-white block">Email Notifications</span>
-                      <span className="text-xs text-slate-400 block">Receive summary emails</span>
+                      <span className="text-xs font-semibold text-[#F5F5F0] block">Email Notifications</span>
+                      <span className="text-[11px] text-[#A7A7A2] block">Receive summary emails</span>
                     </div>
                   </div>
                   <input
                     type="checkbox"
                     checked={email}
-                    onChange={(e) => setEmail(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-4 h-4 rounded text-[#D8B24C] focus:ring-[#D8B24C] bg-[#202020] border-[#343434]"
                   />
                 </label>
               </div>
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#D8B24C]">
                 Notification Categories
               </h3>
 
               <div className="space-y-2">
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
-                  <span className="text-sm font-bold text-white">Daily Routine & Reminder Alerts</span>
+                <label className="flex items-center justify-between p-3.5 bg-[#151515] rounded-lg border border-[#343434] cursor-pointer">
+                  <span className="text-xs font-semibold text-[#F5F5F0]">Daily Routine & Reminder Alerts</span>
                   <input
                     type="checkbox"
                     checked={reminders}
                     onChange={(e) => setReminders(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-4 h-4 rounded text-[#D8B24C] focus:ring-[#D8B24C] bg-[#202020] border-[#343434]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
-                  <span className="text-sm font-bold text-white">Community Session Alerts</span>
+                <label className="flex items-center justify-between p-3.5 bg-[#151515] rounded-lg border border-[#343434] cursor-pointer">
+                  <span className="text-xs font-semibold text-[#F5F5F0]">Community Session Alerts</span>
                   <input
                     type="checkbox"
                     checked={community}
                     onChange={(e) => setCommunity(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-4 h-4 rounded text-[#D8B24C] focus:ring-[#D8B24C] bg-[#202020] border-[#343434]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
-                  <span className="text-sm font-bold text-white">Meeting Circle Room Alerts</span>
+                <label className="flex items-center justify-between p-3.5 bg-[#151515] rounded-lg border border-[#343434] cursor-pointer">
+                  <span className="text-xs font-semibold text-[#F5F5F0]">Meeting Circle Room Alerts</span>
                   <input
                     type="checkbox"
                     checked={meetings}
                     onChange={(e) => setMeetings(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-4 h-4 rounded text-[#D8B24C] focus:ring-[#D8B24C] bg-[#202020] border-[#343434]"
                   />
                 </label>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-800 flex items-center justify-end space-x-3">
+            <div className="pt-4 border-t border-[#343434] flex items-center justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={saving}
-                className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-bold rounded-2xl transition-colors"
+                className="px-4 py-2.5 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-xs font-medium rounded-lg border border-[#343434] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
+                className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-xs rounded-lg shadow-xs flex items-center space-x-2 transition-colors touch-target"
               >
                 <Save className="w-4 h-4" />
                 <span>{saving ? 'Saving...' : 'Save Settings'}</span>

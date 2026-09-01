@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Users, ThumbsUp, Calendar, Video, RefreshCw, AlertTriangle, Sparkles, CheckCircle2
+  Users, RefreshCw, AlertTriangle, Sparkles, Calendar
 } from 'lucide-react';
 import { VotingCard } from '../components/VotingCard.jsx';
 import { ScheduledSessionCard } from '../components/ScheduledSessionCard.jsx';
@@ -79,36 +79,36 @@ export function CommunityPage({ patientId }) {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-purple-400 mb-1">
-            <Users className="w-6 h-6" />
-            <span className="text-xs font-black uppercase tracking-wider">Social Circle</span>
+          <div className="flex items-center space-x-2 text-[#E8688A] mb-1">
+            <Users className="w-5 h-5" />
+            <span className="text-xs font-semibold uppercase tracking-wider">Social Circle</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Community Sessions</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#F5F5F0] tracking-tight">Community Sessions</h1>
+          <p className="text-sm text-[#A7A7A2] mt-1">
             Vote on upcoming activity ideas and register for live virtual meeting circle sessions.
           </p>
         </div>
 
-        <div className="flex items-center bg-slate-950 border border-slate-800 p-1.5 rounded-2xl space-x-1 self-start md:self-auto">
+        <div className="flex items-center bg-[#151515] border border-[#343434] p-1 rounded-lg space-x-1 self-start md:self-auto">
           <button
             onClick={() => setActiveTab('VOTING')}
-            className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
+            className={`px-4 py-2 rounded-md text-xs font-semibold transition-all touch-target ${
               activeTab === 'VOTING'
-                ? 'bg-purple-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#D8B24C] text-[#151515] shadow-xs'
+                : 'text-[#A7A7A2] hover:text-[#F5F5F0]'
             }`}
           >
             Vote on Ideas
           </button>
           <button
             onClick={() => setActiveTab('SCHEDULED')}
-            className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
+            className={`px-4 py-2 rounded-md text-xs font-semibold transition-all touch-target ${
               activeTab === 'SCHEDULED'
-                ? 'bg-indigo-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#D8B24C] text-[#151515] shadow-xs'
+                : 'text-[#A7A7A2] hover:text-[#F5F5F0]'
             }`}
           >
             Upcoming Schedule
@@ -117,20 +117,20 @@ export function CommunityPage({ patientId }) {
       </div>
 
       {loading ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
-          <RefreshCw className="w-10 h-10 text-purple-400 animate-spin mx-auto mb-3" />
-          <p className="text-slate-300 font-bold text-lg">Loading community sessions...</p>
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center">
+          <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin mx-auto mb-3" />
+          <p className="text-[#A7A7A2] text-sm">Loading community sessions...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-slate-900 border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
-          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
+        <div className="bg-[#202020] border border-[#D95C5C]/30 rounded-xl p-8 text-center space-y-4">
+          <AlertTriangle className="w-10 h-10 text-[#D95C5C] mx-auto" />
           <div>
-            <h3 className="text-xl font-bold text-white mb-1">Could Not Load Community Data</h3>
-            <p className="text-sm text-slate-400">{errorMsg}</p>
+            <h3 className="text-lg font-semibold text-[#F5F5F0] mb-1">Could Not Load Community Data</h3>
+            <p className="text-sm text-[#A7A7A2]">{errorMsg}</p>
           </div>
           <button
             onClick={activeTab === 'VOTING' ? fetchProposals : fetchScheduledSessions}
-            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl border border-slate-700 transition-all inline-flex items-center space-x-2"
+            className="px-4 py-2 bg-[#151515] hover:bg-[#242424] text-[#F5F5F0] font-medium text-sm rounded-lg border border-[#343434] transition-colors inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
@@ -138,10 +138,10 @@ export function CommunityPage({ patientId }) {
         </div>
       ) : activeTab === 'VOTING' ? (
         proposals.length === 0 ? (
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg space-y-3">
-            <Sparkles className="w-12 h-12 text-purple-400 mx-auto opacity-50" />
-            <h3 className="text-xl font-bold text-white">No Voting Proposals Active</h3>
-            <p className="text-slate-400 text-sm max-w-sm mx-auto">
+          <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center space-y-3">
+            <Sparkles className="w-10 h-10 text-[#D8B24C] mx-auto opacity-60" />
+            <h3 className="text-lg font-semibold text-[#F5F5F0]">No Voting Proposals Active</h3>
+            <p className="text-[#A7A7A2] text-sm max-w-sm mx-auto">
               Check back soon as administrators post new community session proposals for patient voting.
             </p>
           </div>
@@ -158,10 +158,10 @@ export function CommunityPage({ patientId }) {
           </div>
         )
       ) : scheduledSessions.length === 0 ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg space-y-3">
-          <Calendar className="w-12 h-12 text-indigo-400 mx-auto opacity-50" />
-          <h3 className="text-xl font-bold text-white">No Scheduled Sessions</h3>
-          <p className="text-slate-400 text-sm max-w-sm mx-auto">
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center space-y-3">
+          <Calendar className="w-10 h-10 text-[#D8B24C] mx-auto opacity-60" />
+          <h3 className="text-lg font-semibold text-[#F5F5F0]">No Scheduled Sessions</h3>
+          <p className="text-[#A7A7A2] text-sm max-w-sm mx-auto">
             Once voting ends on proposed topics, approved sessions will be published here with meeting links.
           </p>
         </div>

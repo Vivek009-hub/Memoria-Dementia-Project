@@ -87,15 +87,15 @@ export function CaregiverDashboardPage({ onNavigate }) {
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#252525] border border-[#343434] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-rose-400 mb-1">
-            <HeartPulse className="w-6 h-6" />
-            <span className="text-xs font-black uppercase tracking-wider">Caregiver Control Panel</span>
+          <div className="flex items-center space-x-2 text-[#DDBB55] mb-1">
+            <HeartPulse className="w-5 h-5" />
+            <span className="text-xs font-semibold uppercase tracking-wider">Caregiver Management</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Caregiver Dashboard</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Monitor real-time patient adherence, safety alerts, and cognitive game progress.
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#E8E8E8] tracking-tight">Caregiver Dashboard</h1>
+          <p className="text-sm text-[#A0A0A0] mt-1">
+            Monitor real-time patient adherence, safety alerts, and cognitive activity.
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export function CaregiverDashboardPage({ onNavigate }) {
 
           <button
             onClick={() => setShowPairModal(true)}
-            className="px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm rounded-2xl shadow-md flex items-center space-x-2 transition-all"
+            className="px-4 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg shadow-sm flex items-center space-x-2 transition-colors"
           >
             <Key className="w-4 h-4" />
             <span>Enter Pairing Code</span>
@@ -118,51 +118,51 @@ export function CaregiverDashboardPage({ onNavigate }) {
 
           <button
             onClick={fetchPatientOverview}
-            className="p-3 bg-slate-950 hover:bg-slate-800 text-slate-300 rounded-2xl border border-slate-800 transition-colors"
+            className="p-2.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-[#A0A0A0] hover:text-[#E8E8E8] rounded-lg border border-[#343434] transition-colors"
             title="Refresh overview"
           >
-            <RefreshCw className="w-5 h-5" />
+            <RefreshCw className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {successMsg && (
-        <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-4 py-3 rounded-2xl text-sm font-semibold flex items-center justify-between">
+        <div className="bg-[#8BAA78]/10 border border-[#8BAA78]/30 text-[#8BAA78] px-4 py-3 rounded-lg text-sm font-medium flex items-center justify-between">
           <span>{successMsg}</span>
           <button onClick={() => setSuccessMsg('')}><X className="w-4 h-4" /></button>
         </div>
       )}
 
       {loading ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg">
-          <RefreshCw className="w-10 h-10 text-rose-400 animate-spin mx-auto mb-3" />
-          <p className="text-slate-300 font-bold text-lg">Loading patient monitoring metrics...</p>
+        <div className="bg-[#252525] border border-[#343434] rounded-xl p-12 text-center">
+          <RefreshCw className="w-8 h-8 text-[#DDBB55] animate-spin mx-auto mb-3" />
+          <p className="text-[#A0A0A0] text-sm">Loading patient metrics...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-slate-900 border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
-          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
+        <div className="bg-[#252525] border border-[#C95C5C]/30 rounded-xl p-8 text-center space-y-4">
+          <AlertTriangle className="w-10 h-10 text-[#C95C5C] mx-auto" />
           <div>
-            <h3 className="text-xl font-bold text-white mb-1">Could Not Load Caregiver Overview</h3>
-            <p className="text-sm text-slate-400">{errorMsg}</p>
+            <h3 className="text-lg font-semibold text-[#E8E8E8] mb-1">Could Not Load Caregiver Overview</h3>
+            <p className="text-sm text-[#A0A0A0]">{errorMsg}</p>
           </div>
           <button
             onClick={fetchPatientOverview}
-            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl border border-slate-700 transition-all inline-flex items-center space-x-2"
+            className="px-4 py-2 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-[#E8E8E8] font-medium text-sm rounded-lg border border-[#343434] transition-colors inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
           </button>
         </div>
       ) : !selectedPatientId ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center shadow-lg space-y-4">
-          <Users className="w-12 h-12 text-rose-400 mx-auto opacity-50" />
-          <h3 className="text-xl font-bold text-white">No Assigned Patients</h3>
-          <p className="text-slate-400 text-sm max-w-md mx-auto">
+        <div className="bg-[#252525] border border-[#343434] rounded-xl p-12 text-center space-y-4">
+          <Users className="w-12 h-12 text-[#DDBB55] mx-auto opacity-50" />
+          <h3 className="text-xl font-semibold text-[#E8E8E8]">No Assigned Patients</h3>
+          <p className="text-[#A0A0A0] text-sm max-w-md mx-auto leading-relaxed">
             You do not currently have an active patient connected. Ask your patient to generate a 6-character pairing code from their Profile page, then click below to connect.
           </p>
           <button
             onClick={() => setShowPairModal(true)}
-            className="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm rounded-2xl shadow-lg inline-flex items-center space-x-2"
+            className="px-5 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg inline-flex items-center space-x-2 shadow-sm transition-colors"
           >
             <Key className="w-4 h-4" />
             <span>Enter Pairing Code</span>
@@ -178,31 +178,31 @@ export function CaregiverDashboardPage({ onNavigate }) {
 
       {/* Pairing Modal */}
       {showPairModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl max-w-md w-full space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center space-x-2 text-white font-bold text-lg">
-                <Key className="w-5 h-5 text-brand-400" />
+        <div className="fixed inset-0 bg-[#1E1E1E]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#252525] border border-[#343434] p-6 rounded-xl max-w-md w-full space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-[#343434] pb-3">
+              <div className="flex items-center space-x-2 text-[#E8E8E8] font-semibold text-base">
+                <Key className="w-4 h-4 text-[#DDBB55]" />
                 <span>Pair Patient Account</span>
               </div>
-              <button onClick={() => setShowPairModal(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setShowPairModal(false)} className="text-[#747474] hover:text-[#E8E8E8]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-slate-400 text-sm">
+            <p className="text-[#A0A0A0] text-xs leading-relaxed">
               Enter the 6-character pairing code generated on the patient's Memora profile page.
             </p>
 
             {pairError && (
-              <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs px-3 py-2 rounded-xl">
+              <div className="bg-[#C95C5C]/10 border border-[#C95C5C]/30 text-[#C95C5C] text-xs p-2.5 rounded-lg">
                 {pairError}
               </div>
             )}
 
             <form onSubmit={handleRedeemPairCode} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-[11px] font-medium text-[#A0A0A0] uppercase tracking-wider block mb-1">
                   6-Character Code
                 </label>
                 <input
@@ -212,7 +212,7 @@ export function CaregiverDashboardPage({ onNavigate }) {
                   value={pairingCodeInput}
                   onChange={(e) => setPairingCodeInput(e.target.value.toUpperCase())}
                   placeholder="e.g. 7A8F9B"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-center text-xl font-mono font-bold uppercase tracking-widest text-slate-100 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#1E1E1E] border border-[#383838] rounded-lg px-4 py-2.5 text-center text-xl font-mono font-semibold uppercase tracking-widest text-[#E8E8E8] focus:outline-none focus:border-[#DDBB55]"
                 />
               </div>
 
@@ -220,7 +220,7 @@ export function CaregiverDashboardPage({ onNavigate }) {
                 <button
                   type="submit"
                   disabled={pairingLoading}
-                  className="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm rounded-xl shadow-md disabled:opacity-50 transition-colors flex items-center justify-center space-x-2"
+                  className="w-full py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg shadow-sm disabled:opacity-50 transition-colors flex items-center justify-center space-x-2"
                 >
                   {pairingLoading ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -236,4 +236,5 @@ export function CaregiverDashboardPage({ onNavigate }) {
     </div>
   );
 }
+
 
