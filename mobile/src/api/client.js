@@ -22,19 +22,24 @@ export class ApiError extends Error {
 // User-friendly error message map converting backend system errors to simple text
 const ERROR_MESSAGE_MAP = {
   SAFETY_EVENT_ALREADY_RESOLVED: 'This safety alert has already been handled.',
-  UNAUTHORIZED: 'Please log in to continue.',
+  UNAUTHORIZED: 'Your session has expired. Please log in again.',
   FORBIDDEN: 'You are not authorized to perform this action.',
   RATE_LIMIT_EXCEEDED: 'Too many requests. Please try again in a moment.',
-  NOT_FOUND: 'The requested safety information was not found.',
-  NETWORK_ERROR: 'No internet connection. Event queued for retry.',
-  SERVER_ERROR: 'Our safety system is experiencing temporary issues. Please try again.',
+  RATE_LIMITED: 'I am busy right now. Please try again in a moment.',
+  NOT_FOUND: 'The requested information was not found.',
+  MODEL_NOT_FOUND: 'The requested AI model is unavailable.',
+  INVALID_API_KEY: 'Unauthorized AI configuration. Please verify backend API keys.',
+  AI_PROVIDER_ERROR: 'Unable to connect to AI service. Please try again in a moment.',
+  CLIENT_TIMEOUT: 'Memora took too long to respond. Please try again.',
+  NETWORK_ERROR: 'Unable to connect to Memora server. Please check your internet connection.',
+  SERVER_ERROR: 'Memora is experiencing temporary issues. Please try again.',
 };
 
 export class ApiClient {
   constructor(options = {}) {
     const envUrl = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_API_BASE_URL : null;
     this.baseUrl = options.baseUrl || envUrl || 'http://localhost:5000/api/v1';
-    this.timeoutMs = options.timeoutMs || 10000;
+    this.timeoutMs = options.timeoutMs || 30000;
     this.authToken = null;
     this.onUnauthenticated = options.onUnauthenticated || null;
   }
@@ -96,7 +101,7 @@ export class ApiClient {
     } catch (err) {
       clearTimeout(timeoutId);
       if (err.name === 'AbortError') {
-        throw new ApiError('Request timed out. Please check connection.', 408, 'TIMEOUT');
+        throw new ApiError('Memora took too long to respond. Please try again.', 408, 'CLIENT_TIMEOUT');
       }
       if (err instanceof ApiError) {
         throw err;
