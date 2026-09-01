@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  color-scheme: light;
+  font-family: 'Outfit', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #121212;
+  color: #F8FAFC;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }

@@ -23,13 +23,13 @@ const TYPE_ICONS = {
 };
 
 const TYPE_STYLES = {
-  REMINDER: 'bg-purple-100 text-purple-800 border-purple-300',
-  COMMUNITY_SESSION: 'bg-indigo-100 text-indigo-800 border-indigo-300',
-  MEETING: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-  SOS: 'bg-rose-100 text-rose-800 border-rose-300',
-  POSSIBLE_FALL: 'bg-rose-100 text-rose-800 border-rose-300',
-  GEOFENCE: 'bg-amber-100 text-amber-800 border-amber-300',
-  SYSTEM: 'bg-blue-100 text-blue-800 border-blue-300',
+  REMINDER: 'bg-[#F4C542]/20 text-[#FFD75A] border-[#F4C542]/40',
+  COMMUNITY_SESSION: 'bg-[#6366F1]/20 text-[#818CF8] border-[#6366F1]/40',
+  MEETING: 'bg-[#14B8A6]/20 text-[#2DD4BF] border-[#14B8A6]/40',
+  SOS: 'bg-[#EF4444]/20 text-[#FCA5A5] border-[#EF4444]/40',
+  POSSIBLE_FALL: 'bg-[#EF4444]/20 text-[#FCA5A5] border-[#EF4444]/40',
+  GEOFENCE: 'bg-[#F59E0B]/20 text-[#FCD34D] border-[#F59E0B]/40',
+  SYSTEM: 'bg-[#818CF8]/20 text-[#A78BFA] border-[#818CF8]/40',
 };
 
 export function NotificationItem({ notification, onMarkRead, onClick }) {
@@ -73,10 +73,10 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
   return (
     <div
       onClick={() => onClick && onClick(notification)}
-      className={`group relative bg-white border-2 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
+      className={`group relative bg-[#0F172A] border rounded-3xl p-5 shadow-lg transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
         !notification.isRead
-          ? 'border-blue-500 bg-blue-50/30'
-          : 'border-slate-200 hover:border-slate-300 opacity-90 hover:opacity-100'
+          ? 'border-[#6366F1]/50 bg-[#6366F1]/10'
+          : 'border-[#27324A] opacity-75 hover:opacity-100 hover:border-[#3B4C6E]'
       }`}
       role="button"
       tabIndex={0}
@@ -91,49 +91,49 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
             </div>
             <div>
               <div className="flex items-center space-x-2 mb-0.5">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-black uppercase tracking-wider text-[#94A3B8]">
                   {notification.type?.replace('_', ' ')}
                 </span>
                 {notification.priority === 'CRITICAL' && (
-                  <span className="px-2 py-0.5 bg-rose-100 text-rose-800 text-xs font-black rounded-lg border border-rose-300 uppercase">
+                  <span className="px-2 py-0.5 bg-[#EF4444]/20 text-[#FCA5A5] text-xs font-black rounded-lg border border-[#EF4444]/40 uppercase">
                     Critical
                   </span>
                 )}
               </div>
-              <h3 className="text-lg font-extrabold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors">
+              <h3 className="text-lg font-extrabold text-[#F8FAFC] leading-snug group-hover:text-[#F4C542] transition-colors">
                 {notification.title}
               </h3>
             </div>
           </div>
 
           {!notification.isRead && (
-            <span className="w-3 h-3 bg-blue-600 rounded-full shrink-0 animate-pulse mt-2" />
+            <span className="w-3 h-3 bg-[#F4C542] rounded-full shrink-0 animate-pulse mt-2 shadow-lg shadow-[#F4C542]/50" />
           )}
         </div>
 
         {/* Message */}
-        <p className="text-sm font-semibold text-slate-600 leading-relaxed pl-12">
+        <p className="text-sm font-semibold text-[#CBD5E1] leading-relaxed pl-12">
           {notification.message}
         </p>
       </div>
 
       {/* Footer Timestamp + Actions */}
-      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-        <span className="font-mono font-bold text-slate-500">{formatTimestamp(notification.createdAt)}</span>
+      <div className="pt-3 border-t border-[#27324A] flex items-center justify-between text-xs text-[#94A3B8]">
+        <span className="font-mono font-bold">{formatTimestamp(notification.createdAt)}</span>
 
         <div className="flex items-center space-x-2">
           {!notification.isRead && onMarkRead && (
             <button
               onClick={handleMarkReadClick}
               disabled={marking}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold rounded-xl border border-slate-300 flex items-center space-x-1.5 transition-colors"
+              className="px-3 py-1.5 bg-[#151B2B] hover:bg-[#242D40] text-[#CBD5E1] text-xs font-extrabold rounded-xl border border-[#27324A] flex items-center space-x-1.5 transition-colors"
             >
-              <Check className="w-3.5 h-3.5 text-emerald-600" />
+              <Check className="w-3.5 h-3.5 text-[#10B981]" />
               <span>Mark Read</span>
             </button>
           )}
 
-          <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-transform" />
+          <ChevronRight className="w-4 h-4 text-[#64748B] group-hover:text-[#F4C542] group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
     </div>
