@@ -45,11 +45,12 @@ export async function recordActivityEvent({
  * Get comprehensive patient overview dashboard data.
  */
 export async function getPatientOverview(patientId, startDate, endDate) {
-  const [games, reminders, memories, community] = await Promise.all([
+  const [games, reminders, memories, community, recentActivity] = await Promise.all([
     aggregateGameMetrics(patientId, startDate, endDate),
     aggregateReminderMetrics(patientId, startDate, endDate),
     aggregateMemoryMetrics(patientId, startDate, endDate),
     aggregateCommunityMetrics(patientId, startDate, endDate),
+    ActivityEvent.find({ patientId }).sort({ timestamp: -1 }).limit(5).lean(),
   ]);
 
   const engagementScore = calculateEngagementScore(games, reminders, memories, community);
@@ -63,6 +64,16 @@ export async function getPatientOverview(patientId, startDate, endDate) {
     engagement: {
       score: engagementScore,
     },
+    recentActivity,
+    // Authoritative flattened properties for frontend dashboard consumption
+    remindersCompleted: reminders.completed,
+    remindersTotal: reminders.total,
+    reminderAdherenceRate: Math.round((reminders.completionRate || 0) * 100),
+    gamesCompleted: games.completed,
+    gamesPlayed: games.played,
+    gameAccuracy: games.avgAccuracy || 0,
+    memoriesAdded: memories.activeCount,
+    communitySessionsAttended: community.attendances,
   };
 }
 

@@ -20,17 +20,12 @@ export function AnalyticsPage({ patientId }) {
       const res = await analyticsApi.getAnalyticsOverview({ days: rangeDays, patientId });
       if (res.data) {
         setOverview(res.data);
+      } else {
+        setOverview(null);
       }
-    } catch {
-      setOverview({
-        remindersCompleted: 17,
-        remindersTotal: 20,
-        reminderAdherenceRate: 85,
-        gamesCompleted: 8,
-        gameAccuracy: 86,
-        memoriesAdded: 4,
-        communitySessionsAttended: 2,
-      });
+    } catch (err) {
+      setErrorMsg(err.message || 'Could not load analytics progress statistics.');
+      setOverview(null);
     } finally {
       setLoading(false);
     }
@@ -40,11 +35,18 @@ export function AnalyticsPage({ patientId }) {
     fetchAnalytics();
   }, [fetchAnalytics]);
 
-  const reminderPercentage = overview?.reminderAdherenceRate || (
-    overview?.remindersTotal > 0
-      ? Math.round((overview.remindersCompleted / overview.remindersTotal) * 100)
-      : 85
+  const totalReminders = overview?.remindersTotal ?? overview?.reminders?.total ?? 0;
+  const completedReminders = overview?.remindersCompleted ?? overview?.reminders?.completed ?? 0;
+  const reminderPercentage = overview?.reminderAdherenceRate ?? (
+    totalReminders > 0
+      ? Math.round((completedReminders / totalReminders) * 100)
+      : 0
   );
+
+  const gamesCompleted = overview?.gamesCompleted ?? overview?.games?.completed ?? 0;
+  const gameAccuracy = overview?.gameAccuracy ?? overview?.games?.avgAccuracy ?? 0;
+  const memoriesAdded = overview?.memoriesAdded ?? overview?.memories?.activeCount ?? 0;
+  const communitySessionsAttended = overview?.communitySessionsAttended ?? overview?.community?.attendances ?? 0;
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
@@ -107,7 +109,7 @@ export function AnalyticsPage({ patientId }) {
             <ActivityProgressCard
               title="Routine Reminders"
               value={`${reminderPercentage}%`}
-              subtext={`${overview?.remindersCompleted || 17} of ${overview?.remindersTotal || 20} completed`}
+              subtext={`${completedReminders} of ${totalReminders} completed`}
               icon={Clock}
               color="amber"
               percentage={reminderPercentage}
@@ -115,16 +117,16 @@ export function AnalyticsPage({ patientId }) {
 
             <ActivityProgressCard
               title="Cognitive Games"
-              value={`${overview?.gamesCompleted || 8} Played`}
-              subtext={`${overview?.gameAccuracy || 86}% accuracy rate`}
+              value={`${gamesCompleted} Played`}
+              subtext={`${gameAccuracy}% accuracy rate`}
               icon={Gamepad2}
               color="indigo"
-              percentage={overview?.gameAccuracy || 86}
+              percentage={gameAccuracy}
             />
 
             <ActivityProgressCard
               title="Memory Vault"
-              value={`${overview?.memoriesAdded || 4} Items`}
+              value={`${memoriesAdded} Items`}
               subtext="Added to family vault"
               icon={BookOpen}
               color="emerald"
@@ -133,7 +135,7 @@ export function AnalyticsPage({ patientId }) {
 
             <ActivityProgressCard
               title="Community"
-              value={`${overview?.communitySessionsAttended || 2} Sessions`}
+              value={`${communitySessionsAttended} Sessions`}
               subtext="Attended this period"
               icon={Users}
               color="purple"
@@ -151,12 +153,12 @@ export function AnalyticsPage({ patientId }) {
 
             <div className="p-4 bg-[#151515] border border-[#343434] rounded-lg space-y-2">
               <p className="text-sm text-[#A7A7A2] leading-relaxed">
-                Activity participation increased during this period. Routine completion rate is currently at{' '}
+                Activity participation for this period: Routine completion rate is currently at{' '}
                 <strong className="text-[#D8B24C]">{reminderPercentage}%</strong> with{' '}
-                <strong className="text-[#F5F5F0]">{overview?.gamesCompleted || 8} cognitive game sessions</strong> completed.
+                <strong className="text-[#F5F5F0]">{gamesCompleted} cognitive game sessions</strong> completed.
               </p>
               <p className="text-xs text-[#74746F] italic">
-                * Activity trends reflect engagement levels and routine adherence.
+                * Activity trends reflect engagement levels and routine adherence based on database logs.
               </p>
             </div>
           </div>
