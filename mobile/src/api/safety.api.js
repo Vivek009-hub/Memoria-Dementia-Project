@@ -4,13 +4,22 @@
 
 import { defaultApiClient } from './client.js';
 
-export async function sendSOS(payload, client = defaultApiClient) {
+export async function sendSOS(payload = {}, client = defaultApiClient) {
+  const hasCoordinates =
+    payload.latitude !== undefined &&
+    payload.latitude !== null &&
+    payload.longitude !== undefined &&
+    payload.longitude !== null;
+
   const body = {
-    latitude: payload.latitude ?? null,
-    longitude: payload.longitude ?? null,
-    accuracy: payload.accuracy ?? null,
-    timestamp: payload.timestamp || new Date().toISOString(),
-    idempotencyKey: payload.idempotencyKey || null,
+    location: hasCoordinates
+      ? {
+          latitude: Number(payload.latitude),
+          longitude: Number(payload.longitude),
+          accuracy: payload.accuracy !== undefined && payload.accuracy !== null ? Number(payload.accuracy) : 0,
+        }
+      : null,
+    clientEventId: payload.idempotencyKey || payload.clientEventId || null,
   };
   return await client.post('/safety/sos', body);
 }

@@ -37,7 +37,7 @@ export function getProvider() {
       _geminiInstance = new GeminiProvider(env.geminiApiKey.trim());
     }
     if (_loggedState !== 'GEMINI') {
-      logger.info({ model: _geminiInstance.model }, 'AI Provider active: Google Gemini (gemini-2.0-flash)');
+      logger.info({ model: _geminiInstance.model }, 'AI Provider active: Google Gemini (gemini-3.6-flash)');
       _loggedState = 'GEMINI';
     }
     return _geminiInstance;
