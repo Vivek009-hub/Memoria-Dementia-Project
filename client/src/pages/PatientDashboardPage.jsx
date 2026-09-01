@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { ActivityProgressCard } from '../components/ActivityProgressCard.jsx';
+import { PersonalizedRecommendationsCard } from '../components/PersonalizedRecommendationsCard.jsx';
 import * as analyticsApi from '../api/analytics.api.js';
 
 export function PatientDashboardPage() {
@@ -231,6 +232,9 @@ export function PatientDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* AI Recommendations Section */}
+      <PersonalizedRecommendationsCard onNavigate={(path) => navigate(path)} />
 
       {/* Today's Schedule & Recent Activity Split */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

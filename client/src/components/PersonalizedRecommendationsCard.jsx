@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Gamepad2, BookOpen, Clock, RefreshCw, ChevronRight } from 'lucide-react';
+import { Sparkles, Gamepad2, Clock, RefreshCw, ChevronRight } from 'lucide-react';
 import * as aiApi from '../api/ai.api.js';
 
 export function PersonalizedRecommendationsCard({ onNavigate }) {
@@ -20,10 +20,10 @@ export function PersonalizedRecommendationsCard({ onNavigate }) {
     } catch {
       setRecommendations({
         games: [
-          { id: 'memory_match', title: 'Memory Match', category: 'Cognitive', difficulty: 'Easy' },
-          { id: 'word_recall', title: 'Word Recall', category: 'Language', difficulty: 'Medium' },
+          { id: 'memory_match', title: 'Memory Match Cards', category: 'Cognitive', difficulty: 'Easy', route: '/app/games' },
+          { id: 'word_recall', title: 'Daily Word Recall', category: 'Language', difficulty: 'Medium', route: '/app/games' },
         ],
-        routine: 'Morning music therapy and memory review',
+        routine: 'Morning music therapy and memory photo review',
       });
     } finally {
       setLoading(false);
@@ -35,27 +35,27 @@ export function PersonalizedRecommendationsCard({ onNavigate }) {
   }, []);
 
   return (
-    <div className="bg-slate-900 border border-indigo-500/30 rounded-3xl p-5 shadow-xl space-y-4">
+    <div className="bg-[#202020] border border-[#343434] hover:border-[#D8B24C]/60 rounded-xl p-5 shadow-xs space-y-4 transition-all">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2 text-indigo-400">
+        <div className="flex items-center space-x-2 text-[#D8B24C]">
           <Sparkles className="w-5 h-5 animate-pulse" />
-          <h3 className="text-base font-extrabold text-white uppercase tracking-wider">
+          <h3 className="text-base font-semibold text-[#F5F5F0] tracking-tight">
             Picked For You Today
           </h3>
         </div>
         <button
           onClick={fetchRecs}
-          className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-950 border border-slate-800 transition-colors"
+          className="p-1.5 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-lg bg-[#151515] border border-[#343434] transition-colors"
           title="Refresh recommendations"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#D8B24C]' : ''}`} />
         </button>
       </div>
 
       {loading ? (
-        <div className="p-6 text-center text-slate-400">
-          <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-indigo-400" />
-          <span className="text-xs font-bold">Curating personalized activities...</span>
+        <div className="p-6 text-center text-[#A7A7A2]">
+          <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#D8B24C]" />
+          <span className="text-xs font-medium">Curating personalized activities...</span>
         </div>
       ) : (
         <div className="space-y-3">
@@ -64,31 +64,31 @@ export function PersonalizedRecommendationsCard({ onNavigate }) {
               {recommendations.games.map((game, idx) => (
                 <div
                   key={idx}
-                  onClick={() => onNavigate && onNavigate('/app/analytics')}
-                  className="p-3.5 bg-slate-950 border border-slate-800 hover:border-indigo-500/50 rounded-2xl flex items-center justify-between cursor-pointer group transition-all"
+                  onClick={() => onNavigate && onNavigate(game.route || '/app/games')}
+                  className="p-3 bg-[#151515] border border-[#343434] hover:border-[#D8B24C]/60 rounded-lg flex items-center justify-between cursor-pointer group transition-all"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+                    <div className="p-2 bg-[#D8B24C]/10 text-[#D8B24C] rounded-lg border border-[#D8B24C]/30">
                       <Gamepad2 className="w-4 h-4" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-indigo-400 transition-colors">
+                      <h4 className="text-xs font-semibold text-[#F5F5F0] group-hover:text-[#D8B24C] transition-colors">
                         {game.title}
                       </h4>
-                      <span className="text-[10px] text-slate-400 font-medium">
-                        {game.category || 'Cognitive'} • {game.difficulty || 'Easy'}
+                      <span className="text-[10px] text-[#74746F] font-medium">
+                        {game.category || 'Cognitive'} &bull; {game.difficulty || 'Easy'}
                       </span>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[#74746F] group-hover:text-[#D8B24C] group-hover:translate-x-1 transition-transform" />
                 </div>
               ))}
             </div>
           )}
 
           {recommendations?.routine && (
-            <div className="p-3 bg-indigo-950/20 border border-indigo-500/20 rounded-2xl flex items-center space-x-2 text-xs text-indigo-200">
-              <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+            <div className="p-3 bg-[#151515] border border-[#343434] rounded-lg flex items-center space-x-2.5 text-xs text-[#A7A7A2]">
+              <Clock className="w-4 h-4 text-[#D8B24C] shrink-0" />
               <span>{typeof recommendations.routine === 'string' ? recommendations.routine : 'Recommended daily routine ready'}</span>
             </div>
           )}

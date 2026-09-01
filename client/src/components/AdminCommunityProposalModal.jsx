@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles, PlusCircle } from 'lucide-react';
 
-export function AdminCommunityProposalModal({ isOpen, onClose, onSubmit }) {
+export function AdminCommunityProposalModal({ isOpen, onClose, onSubmit, onCreateProposal }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('MUSIC');
@@ -17,9 +17,12 @@ export function AdminCommunityProposalModal({ isOpen, onClose, onSubmit }) {
     e.preventDefault();
     if (!title.trim() || submitting) return;
 
+    const submitFn = onSubmit || onCreateProposal;
+    if (!submitFn) return;
+
     setSubmitting(true);
     try {
-      await onSubmit({ title, description, category });
+      await submitFn({ title, description, category });
       setTitle('');
       setDescription('');
       onClose();

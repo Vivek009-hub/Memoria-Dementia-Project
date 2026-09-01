@@ -6,13 +6,14 @@ import React from 'react';
 import { Clock, Gamepad2, BookOpen, Users, Shield, MapPin, Activity } from 'lucide-react';
 
 export function CaregiverPatientOverviewCard({
-  patientName = 'Patient',
-  remindersCount = 0,
-  remindersCompleted = 0,
-  memoriesCount = 0,
-  safetyStatus = 'CONNECTED',
-  locationAccuracy = 10,
-  activeSOS = null,
+  overview,
+  patientName = overview?.patientName || overview?.patient?.name || 'Patient',
+  remindersCount = overview?.remindersTotal || overview?.remindersCount || 0,
+  remindersCompleted = overview?.remindersCompleted || 0,
+  memoriesCount = overview?.memoriesAdded || overview?.memoriesCount || 0,
+  safetyStatus = overview?.safetyStatus || 'CONNECTED',
+  locationAccuracy = overview?.locationAccuracy || 10,
+  activeSOS = overview?.activeSOS || null,
 }) {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
