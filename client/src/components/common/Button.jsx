@@ -9,13 +9,13 @@ export function Button({
   className = '',
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-colors duration-150 disabled:opacity-50 disabled:pointer-events-none touch-target';
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none touch-target';
 
   const variants = {
-    primary: 'bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] shadow-sm',
-    secondary: 'bg-[#252525] hover:bg-[#2A2A2A] text-[#E8E8E8] border border-[#343434]',
-    danger: 'bg-[#C95C5C] hover:bg-[#D96C6C] text-[#FFFFFF]',
-    outline: 'bg-transparent hover:bg-[#252525] text-[#E8E8E8] border border-[#343434]',
+    primary: 'bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] shadow-xs active:scale-[0.99]',
+    secondary: 'bg-[#202020] hover:bg-[#242424] text-[#F5F5F0] border border-[#343434]',
+    danger: 'bg-[#D95C5C]/15 hover:bg-[#D95C5C]/25 text-[#D95C5C] border border-[#D95C5C]/40',
+    outline: 'bg-transparent hover:bg-[#D8B24C]/10 text-[#D8B24C] border border-[#D8B24C]/40',
   };
 
   const sizes = {
@@ -38,4 +38,3 @@ export function Button({
     </button>
   );
 }
-

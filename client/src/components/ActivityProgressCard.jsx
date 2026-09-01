@@ -4,53 +4,71 @@
 import React from 'react';
 import { Activity } from 'lucide-react';
 
-export function ActivityProgressCard({ title, value, subtext, icon: Icon = Activity, color = 'indigo', percentage = 100 }) {
+export function ActivityProgressCard({ title, value, subtext, icon: Icon = Activity, color = 'gold', percentage = 100 }) {
   const IconComponent = Icon || Activity;
 
   const colorMap = {
-    indigo: {
-      bg: 'bg-indigo-600/20',
-      border: 'border-indigo-500/30',
-      text: 'text-indigo-400',
-      bar: 'bg-indigo-500',
+    gold: {
+      bg: 'bg-[#D8B24C]/10',
+      border: 'border-[#D8B24C]/30',
+      text: 'text-[#D8B24C]',
+      bar: 'bg-[#D8B24C]',
     },
     amber: {
-      bg: 'bg-amber-600/20',
-      border: 'border-amber-500/30',
-      text: 'text-amber-400',
-      bar: 'bg-amber-500',
-    },
-    emerald: {
-      bg: 'bg-emerald-600/20',
-      border: 'border-emerald-500/30',
-      text: 'text-emerald-400',
-      bar: 'bg-emerald-500',
+      bg: 'bg-[#D8B24C]/10',
+      border: 'border-[#D8B24C]/30',
+      text: 'text-[#D8B24C]',
+      bar: 'bg-[#D8B24C]',
     },
     purple: {
-      bg: 'bg-purple-600/20',
-      border: 'border-purple-500/30',
-      text: 'text-purple-400',
-      bar: 'bg-purple-500',
+      bg: 'bg-[#9B6B9E]/15',
+      border: 'border-[#9B6B9E]/30',
+      text: 'text-[#9B6B9E]',
+      bar: 'bg-[#9B6B9E]',
+    },
+    indigo: {
+      bg: 'bg-[#9B6B9E]/15',
+      border: 'border-[#9B6B9E]/30',
+      text: 'text-[#9B6B9E]',
+      bar: 'bg-[#9B6B9E]',
+    },
+    emerald: {
+      bg: 'bg-[#45B982]/15',
+      border: 'border-[#45B982]/30',
+      text: 'text-[#45B982]',
+      bar: 'bg-[#45B982]',
+    },
+    green: {
+      bg: 'bg-[#45B982]/15',
+      border: 'border-[#45B982]/30',
+      text: 'text-[#45B982]',
+      bar: 'bg-[#45B982]',
+    },
+    pink: {
+      bg: 'bg-[#E8688A]/15',
+      border: 'border-[#E8688A]/30',
+      text: 'text-[#E8688A]',
+      bar: 'bg-[#E8688A]',
     },
   };
 
-  const scheme = colorMap[color] || colorMap.indigo;
+  const scheme = colorMap[color] || colorMap.gold;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-3">
+    <div className="bg-[#202020] border border-[#343434] rounded-xl p-5 shadow-xs space-y-3">
       <div className="flex items-center justify-between">
-        <div className={`p-3 rounded-2xl ${scheme.bg} ${scheme.border} ${scheme.text}`}>
+        <div className={`p-2.5 rounded-lg border ${scheme.bg} ${scheme.border} ${scheme.text}`}>
           <IconComponent className="w-5 h-5" />
         </div>
-        <span className="text-xs font-black text-slate-400 uppercase tracking-wider">{title}</span>
+        <span className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider">{title}</span>
       </div>
 
       <div>
-        <h4 className="text-2xl font-black text-white">{value}</h4>
-        <p className="text-xs text-slate-400 mt-0.5">{subtext}</p>
+        <h4 className="text-2xl font-bold text-[#F5F5F0]">{value}</h4>
+        <p className="text-xs text-[#A7A7A2] mt-0.5">{subtext}</p>
       </div>
 
-      <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+      <div className="w-full bg-[#151515] h-2 rounded-full overflow-hidden border border-[#343434]">
         <div
           className={`h-full ${scheme.bar} transition-all duration-500 rounded-full`}
           style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}

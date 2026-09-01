@@ -153,7 +153,7 @@ export function PatientProfilePage() {
     try {
       const res = await fetchCurrentLocation();
       if (res.success) setLocation(res.data);
-    } catch (err) {
+    } catch {
       // ignore
     } finally {
       setLocationLoading(false);
@@ -279,7 +279,7 @@ export function PatientProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <RefreshCw className="w-8 h-8 text-brand-500 animate-spin" />
+        <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin" />
       </div>
     );
   }
@@ -288,16 +288,16 @@ export function PatientProfilePage() {
   const pendingCaregivers = caregivers.filter((c) => c.status === 'PENDING');
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-12">
+    <div className="space-y-6 max-w-6xl mx-auto pb-12">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 p-6 rounded-3xl border border-slate-800 backdrop-blur-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#202020] p-6 rounded-xl border border-[#343434]">
         <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 rounded-2xl bg-brand-600/20 border border-brand-500/30 flex items-center justify-center text-brand-300">
-            <User className="w-8 h-8" />
+          <div className="w-14 h-14 rounded-xl bg-[#D8B24C]/10 border border-[#D8B24C]/30 flex items-center justify-center text-[#D8B24C]">
+            <User className="w-7 h-7" />
           </div>
           <div>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">{profile?.name || 'Patient Profile'}</h1>
-            <p className="text-slate-400 text-sm">{profile?.email || 'Manage personal & safety details'}</p>
+            <h1 className="text-2xl font-semibold text-[#F5F5F0] tracking-tight">{profile?.name || 'Patient Profile'}</h1>
+            <p className="text-[#A7A7A2] text-sm">{profile?.email || 'Manage personal & safety details'}</p>
           </div>
         </div>
         <div className="flex items-center space-x-3">
@@ -309,17 +309,17 @@ export function PatientProfilePage() {
 
       {/* Notifications / Alerts */}
       {successMsg && (
-        <div className="flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-4 py-3 rounded-2xl text-sm font-semibold animate-fadeIn">
-          <CheckCircle className="w-5 h-5 flex-shrink-0" />
+        <div className="flex items-center space-x-2 bg-[#45B982]/10 border border-[#45B982]/30 text-[#45B982] px-4 py-3 rounded-lg text-sm font-medium animate-fade-in">
+          <CheckCircle className="w-5 h-5 shrink-0" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {error && (
-        <div className="flex items-center space-x-2 bg-rose-500/10 border border-rose-500/30 text-rose-300 px-4 py-3 rounded-2xl text-sm font-semibold">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+        <div className="flex items-center space-x-2 bg-[#D95C5C]/10 border border-[#D95C5C]/30 text-[#D95C5C] px-4 py-3 rounded-lg text-sm font-medium">
+          <AlertCircle className="w-5 h-5 shrink-0" />
           <span>{error}</span>
-          <button onClick={() => setError(null)} className="ml-auto text-rose-400 hover:text-white">
+          <button onClick={() => setError(null)} className="ml-auto text-[#D95C5C] hover:text-[#F5F5F0]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -329,14 +329,14 @@ export function PatientProfilePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Personal Information */}
         <Card className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <div className="flex items-center space-x-2 text-white font-bold text-lg">
-              <User className="w-5 h-5 text-brand-400" />
+          <div className="flex items-center justify-between border-b border-[#343434] pb-3">
+            <div className="flex items-center space-x-2 text-[#F5F5F0] font-semibold text-base">
+              <User className="w-5 h-5 text-[#D8B24C]" />
               <span>Personal Information</span>
             </div>
             {!isEditingProfile && (
-              <Button variant="ghost" size="sm" onClick={() => setIsEditingProfile(true)}>
-                <Edit2 className="w-4 h-4 mr-1" /> Edit
+              <Button variant="outline" size="sm" onClick={() => setIsEditingProfile(true)}>
+                <Edit2 className="w-3.5 h-3.5 mr-1" /> Edit
               </Button>
             )}
           </div>
@@ -344,20 +344,20 @@ export function PatientProfilePage() {
           {isEditingProfile ? (
             <form onSubmit={handleSaveProfile} className="space-y-4 pt-2">
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Full Name
                 </label>
                 <input
                   type="text"
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Phone Number
                 </label>
                 <input
@@ -365,18 +365,18 @@ export function PatientProfilePage() {
                   value={editForm.phone}
                   onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Preferred Language
                 </label>
                 <select
                   value={editForm.preferredLanguage}
                   onChange={(e) => setEditForm({ ...editForm, preferredLanguage: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                 >
                   <option value="en">English (en)</option>
                   <option value="es">Spanish (es)</option>
@@ -387,14 +387,14 @@ export function PatientProfilePage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Date of Birth
                 </label>
                 <input
                   type="date"
                   value={editForm.dateOfBirth}
                   onChange={(e) => setEditForm({ ...editForm, dateOfBirth: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                 />
               </div>
 
@@ -402,32 +402,32 @@ export function PatientProfilePage() {
                 <Button type="submit" variant="primary" size="sm">
                   <Save className="w-4 h-4 mr-1" /> Save Changes
                 </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => setIsEditingProfile(false)}>
+                <Button type="button" variant="secondary" size="sm" onClick={() => setIsEditingProfile(false)}>
                   Cancel
                 </Button>
               </div>
             </form>
           ) : (
             <div className="space-y-3 text-sm pt-2">
-              <div className="flex items-center justify-between py-2 border-b border-slate-800/60">
-                <span className="text-slate-400 flex items-center"><User className="w-4 h-4 mr-2 text-slate-500" /> Name</span>
-                <span className="text-slate-200 font-semibold">{profile?.name || 'Not provided'}</span>
+              <div className="flex items-center justify-between py-2 border-b border-[#343434]">
+                <span className="text-[#A7A7A2] flex items-center"><User className="w-4 h-4 mr-2 text-[#74746F]" /> Name</span>
+                <span className="text-[#F5F5F0] font-semibold">{profile?.name || 'Not provided'}</span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-slate-800/60">
-                <span className="text-slate-400 flex items-center"><Mail className="w-4 h-4 mr-2 text-slate-500" /> Email</span>
-                <span className="text-slate-200 font-semibold">{profile?.email || 'Not provided'}</span>
+              <div className="flex items-center justify-between py-2 border-b border-[#343434]">
+                <span className="text-[#A7A7A2] flex items-center"><Mail className="w-4 h-4 mr-2 text-[#74746F]" /> Email</span>
+                <span className="text-[#F5F5F0] font-semibold">{profile?.email || 'Not provided'}</span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-slate-800/60">
-                <span className="text-slate-400 flex items-center"><Phone className="w-4 h-4 mr-2 text-slate-500" /> Phone</span>
-                <span className="text-slate-200 font-semibold">{profile?.phone || 'Not provided'}</span>
+              <div className="flex items-center justify-between py-2 border-b border-[#343434]">
+                <span className="text-[#A7A7A2] flex items-center"><Phone className="w-4 h-4 mr-2 text-[#74746F]" /> Phone</span>
+                <span className="text-[#F5F5F0] font-semibold">{profile?.phone || 'Not provided'}</span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-slate-800/60">
-                <span className="text-slate-400 flex items-center"><Globe className="w-4 h-4 mr-2 text-slate-500" /> Language</span>
-                <span className="text-slate-200 font-semibold uppercase">{profile?.preferredLanguage || 'en'}</span>
+              <div className="flex items-center justify-between py-2 border-b border-[#343434]">
+                <span className="text-[#A7A7A2] flex items-center"><Globe className="w-4 h-4 mr-2 text-[#74746F]" /> Language</span>
+                <span className="text-[#F5F5F0] font-semibold uppercase">{profile?.preferredLanguage || 'en'}</span>
               </div>
               <div className="flex items-center justify-between py-2">
-                <span className="text-slate-400 flex items-center"><Calendar className="w-4 h-4 mr-2 text-slate-500" /> Date of Birth</span>
-                <span className="text-slate-200 font-semibold">
+                <span className="text-[#A7A7A2] flex items-center"><Calendar className="w-4 h-4 mr-2 text-[#74746F]" /> Date of Birth</span>
+                <span className="text-[#F5F5F0] font-semibold">
                   {profile?.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString() : 'Not provided'}
                 </span>
               </div>
@@ -437,61 +437,61 @@ export function PatientProfilePage() {
 
         {/* My Location & Sharing */}
         <Card className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <div className="flex items-center space-x-2 text-white font-bold text-lg">
-              <MapPin className="w-5 h-5 text-emerald-400" />
-              <span>My Location & Safety</span>
+          <div className="flex items-center justify-between border-b border-[#343434] pb-3">
+            <div className="flex items-center space-x-2 text-[#F5F5F0] font-semibold text-base">
+              <MapPin className="w-5 h-5 text-[#45B982]" />
+              <span>Location & Safety</span>
             </div>
             <button
               onClick={handleRefreshLocation}
               disabled={locationLoading}
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              className="p-1.5 rounded-lg bg-[#151515] border border-[#343434] hover:bg-[#242424] text-[#A7A7A2] transition-colors"
             >
-              <RefreshCw className={`w-4 h-4 ${locationLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 ${locationLoading ? 'animate-spin text-[#D8B24C]' : ''}`} />
             </button>
           </div>
 
           <div className="space-y-4 pt-1">
             {/* Location Status Card */}
-            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div className="bg-[#151515] p-4 rounded-xl border border-[#343434] space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider">
                   Location Status
                 </span>
-                <Badge variant={location?.isStale ? 'warning' : location ? 'success' : 'secondary'}>
+                <Badge variant={location?.isStale ? 'warning' : location ? 'success' : 'neutral'}>
                   {location?.isStale ? 'Last Known Location' : location ? 'Current Location' : 'No Signal'}
                 </Badge>
               </div>
 
               {location ? (
                 <div className="space-y-1.5">
-                  <div className="text-slate-200 font-medium text-sm flex items-center">
-                    <MapPin className="w-4 h-4 mr-2 text-brand-400 flex-shrink-0" />
+                  <div className="text-[#F5F5F0] font-medium text-sm flex items-center">
+                    <MapPin className="w-4 h-4 mr-2 text-[#D8B24C] shrink-0" />
                     <span>{location.latitude?.toFixed(4)}°, {location.longitude?.toFixed(4)}°</span>
                   </div>
-                  <div className="text-slate-400 text-xs flex items-center">
-                    <Clock className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
+                  <div className="text-[#A7A7A2] text-xs flex items-center">
+                    <Clock className="w-3.5 h-3.5 mr-1.5 text-[#74746F]" />
                     <span>Last Updated: {new Date(location.timestamp || location.createdAt).toLocaleTimeString()} ({location.isStale ? 'Stale' : 'Live'})</span>
                   </div>
                 </div>
               ) : (
-                <p className="text-slate-500 text-xs italic">No geolocation fixes received recently.</p>
+                <p className="text-[#74746F] text-xs italic">No geolocation fixes received recently.</p>
               )}
             </div>
 
             {/* Location Sharing Switch */}
-            <div className="flex items-center justify-between p-4 bg-slate-950 rounded-2xl border border-slate-800">
+            <div className="flex items-center justify-between p-4 bg-[#151515] rounded-xl border border-[#343434]">
               <div>
-                <h4 className="text-sm font-bold text-white">Location Sharing to Caregiver</h4>
-                <p className="text-xs text-slate-400">Allow active caregiver to view location</p>
+                <h4 className="text-sm font-semibold text-[#F5F5F0]">Location Sharing to Caregiver</h4>
+                <p className="text-xs text-[#A7A7A2]">Allow active caregiver to view location</p>
               </div>
               <button
                 onClick={handleToggleLocationSharing}
                 className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                  profile?.safetySettings?.locationSharingEnabled ? 'bg-emerald-500 justify-end' : 'bg-slate-700 justify-start'
+                  profile?.safetySettings?.locationSharingEnabled ? 'bg-[#45B982] justify-end' : 'bg-[#343434] justify-start'
                 }`}
               >
-                <div className="w-4 h-4 rounded-full bg-white shadow-md" />
+                <div className="w-4 h-4 rounded-full bg-[#151515] shadow-xs" />
               </button>
             </div>
           </div>
@@ -500,9 +500,9 @@ export function PatientProfilePage() {
 
       {/* Emergency Contacts Section */}
       <Card className="space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center space-x-2 text-white font-bold text-lg">
-            <Phone className="w-5 h-5 text-rose-400" />
+        <div className="flex items-center justify-between border-b border-[#343434] pb-3">
+          <div className="flex items-center space-x-2 text-[#F5F5F0] font-semibold text-base">
+            <Phone className="w-5 h-5 text-[#D95C5C]" />
             <span>Emergency Contacts</span>
           </div>
           <Button variant="primary" size="sm" onClick={() => handleOpenContactModal()}>
@@ -511,37 +511,37 @@ export function PatientProfilePage() {
         </div>
 
         {contacts.length === 0 ? (
-          <div className="text-center py-8 bg-slate-950 rounded-2xl border border-slate-800/60">
-            <AlertCircle className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-            <p className="text-slate-400 text-sm font-medium">No emergency contacts added yet.</p>
-            <p className="text-slate-500 text-xs mt-1">Add trusted contacts who can be reached in emergency events.</p>
+          <div className="text-center py-8 bg-[#151515] rounded-xl border border-[#343434]">
+            <AlertCircle className="w-8 h-8 text-[#74746F] mx-auto mb-2" />
+            <p className="text-[#A7A7A2] text-sm font-medium">No emergency contacts added yet.</p>
+            <p className="text-[#74746F] text-xs mt-1">Add trusted contacts who can be reached in emergency events.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
             {contacts.map((contact) => (
               <div
                 key={contact.id || contact._id}
-                className="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-3"
+                className="bg-[#151515] p-4 rounded-xl border border-[#343434] flex flex-col justify-between space-y-3"
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-white text-base">{contact.name}</h4>
-                    <Badge variant="secondary">Priority {contact.priority || 1}</Badge>
+                    <h4 className="font-semibold text-[#F5F5F0] text-base">{contact.name}</h4>
+                    <Badge variant="neutral">Priority {contact.priority || 1}</Badge>
                   </div>
-                  <p className="text-slate-400 text-xs mt-0.5">{contact.relationship || 'Contact'}</p>
-                  <p className="text-slate-200 text-sm font-mono mt-2 flex items-center">
-                    <Phone className="w-3.5 h-3.5 mr-2 text-slate-500" />
+                  <p className="text-[#A7A7A2] text-xs mt-0.5">{contact.relationship || 'Contact'}</p>
+                  <p className="text-[#F5F5F0] text-sm font-mono mt-2 flex items-center">
+                    <Phone className="w-3.5 h-3.5 mr-2 text-[#74746F]" />
                     {contact.phoneNumber || 'No phone'}
                   </p>
                 </div>
 
-                <div className="flex items-center space-x-2 pt-2 border-t border-slate-900">
-                  <Button variant="ghost" size="sm" className="flex-1" onClick={() => handleOpenContactModal(contact)}>
+                <div className="flex items-center space-x-2 pt-2 border-t border-[#343434]">
+                  <Button variant="secondary" size="sm" className="flex-1" onClick={() => handleOpenContactModal(contact)}>
                     <Edit2 className="w-3.5 h-3.5 mr-1" /> Edit
                   </Button>
                   <button
                     onClick={() => handleDeleteContact(contact.id || contact._id)}
-                    className="p-2 text-slate-400 hover:text-rose-400 transition-colors"
+                    className="p-2 text-[#A7A7A2] hover:text-[#D95C5C] transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -554,9 +554,9 @@ export function PatientProfilePage() {
 
       {/* Caregiver Connection & Pairing */}
       <Card className="space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center space-x-2 text-white font-bold text-lg">
-            <UserCheck className="w-5 h-5 text-indigo-400" />
+        <div className="flex items-center justify-between border-b border-[#343434] pb-3">
+          <div className="flex items-center space-x-2 text-[#F5F5F0] font-semibold text-base">
+            <UserCheck className="w-5 h-5 text-[#D8B24C]" />
             <span>Caregiver Connection & Pairing</span>
           </div>
           <Button
@@ -571,15 +571,15 @@ export function PatientProfilePage() {
 
         {/* Pairing Code Card if active */}
         {activeInvite && (
-          <div className="bg-brand-600/15 border border-brand-500/30 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="bg-[#D8B24C]/10 border border-[#D8B24C]/30 p-5 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="space-y-1">
-              <span className="text-xs font-bold text-brand-300 uppercase tracking-wider flex items-center">
+              <span className="text-xs font-semibold text-[#D8B24C] uppercase tracking-wider flex items-center">
                 <Key className="w-4 h-4 mr-1.5" /> Pairing Code Created
               </span>
-              <p className="text-slate-300 text-xs">Share this 6-character code with your caregiver to connect accounts.</p>
+              <p className="text-[#A7A7A2] text-xs">Share this 6-character code with your caregiver to connect accounts.</p>
             </div>
-            <div className="flex items-center space-x-3 bg-slate-950 px-6 py-3 rounded-2xl border border-brand-500/40">
-              <span className="text-2xl font-black text-brand-300 tracking-widest font-mono">{activeInvite.inviteCode}</span>
+            <div className="flex items-center space-x-3 bg-[#151515] px-6 py-3 rounded-xl border border-[#D8B24C]/40">
+              <span className="text-2xl font-bold text-[#D8B24C] tracking-widest font-mono">{activeInvite.inviteCode}</span>
             </div>
           </div>
         )}
@@ -587,19 +587,19 @@ export function PatientProfilePage() {
         {/* Pending Caregivers / Invitations */}
         {pendingCaregivers.length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Pending Caregiver Requests</h4>
+            <h4 className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider">Pending Caregiver Requests</h4>
             <div className="space-y-2">
               {pendingCaregivers.map((rel) => (
-                <div key={rel.id} className="bg-slate-950 p-4 rounded-2xl border border-amber-500/30 flex items-center justify-between">
+                <div key={rel.id} className="bg-[#151515] p-4 rounded-xl border border-[#E5A83B]/30 flex items-center justify-between">
                   <div>
-                    <h5 className="font-bold text-white">{rel.caregiver?.name || 'Caregiver Request'}</h5>
-                    <p className="text-xs text-slate-400">{rel.caregiver?.email || 'Pending approval'}</p>
+                    <h5 className="font-semibold text-[#F5F5F0]">{rel.caregiver?.name || 'Caregiver Request'}</h5>
+                    <p className="text-xs text-[#A7A7A2]">{rel.caregiver?.email || 'Pending approval'}</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Button variant="primary" size="sm" onClick={() => handleAcceptCaregiver(rel.id)}>
                       Accept Connection
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => handleRevokeCaregiver(rel.id)}>
+                    <Button variant="secondary" size="sm" onClick={() => handleRevokeCaregiver(rel.id)}>
                       Decline
                     </Button>
                   </div>
@@ -611,29 +611,29 @@ export function PatientProfilePage() {
 
         {/* Connected Caregivers List */}
         {activeCaregivers.length === 0 ? (
-          <div className="text-center py-6 bg-slate-950 rounded-2xl border border-slate-800/60">
-            <UserPlus className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-            <p className="text-slate-400 text-sm font-medium">No active caregiver connected.</p>
-            <p className="text-slate-500 text-xs mt-1">Click 'Generate Pairing Code' above to connect with a family caregiver.</p>
+          <div className="text-center py-6 bg-[#151515] rounded-xl border border-[#343434]">
+            <UserPlus className="w-8 h-8 text-[#74746F] mx-auto mb-2" />
+            <p className="text-[#A7A7A2] text-sm font-medium">No active caregiver connected.</p>
+            <p className="text-[#74746F] text-xs mt-1">Click 'Generate Pairing Code' above to connect with a family caregiver.</p>
           </div>
         ) : (
           <div className="space-y-4">
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Connected Caregivers</h4>
+            <h4 className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider">Connected Caregivers</h4>
             {activeCaregivers.map((rel) => (
-              <div key={rel.id} className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-900 pb-3">
+              <div key={rel.id} className="bg-[#151515] p-5 rounded-xl border border-[#343434] space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#343434] pb-3">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center font-bold">
+                    <div className="w-10 h-10 rounded-lg bg-[#D8B24C]/10 text-[#D8B24C] flex items-center justify-center font-bold border border-[#D8B24C]/30">
                       {rel.caregiver?.name?.[0] || 'C'}
                     </div>
                     <div>
-                      <h4 className="font-bold text-white text-base">{rel.caregiver?.name || 'Caregiver Account'}</h4>
-                      <p className="text-slate-400 text-xs">{rel.caregiver?.email} • {rel.relationshipType}</p>
+                      <h4 className="font-semibold text-[#F5F5F0] text-base">{rel.caregiver?.name || 'Caregiver Account'}</h4>
+                      <p className="text-[#A7A7A2] text-xs">{rel.caregiver?.email} &bull; {rel.relationshipType}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Badge variant="success">CONNECTED</Badge>
-                    <Button variant="ghost" size="sm" onClick={() => handleRevokeCaregiver(rel.id)}>
+                    <Button variant="secondary" size="sm" onClick={() => handleRevokeCaregiver(rel.id)}>
                       Disconnect
                     </Button>
                   </div>
@@ -641,8 +641,8 @@ export function PatientProfilePage() {
 
                 {/* Privacy & Sharing Controls */}
                 <div>
-                  <h5 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center">
-                    <Lock className="w-3.5 h-3.5 mr-1.5 text-brand-400" /> Caregiver Sharing Permissions
+                  <h5 className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider mb-3 flex items-center">
+                    <Lock className="w-3.5 h-3.5 mr-1.5 text-[#D8B24C]" /> Caregiver Sharing Permissions
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     {[
@@ -659,14 +659,14 @@ export function PatientProfilePage() {
                           key={perm.key}
                           type="button"
                           onClick={() => handleTogglePermission(rel.id, perm.key, enabled)}
-                          className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-xs font-semibold transition-all ${
+                          className={`flex items-center justify-between px-3 py-2.5 rounded-lg border text-xs font-semibold transition-all ${
                             enabled
-                              ? 'bg-brand-600/15 border-brand-500/40 text-brand-200'
-                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                              ? 'bg-[#D8B24C]/10 border-[#D8B24C]/30 text-[#D8B24C]'
+                              : 'bg-[#202020] border-[#343434] text-[#74746F] hover:border-[#343434]'
                           }`}
                         >
                           <span>{perm.label}</span>
-                          <span className={`w-2.5 h-2.5 rounded-full ${enabled ? 'bg-brand-400' : 'bg-slate-700'}`} />
+                          <span className={`w-2.5 h-2.5 rounded-full ${enabled ? 'bg-[#D8B24C]' : 'bg-[#343434]'}`} />
                         </button>
                       );
                     })}
@@ -680,20 +680,20 @@ export function PatientProfilePage() {
 
       {/* Contact Form Modal */}
       {showContactModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl max-w-md w-full space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-[#202020] border border-[#343434] p-6 rounded-xl max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#343434] pb-3">
+              <h3 className="text-lg font-semibold text-[#F5F5F0]">
                 {editingContact ? 'Edit Emergency Contact' : 'Add Emergency Contact'}
               </h3>
-              <button onClick={() => setShowContactModal(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setShowContactModal(false)} className="text-[#A7A7A2] hover:text-[#F5F5F0]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSaveContact} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Full Name *
                 </label>
                 <input
@@ -702,12 +702,12 @@ export function PatientProfilePage() {
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                   placeholder="e.g. Jane Doe"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Relationship
                 </label>
                 <input
@@ -715,12 +715,12 @@ export function PatientProfilePage() {
                   value={contactForm.relationship}
                   onChange={(e) => setContactForm({ ...contactForm, relationship: e.target.value })}
                   placeholder="e.g. Daughter, Spouse, Doctor"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Phone Number *
                 </label>
                 <input
@@ -729,18 +729,18 @@ export function PatientProfilePage() {
                   value={contactForm.phoneNumber}
                   onChange={(e) => setContactForm({ ...contactForm, phoneNumber: e.target.value })}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Priority (1 = Highest)
                 </label>
                 <select
                   value={contactForm.priority}
                   onChange={(e) => setContactForm({ ...contactForm, priority: Number(e.target.value) })}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
+                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
                 >
                   <option value={1}>1 - Primary Emergency Contact</option>
                   <option value={2}>2 - Secondary Contact</option>

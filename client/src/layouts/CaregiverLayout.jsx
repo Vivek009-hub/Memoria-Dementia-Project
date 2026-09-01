@@ -5,7 +5,7 @@ import { Sidebar } from '../components/navigation/Sidebar.jsx';
 
 export function CaregiverLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#1E1E1E] text-[#E8E8E8]">
+    <div className="min-h-screen flex flex-col bg-[#151515] text-[#F5F5F0]">
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />

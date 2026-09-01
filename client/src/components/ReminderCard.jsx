@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import {
   Pill, Utensils, Calendar, Activity, Gift, Clock, Users, Video,
-  CheckCircle2, XCircle, ChevronRight, Volume2, Repeat
+  CheckCircle2, XCircle, Volume2, Repeat
 } from 'lucide-react';
 
 const TYPE_ICONS = {
@@ -66,12 +66,12 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
   return (
     <div
       onClick={() => onSelect && onSelect(reminder)}
-      className={`group relative bg-[#252525] border rounded-xl p-4 transition-all duration-150 cursor-pointer flex flex-col justify-between ${
+      className={`group relative bg-[#202020] border rounded-xl p-4 transition-all duration-200 cursor-pointer flex flex-col justify-between ${
         isCompleted
-          ? 'border-[#8BAA78]/40 bg-[#8BAA78]/5'
+          ? 'border-[#45B982]/40 bg-[#45B982]/5'
           : isSkipped
           ? 'border-[#343434] opacity-60'
-          : 'border-[#343434] hover:border-[#DDBB55]/50'
+          : 'border-[#343434] hover:border-[#D8B24C]/60'
       }`}
       role="button"
       tabIndex={0}
@@ -86,36 +86,36 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
       <div>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
-            <span className="text-xl font-semibold text-[#DDBB55] tracking-tight">
+            <span className="text-xl font-semibold text-[#D8B24C] tracking-tight font-mono">
               {formatTime(reminder.schedule?.time)}
             </span>
             {reminder.voiceEnabled && (
-              <span className="p-1 bg-[#DDBB55]/10 text-[#DDBB55] rounded" title="Voice assistance enabled">
+              <span className="p-1 bg-[#D8B24C]/10 text-[#D8B24C] rounded border border-[#D8B24C]/20" title="Voice assistance enabled">
                 <Volume2 className="w-3.5 h-3.5" />
               </span>
             )}
           </div>
 
-          <div className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-[#1E1E1E] border border-[#343434] text-[#A0A0A0] flex items-center space-x-1.5 capitalize">
-            <TypeIcon className="w-3.5 h-3.5 text-[#DDBB55]" />
+          <div className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-[#151515] border border-[#343434] text-[#A7A7A2] flex items-center space-x-1.5 capitalize">
+            <TypeIcon className="w-3.5 h-3.5 text-[#D8B24C]" />
             <span>{reminder.type?.toLowerCase().replace('_', ' ')}</span>
           </div>
         </div>
 
-        <h3 className={`text-base font-semibold mb-1 line-clamp-1 ${isCompleted ? 'line-through text-[#747474]' : 'text-[#E8E8E8] group-hover:text-[#DDBB55] transition-colors'}`}>
+        <h3 className={`text-base font-semibold mb-1 line-clamp-1 ${isCompleted ? 'line-through text-[#74746F]' : 'text-[#F5F5F0] group-hover:text-[#D8B24C] transition-colors'}`}>
           {reminder.title}
         </h3>
 
         {reminder.description && (
-          <p className="text-xs text-[#A0A0A0] line-clamp-2 mb-3 leading-relaxed">
+          <p className="text-xs text-[#A7A7A2] line-clamp-2 mb-3 leading-relaxed">
             {reminder.description}
           </p>
         )}
 
-        <div className="flex flex-wrap gap-2 text-xs text-[#A0A0A0] mb-3">
+        <div className="flex flex-wrap gap-2 text-xs text-[#A7A7A2] mb-3">
           {reminder.recurrence ? (
-            <div className="flex items-center space-x-1 bg-[#1E1E1E] px-2.5 py-0.5 rounded-md border border-[#343434] text-[#A0A0A0]">
-              <Repeat className="w-3 h-3 text-[#DDBB55]" />
+            <div className="flex items-center space-x-1 bg-[#151515] px-2.5 py-0.5 rounded-md border border-[#343434] text-[#A7A7A2]">
+              <Repeat className="w-3 h-3 text-[#D8B24C]" />
               <span>
                 {reminder.recurrence.frequency}
                 {reminder.recurrence.frequency === 'WEEKLY' && reminder.recurrence.weekdays?.length > 0 && (
@@ -124,20 +124,20 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
               </span>
             </div>
           ) : (
-            <div className="flex items-center space-x-1 bg-[#1E1E1E] px-2.5 py-0.5 rounded-md border border-[#343434] text-[#747474]">
+            <div className="flex items-center space-x-1 bg-[#151515] px-2.5 py-0.5 rounded-md border border-[#343434] text-[#74746F]">
               <span>One-Time</span>
             </div>
           )}
 
           {isCompleted && (
-            <span className="px-2.5 py-0.5 bg-[#8BAA78]/10 text-[#8BAA78] text-xs font-medium rounded-md border border-[#8BAA78]/30 flex items-center space-x-1">
+            <span className="px-2.5 py-0.5 bg-[#45B982]/10 text-[#45B982] text-xs font-medium rounded-md border border-[#45B982]/30 flex items-center space-x-1">
               <CheckCircle2 className="w-3 h-3" />
               <span>Completed</span>
             </span>
           )}
 
           {isSkipped && (
-            <span className="px-2.5 py-0.5 bg-[#1E1E1E] text-[#747474] text-xs font-medium rounded-md border border-[#343434] flex items-center space-x-1">
+            <span className="px-2.5 py-0.5 bg-[#151515] text-[#74746F] text-xs font-medium rounded-md border border-[#343434] flex items-center space-x-1">
               <XCircle className="w-3 h-3" />
               <span>Skipped</span>
             </span>
@@ -151,7 +151,7 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
             <button
               onClick={handleCompleteClick}
               disabled={acting}
-              className="flex-1 py-2 bg-[#8BAA78] hover:bg-[#8BAA78]/90 disabled:opacity-50 text-[#1E1E1E] font-semibold text-xs rounded-lg flex items-center justify-center space-x-1.5 transition-colors"
+              className="flex-1 py-2 bg-[#45B982] hover:bg-[#45B982]/90 disabled:opacity-50 text-[#151515] font-semibold text-xs rounded-lg flex items-center justify-center space-x-1.5 transition-colors touch-target"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Complete</span>
@@ -162,7 +162,7 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
             <button
               onClick={handleSkipClick}
               disabled={acting}
-              className="py-2 px-3 bg-transparent hover:bg-[#1E1E1E] disabled:opacity-50 text-[#A0A0A0] hover:text-[#E8E8E8] font-medium text-xs rounded-lg border border-[#343434] transition-colors"
+              className="py-2 px-3 bg-transparent hover:bg-[#151515] disabled:opacity-50 text-[#A7A7A2] hover:text-[#F5F5F0] font-medium text-xs rounded-lg border border-[#343434] transition-colors touch-target"
             >
               <span>Skip</span>
             </button>
@@ -172,4 +172,3 @@ export function ReminderCard({ reminder, status = 'PENDING', onComplete, onSkip,
     </div>
   );
 }
-

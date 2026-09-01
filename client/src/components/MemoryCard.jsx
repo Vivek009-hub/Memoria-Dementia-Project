@@ -40,7 +40,7 @@ export function MemoryCard({ memory, onSelect }) {
   return (
     <div
       onClick={() => onSelect && onSelect(memory)}
-      className="group relative bg-[#252525] border border-[#343434] hover:border-[#DDBB55]/50 rounded-xl p-3.5 shadow-md transition-all duration-150 cursor-pointer flex flex-col justify-between"
+      className="group relative bg-[#202020] border border-[#343434] hover:border-[#D8B24C]/60 rounded-xl p-3.5 shadow-xs transition-all duration-200 cursor-pointer flex flex-col justify-between"
       role="button"
       tabIndex={0}
       aria-label={`Open memory: ${memory.title}`}
@@ -53,7 +53,7 @@ export function MemoryCard({ memory, onSelect }) {
     >
       <div>
         {/* Photo Container */}
-        <div className="w-full h-48 bg-[#1E1E1E] rounded-lg overflow-hidden mb-3 border border-[#343434] relative flex items-center justify-center">
+        <div className="w-full h-48 bg-[#151515] rounded-lg overflow-hidden mb-3 border border-[#343434] relative flex items-center justify-center">
           {memory.mediaUrl || memory.thumbnailUrl ? (
             !imageError ? (
               <img
@@ -63,56 +63,55 @@ export function MemoryCard({ memory, onSelect }) {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center text-[#747474] p-4">
+              <div className="flex flex-col items-center justify-center text-[#74746F] p-4">
                 <Image className="w-8 h-8 mb-1 stroke-1" />
                 <span className="text-xs">Photo unavailable</span>
               </div>
             )
           ) : (
-            <div className="flex flex-col items-center justify-center text-[#747474] p-4">
-              <TypeIcon className="w-10 h-10 stroke-1 text-[#747474] mb-1" />
-              <span className="text-xs uppercase font-medium tracking-wider text-[#A0A0A0]">{memory.type}</span>
+            <div className="flex flex-col items-center justify-center text-[#74746F] p-4">
+              <TypeIcon className="w-10 h-10 stroke-1 text-[#74746F] mb-1" />
+              <span className="text-xs uppercase font-medium tracking-wider text-[#A7A7A2]">{memory.type}</span>
             </div>
           )}
 
-          <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-[#1B1B1B]/80 text-[#E8E8E8] border border-[#343434] flex items-center space-x-1.5 backdrop-blur-md">
-            <TypeIcon className="w-3 h-3 text-[#DDBB55]" />
+          <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-[#1B1B1B]/90 text-[#F5F5F0] border border-[#343434] flex items-center space-x-1.5 backdrop-blur-xs">
+            <TypeIcon className="w-3 h-3 text-[#D8B24C]" />
             <span className="capitalize">{memory.type?.toLowerCase()}</span>
           </div>
         </div>
 
         {/* Memory Info */}
-        <h3 className="text-base font-semibold text-[#E8E8E8] mb-1 line-clamp-1 group-hover:text-[#DDBB55] transition-colors">
+        <h3 className="text-base font-semibold text-[#F5F5F0] mb-1 line-clamp-1 group-hover:text-[#D8B24C] transition-colors">
           {memory.title}
         </h3>
 
         {memory.description && (
-          <p className="text-xs text-[#A0A0A0] line-clamp-2 mb-3 leading-relaxed">
+          <p className="text-xs text-[#A7A7A2] line-clamp-2 mb-3 leading-relaxed">
             {memory.description}
           </p>
         )}
 
-        <div className="flex flex-wrap gap-2 text-xs text-[#A0A0A0] mb-2">
+        <div className="flex flex-wrap gap-2 text-xs text-[#A7A7A2] mb-2">
           {formattedDate && (
-            <div className="flex items-center space-x-1.5 bg-[#1E1E1E] px-2 py-0.5 rounded-md border border-[#343434]">
-              <Calendar className="w-3 h-3 text-[#DDBB55]" />
+            <div className="flex items-center space-x-1.5 bg-[#151515] px-2 py-0.5 rounded-md border border-[#343434]">
+              <Calendar className="w-3 h-3 text-[#D8B24C]" />
               <span>{formattedDate}</span>
             </div>
           )}
           {memory.relatedPlace && (
-            <div className="flex items-center space-x-1.5 bg-[#1E1E1E] px-2 py-0.5 rounded-md border border-[#343434] line-clamp-1">
-              <MapPin className="w-3 h-3 text-[#DDBB55]" />
+            <div className="flex items-center space-x-1.5 bg-[#151515] px-2 py-0.5 rounded-md border border-[#343434] line-clamp-1">
+              <MapPin className="w-3 h-3 text-[#D8B24C]" />
               <span>{memory.relatedPlace}</span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="pt-2.5 mt-1 border-t border-[#343434] flex items-center justify-between text-[#DDBB55] font-medium text-xs">
+      <div className="pt-2.5 mt-1 border-t border-[#343434] flex items-center justify-between text-[#D8B24C] font-medium text-xs">
         <span>View Memory</span>
         <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
       </div>
     </div>
   );
 }
-

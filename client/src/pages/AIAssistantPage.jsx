@@ -21,6 +21,7 @@ import {
   Trash2,
   ChevronRight,
   Lightbulb,
+  Mic,
 } from 'lucide-react';
 import { VoiceAssistantBar } from '../components/VoiceAssistantBar.jsx';
 import * as aiApi from '../api/ai.api.js';
@@ -30,7 +31,7 @@ export function AIAssistantPage({ patientId, onNavigate }) {
     {
       id: 'welcome',
       sender: 'ai',
-      text: "Good morning. I am your Memora AI companion. I can help you recall special memories, guide you through your daily routine, or talk with you about your day. How are you feeling today?",
+      text: "Good afternoon. I am your Memora AI companion. I can help you recall special memories, guide you through your daily routine, or talk with you about your day. How can I help you today?",
       createdAt: new Date().toISOString(),
     },
   ]);
@@ -155,19 +156,19 @@ export function AIAssistantPage({ patientId, onNavigate }) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6 pb-28">
+    <div className="w-full max-w-6xl mx-auto space-y-6 pb-28">
       {/* ── TOP HEADER ── */}
-      <header className="bg-[#252525] border border-[#343434] rounded-xl p-6 space-y-2">
-        <div className="flex items-center space-x-2 text-[#DDBB55]">
+      <header className="bg-[#202020] border border-[#343434] rounded-xl p-6 space-y-2">
+        <div className="flex items-center space-x-2 text-[#D8B24C]">
           <Bot className="w-5 h-5" />
           <span className="text-xs font-semibold uppercase tracking-wider">
             Talk to Memora
           </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-[#E8E8E8] tracking-tight">
-          AI Conversation Companion
+        <h1 className="text-2xl sm:text-3xl font-semibold text-[#F5F5F0] tracking-tight">
+          AI Companion
         </h1>
-        <p className="text-sm text-[#A0A0A0] max-w-3xl leading-relaxed">
+        <p className="text-sm text-[#A7A7A2] max-w-3xl leading-relaxed">
           A calm voice and text companion to help recall memories, answer daily routine questions, and suggest activities.
         </p>
       </header>
@@ -177,26 +178,26 @@ export function AIAssistantPage({ patientId, onNavigate }) {
         {/* ── LEFT COLUMN: Daily Prompts & Recommendations ── */}
         <section
           aria-label="Daily Prompts"
-          className="lg:col-span-5 bg-[#252525] border border-[#343434] rounded-xl p-5 space-y-5 flex flex-col justify-between"
+          className="lg:col-span-5 bg-[#202020] border border-[#343434] rounded-xl p-5 space-y-5 flex flex-col justify-between"
         >
           <div className="flex items-center justify-between border-b border-[#343434] pb-3.5">
             <div className="flex items-center space-x-2.5">
-              <div className="p-1.5 bg-[#DDBB55]/10 border border-[#DDBB55]/20 rounded-md text-[#DDBB55]">
+              <div className="p-1.5 bg-[#D8B24C]/10 border border-[#D8B24C]/30 rounded-md text-[#D8B24C]">
                 <Sparkles className="w-4 h-4" />
               </div>
-              <h2 className="text-base font-semibold text-[#E8E8E8] tracking-wide">
+              <h2 className="text-base font-semibold text-[#F5F5F0] tracking-wide">
                 Suggested Conversations
               </h2>
             </div>
             <button
               onClick={fetchRecs}
               disabled={loadingRecs}
-              className="p-1.5 text-[#A0A0A0] hover:text-[#E8E8E8] rounded-md bg-[#1E1E1E] border border-[#343434] transition-colors disabled:opacity-50"
+              className="p-1.5 text-[#A7A7A2] hover:text-[#F5F5F0] rounded-md bg-[#151515] border border-[#343434] transition-colors disabled:opacity-50"
               title="Refresh recommendations"
               aria-label="Refresh recommendations"
             >
               <RefreshCw
-                className={`w-3.5 h-3.5 ${loadingRecs ? 'animate-spin text-[#DDBB55]' : ''}`}
+                className={`w-3.5 h-3.5 ${loadingRecs ? 'animate-spin text-[#D8B24C]' : ''}`}
               />
             </button>
           </div>
@@ -204,11 +205,11 @@ export function AIAssistantPage({ patientId, onNavigate }) {
           {/* Quick Memory Recall Prompts */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[#A0A0A0] uppercase tracking-wider flex items-center space-x-1.5">
-                <HelpCircle className="w-3.5 h-3.5 text-[#DDBB55]" />
+              <span className="text-xs font-medium text-[#A7A7A2] uppercase tracking-wider flex items-center space-x-1.5">
+                <HelpCircle className="w-3.5 h-3.5 text-[#D8B24C]" />
                 <span>Memory Prompts</span>
               </span>
-              <span className="text-[10px] text-[#747474]">Tap to ask</span>
+              <span className="text-[10px] text-[#74746F]">Tap to ask</span>
             </div>
 
             <div className="grid grid-cols-1 gap-2">
@@ -218,17 +219,17 @@ export function AIAssistantPage({ patientId, onNavigate }) {
                   <button
                     key={idx}
                     onClick={() => handleSendMessage(prompt.text)}
-                    className="p-3 bg-[#1E1E1E] border border-[#343434] hover:border-[#DDBB55]/40 rounded-lg flex items-center justify-between text-left group transition-all"
+                    className="p-3 bg-[#151515] border border-[#343434] hover:border-[#D8B24C]/50 rounded-lg flex items-center justify-between text-left group transition-all"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="p-1.5 rounded-md bg-[#252525] text-[#DDBB55] shrink-0">
+                      <div className="p-1.5 rounded-md bg-[#202020] text-[#D8B24C] shrink-0 border border-[#343434]">
                         <IconComp className="w-4 h-4" />
                       </div>
-                      <span className="text-xs font-medium text-[#E8E8E8] group-hover:text-[#DDBB55] transition-colors">
+                      <span className="text-xs font-medium text-[#F5F5F0] group-hover:text-[#D8B24C] transition-colors">
                         {prompt.text}
                       </span>
                     </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-[#747474] group-hover:text-[#DDBB55] transition-all shrink-0" />
+                    <ChevronRight className="w-3.5 h-3.5 text-[#74746F] group-hover:text-[#D8B24C] transition-all shrink-0" />
                   </button>
                 );
               })}
@@ -237,8 +238,8 @@ export function AIAssistantPage({ patientId, onNavigate }) {
 
           {/* Recommended Brain Practice */}
           <div className="space-y-2.5 pt-3 border-t border-[#343434]">
-            <span className="text-xs font-medium text-[#A0A0A0] uppercase tracking-wider flex items-center space-x-1.5">
-              <Gamepad2 className="w-3.5 h-3.5 text-[#8BAA78]" />
+            <span className="text-xs font-medium text-[#A7A7A2] uppercase tracking-wider flex items-center space-x-1.5">
+              <Gamepad2 className="w-3.5 h-3.5 text-[#9B6B9E]" />
               <span>Brain Practice</span>
             </span>
 
@@ -247,33 +248,33 @@ export function AIAssistantPage({ patientId, onNavigate }) {
                 <div
                   key={idx}
                   onClick={() => onNavigate && onNavigate(game.route || '/app/games')}
-                  className="p-3 bg-[#1E1E1E] border border-[#343434] hover:border-[#8BAA78]/40 rounded-lg flex items-center justify-between cursor-pointer group transition-all"
+                  className="p-3 bg-[#151515] border border-[#343434] hover:border-[#9B6B9E]/50 rounded-lg flex items-center justify-between cursor-pointer group transition-all"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="p-1.5 bg-[#8BAA78]/10 text-[#8BAA78] rounded-md">
+                    <div className="p-1.5 bg-[#9B6B9E]/15 text-[#9B6B9E] border border-[#9B6B9E]/30 rounded-md">
                       <Gamepad2 className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-xs font-semibold text-[#E8E8E8] group-hover:text-[#8BAA78] transition-colors">
+                      <h3 className="text-xs font-semibold text-[#F5F5F0] group-hover:text-[#9B6B9E] transition-colors">
                         {game.title}
                       </h3>
-                      <span className="text-[10px] text-[#747474]">
+                      <span className="text-[10px] text-[#74746F]">
                         {game.category || 'Cognitive'} &bull; {game.difficulty || 'Easy'}
                       </span>
                     </div>
                   </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-[#747474] group-hover:text-[#8BAA78] transition-all" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[#74746F] group-hover:text-[#9B6B9E] transition-all" />
                 </div>
               ))}
             </div>
           </div>
 
           {/* Daily Routine Summary */}
-          <div className="p-3.5 bg-[#1E1E1E] border border-[#343434] rounded-lg flex items-center space-x-3">
-            <Clock className="w-4 h-4 text-[#DDBB55] shrink-0" />
+          <div className="p-3.5 bg-[#151515] border border-[#343434] rounded-lg flex items-center space-x-3">
+            <Clock className="w-4 h-4 text-[#D8B24C] shrink-0" />
             <div>
-              <span className="text-xs font-semibold text-[#E8E8E8] block">Daily Schedule Note</span>
-              <p className="text-xs text-[#A0A0A0] mt-0.5">{recommendations.routine}</p>
+              <span className="text-xs font-semibold text-[#F5F5F0] block">Daily Schedule Note</span>
+              <p className="text-xs text-[#A7A7A2] mt-0.5">{recommendations.routine}</p>
             </div>
           </div>
         </section>
@@ -281,19 +282,19 @@ export function AIAssistantPage({ patientId, onNavigate }) {
         {/* ── RIGHT COLUMN: Conversation Interface ── */}
         <section
           aria-label="Conversation Box"
-          className="lg:col-span-7 bg-[#252525] border border-[#343434] rounded-xl overflow-hidden shadow-lg flex flex-col h-[600px]"
+          className="lg:col-span-7 bg-[#202020] border border-[#343434] rounded-xl overflow-hidden shadow-xs flex flex-col h-[600px]"
         >
           {/* Chat Header Bar */}
           <div className="p-4 bg-[#1B1B1B] border-b border-[#343434] flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg bg-[#DDBB55]/10 border border-[#DDBB55]/30 flex items-center justify-center text-[#DDBB55]">
+              <div className="w-8 h-8 rounded-lg bg-[#D8B24C]/10 border border-[#D8B24C]/30 flex items-center justify-center text-[#D8B24C]">
                 <Bot className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-sm font-semibold text-[#E8E8E8] leading-none">
+                <h2 className="text-sm font-semibold text-[#F5F5F0] leading-none">
                   Memora Companion
                 </h2>
-                <span className="text-[11px] text-[#8BAA78] font-medium">
+                <span className="text-[11px] text-[#45B982] font-medium">
                   Connected & Ready
                 </span>
               </div>
@@ -304,13 +305,13 @@ export function AIAssistantPage({ patientId, onNavigate }) {
                 onClick={() => setSpeakEnabled(!speakEnabled)}
                 className={`p-2 rounded-lg border text-xs font-medium flex items-center space-x-1.5 transition-colors ${
                   speakEnabled
-                    ? 'bg-[#DDBB55]/10 border-[#DDBB55]/30 text-[#DDBB55]'
-                    : 'bg-[#1E1E1E] border-[#343434] text-[#747474]'
+                    ? 'bg-[#D8B24C]/10 border-[#D8B24C]/30 text-[#D8B24C]'
+                    : 'bg-[#151515] border-[#343434] text-[#74746F]'
                 }`}
                 title={speakEnabled ? 'Mute voice responses' : 'Enable voice responses'}
               >
                 {speakEnabled ? (
-                  <Volume2 className="w-3.5 h-3.5 text-[#DDBB55]" />
+                  <Volume2 className="w-3.5 h-3.5 text-[#D8B24C]" />
                 ) : (
                   <VolumeX className="w-3.5 h-3.5" />
                 )}
@@ -321,7 +322,7 @@ export function AIAssistantPage({ patientId, onNavigate }) {
 
               <button
                 onClick={clearChat}
-                className="p-2 text-[#A0A0A0] hover:text-[#C95C5C] bg-[#1E1E1E] border border-[#343434] rounded-lg transition-colors"
+                className="p-2 text-[#A7A7A2] hover:text-[#D95C5C] bg-[#151515] border border-[#343434] rounded-lg transition-colors"
                 title="Clear conversation"
                 aria-label="Clear conversation"
               >
@@ -331,7 +332,7 @@ export function AIAssistantPage({ patientId, onNavigate }) {
           </div>
 
           {/* Messages Stream */}
-          <div className="flex-1 p-5 space-y-4 overflow-y-auto bg-[#1E1E1E]">
+          <div className="flex-1 p-5 space-y-4 overflow-y-auto bg-[#151515]">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -344,8 +345,8 @@ export function AIAssistantPage({ patientId, onNavigate }) {
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
                     msg.sender === 'user'
-                      ? 'bg-[#DDBB55] border-[#E8C968] text-[#1E1E1E]'
-                      : 'bg-[#252525] border-[#343434] text-[#DDBB55]'
+                      ? 'bg-[#D8B24C] border-[#F0C75E] text-[#151515]'
+                      : 'bg-[#202020] border-[#343434] text-[#D8B24C]'
                   }`}
                 >
                   {msg.sender === 'user' ? (
@@ -358,8 +359,8 @@ export function AIAssistantPage({ patientId, onNavigate }) {
                 <div
                   className={`p-3.5 rounded-lg text-sm leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-[#DDBB55] text-[#1E1E1E] font-medium'
-                      : 'bg-[#252525] border border-[#343434] text-[#E8E8E8]'
+                      ? 'bg-[#D8B24C] text-[#151515] font-semibold'
+                      : 'bg-[#202020] border border-[#343434] text-[#F5F5F0]'
                   }`}
                 >
                   <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -375,7 +376,7 @@ export function AIAssistantPage({ patientId, onNavigate }) {
                     {msg.sender === 'ai' && (
                       <button
                         onClick={() => speakText(msg.text)}
-                        className="p-1 hover:text-[#DDBB55] transition-colors"
+                        className="p-1 hover:text-[#D8B24C] transition-colors"
                         title="Read message aloud"
                         aria-label="Read message aloud"
                       >
@@ -389,11 +390,11 @@ export function AIAssistantPage({ patientId, onNavigate }) {
 
             {sending && (
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-lg bg-[#252525] border border-[#343434] text-[#DDBB55] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#202020] border border-[#343434] text-[#D8B24C] flex items-center justify-center">
                   <Bot className="w-4 h-4 animate-pulse" />
                 </div>
-                <div className="p-3 bg-[#252525] border border-[#343434] rounded-lg text-[#A0A0A0] text-xs font-medium flex items-center space-x-2">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#DDBB55]" />
+                <div className="p-3 bg-[#202020] border border-[#343434] rounded-lg text-[#A7A7A2] text-xs font-medium flex items-center space-x-2">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#D8B24C]" />
                   <span>Memora is thinking...</span>
                 </div>
               </div>
@@ -403,7 +404,7 @@ export function AIAssistantPage({ patientId, onNavigate }) {
           </div>
 
           {errorMsg && (
-            <div className="p-2.5 bg-[#C95C5C]/10 border-t border-[#C95C5C]/30 text-xs font-medium text-[#C95C5C] flex items-center space-x-2">
+            <div className="p-2.5 bg-[#D95C5C]/10 border-t border-[#D95C5C]/30 text-xs font-medium text-[#D95C5C] flex items-center space-x-2">
               <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
               <span>{errorMsg}</span>
             </div>
@@ -421,13 +422,13 @@ export function AIAssistantPage({ patientId, onNavigate }) {
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Ask anything about your memories or routine..."
-              className="flex-1 px-3.5 py-2.5 bg-[#252525] border border-[#383838] rounded-lg text-[#E8E8E8] font-normal text-sm focus:outline-none focus:border-[#DDBB55] transition-colors placeholder:text-[#747474]"
+              placeholder="Type a message to Memora..."
+              className="flex-1 px-3.5 py-2.5 bg-[#202020] border border-[#343434] rounded-lg text-[#F5F5F0] font-normal text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F]"
             />
             <button
               type="submit"
               disabled={sending || !inputText.trim()}
-              className="px-4 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] disabled:opacity-50 text-[#1E1E1E] font-semibold rounded-lg transition-colors flex items-center justify-center text-sm"
+              className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] font-semibold rounded-lg transition-colors flex items-center justify-center text-sm touch-target"
               aria-label="Send message"
             >
               <Send className="w-4 h-4" />
@@ -447,4 +448,3 @@ export function AIAssistantPage({ patientId, onNavigate }) {
     </div>
   );
 }
-

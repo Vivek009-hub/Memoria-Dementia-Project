@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { X, Sparkles } from 'lucide-react';
 
 export function GameInstructions({ game, onStart, onClose, isStarting = false }) {
   const [selectedDifficulty, setSelectedDifficulty] = useState(game?.difficulty || 'MEDIUM');
@@ -6,62 +7,64 @@ export function GameInstructions({ game, onStart, onClose, isStarting = false })
   if (!game) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-900/70 flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-8 border-4 border-blue-600 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-[#202020] rounded-xl max-w-lg w-full p-6 border border-[#343434] shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 text-2xl font-bold rounded-full focus:outline-none focus:ring-2 focus:ring-slate-400"
+          className="absolute top-4 right-4 text-[#A7A7A2] hover:text-[#F5F5F0] p-1.5 rounded-lg hover:bg-[#242424] transition-colors"
           aria-label="Close instructions"
         >
-          ✕
+          <X className="w-5 h-5" />
         </button>
 
-        <div className="text-center mb-6">
-          <span className="text-5xl mb-2 block">🧠</span>
-          <h2 className="text-3xl font-extrabold text-slate-900">{game.title}</h2>
+        <div className="text-center mb-5">
+          <div className="w-12 h-12 bg-[#9B6B9E]/15 border border-[#9B6B9E]/30 rounded-xl flex items-center justify-center mx-auto text-[#9B6B9E] mb-3">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <h2 className="text-2xl font-bold text-[#F5F5F0]">{game.title}</h2>
         </div>
 
-        <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 mb-6">
-          <h3 className="text-lg font-bold text-slate-700 mb-2">How to Play:</h3>
-          <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-line">
+        <div className="bg-[#151515] p-4 rounded-lg border border-[#343434] mb-5">
+          <h3 className="text-sm font-semibold text-[#D8B24C] mb-1">How to Play:</h3>
+          <p className="text-[#A7A7A2] text-sm leading-relaxed whitespace-pre-line">
             {game.instructions || game.description || 'Follow the prompts on screen to complete the exercise at your own comfortable pace.'}
           </p>
         </div>
 
-        <div className="mb-8">
-          <label className="block text-slate-800 text-lg font-bold mb-3 text-center">
+        <div className="mb-6">
+          <label className="block text-[#F5F5F0] text-sm font-semibold mb-2 text-center">
             Select Difficulty:
           </label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             {['EASY', 'MEDIUM', 'HARD'].map((diff) => (
               <button
                 key={diff}
                 type="button"
                 onClick={() => setSelectedDifficulty(diff)}
-                className={`py-3 px-2 rounded-xl text-base font-bold transition-all border-2 ${
+                className={`py-2 px-2 rounded-lg text-xs font-semibold transition-all border ${
                   selectedDifficulty === diff
-                    ? 'bg-blue-600 text-white border-blue-700 shadow-md scale-105'
-                    : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                    ? 'bg-[#D8B24C] text-[#151515] border-[#D8B24C]'
+                    : 'bg-[#151515] text-[#A7A7A2] border-[#343434] hover:text-[#F5F5F0]'
                 }`}
               >
-                {diff === 'EASY' ? '🟢 Easy' : diff === 'MEDIUM' ? '🟡 Medium' : '🔴 Hard'}
+                {diff === 'EASY' ? 'Easy' : diff === 'MEDIUM' ? 'Medium' : 'Hard'}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           <button
             onClick={() => onStart(selectedDifficulty)}
             disabled={isStarting}
-            className="w-full min-h-[64px] bg-green-600 hover:bg-green-700 active:bg-green-800 disabled:bg-slate-400 text-white text-2xl font-extrabold rounded-2xl shadow-lg transition-all flex items-center justify-center gap-3 focus:outline-none focus:ring-4 focus:ring-green-300"
+            className="w-full py-3 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] text-sm font-semibold rounded-lg transition-colors flex items-center justify-center space-x-2 touch-target"
           >
-            <span>{isStarting ? 'Starting Session...' : 'Start Game NOW 🚀'}</span>
+            <span>{isStarting ? 'Starting Session...' : 'Start Exercise'}</span>
           </button>
-          
+
           <button
             onClick={onClose}
-            className="w-full py-3 text-slate-600 hover:text-slate-800 text-lg font-semibold text-center"
+            className="w-full py-2.5 text-[#A7A7A2] hover:text-[#F5F5F0] text-xs font-medium text-center"
           >
             Back to Library
           </button>

@@ -8,26 +8,26 @@
  */
 :root {
   /* Color Palette */
-  --color-bg: #1E1E1E;
+  --color-bg: #151515;
   --color-sidebar: #1B1B1B;
-  --color-surface: #252525;
-  --color-surface-hover: #2A2A2A;
+  --color-surface: #202020;
+  --color-surface-hover: #242424;
   --color-border: #343434;
 
-  --color-text: #E8E8E8;
-  --color-text-muted: #A0A0A0;
-  --color-text-subtle: #747474;
+  --color-text: #F5F5F0;
+  --color-text-muted: #A7A7A2;
+  --color-text-subtle: #74746F;
 
-  --color-accent: #DDBB55;
-  --color-accent-hover: #E8C968;
-  --color-accent-bg: rgba(221, 187, 85, 0.10);
+  --color-accent: #D8B24C;
+  --color-accent-hover: #F0C75E;
+  --color-accent-bg: rgba(216, 178, 76, 0.10);
 
-  --color-danger: #C95C5C;
-  --color-danger-bg: rgba(201, 92, 92, 0.12);
-  --color-success: #8BAA78;
-  --color-success-bg: rgba(139, 170, 120, 0.12);
+  --color-danger: #D95C5C;
+  --color-danger-bg: rgba(217, 92, 92, 0.12);
+  --color-success: #45B982;
+  --color-success-bg: rgba(69, 185, 130, 0.12);
 
-  --color-focus: #DDBB55;
+  --color-focus: #D8B24C;
 
   /* Typography Scale */
   --font-family: 'Montserrat', 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;

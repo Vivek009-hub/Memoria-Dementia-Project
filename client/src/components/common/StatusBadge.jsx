@@ -4,22 +4,22 @@ export function StatusBadge({ status, className = '' }) {
   const normalized = (status || '').toUpperCase();
 
   const configs = {
-    ACTIVE: { label: 'Active', variant: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' },
-    COMPLETED: { label: 'Completed', variant: 'bg-blue-500/10 text-blue-300 border-blue-500/30' },
-    PENDING: { label: 'Pending', variant: 'bg-amber-500/10 text-amber-300 border-amber-500/30' },
-    SCHEDULED: { label: 'Scheduled', variant: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30' },
-    RESOLVED: { label: 'Resolved', variant: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' },
-    CANCELLED: { label: 'Cancelled', variant: 'bg-slate-800 text-slate-400 border-slate-700' },
-    SAFE: { label: '🟢 Safe', variant: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' },
-    WARNING: { label: '⚠️ Warning', variant: 'bg-amber-500/10 text-amber-300 border-amber-500/30' },
-    EMERGENCY: { label: '🚨 Emergency SOS', variant: 'bg-red-500/20 text-red-300 border-red-500/50' },
+    ACTIVE: { label: 'Active', variant: 'bg-[#45B982]/10 text-[#45B982] border-[#45B982]/30' },
+    COMPLETED: { label: 'Completed', variant: 'bg-[#45B982]/10 text-[#45B982] border-[#45B982]/30' },
+    PENDING: { label: 'Pending', variant: 'bg-[#E5A83B]/10 text-[#E5A83B] border-[#E5A83B]/30' },
+    SCHEDULED: { label: 'Scheduled', variant: 'bg-[#D8B24C]/10 text-[#D8B24C] border-[#D8B24C]/30' },
+    RESOLVED: { label: 'Resolved', variant: 'bg-[#45B982]/10 text-[#45B982] border-[#45B982]/30' },
+    CANCELLED: { label: 'Cancelled', variant: 'bg-[#202020] text-[#74746F] border-[#343434]' },
+    SAFE: { label: '🟢 Safe', variant: 'bg-[#45B982]/10 text-[#45B982] border-[#45B982]/30' },
+    WARNING: { label: '⚠️ Warning', variant: 'bg-[#E5A83B]/10 text-[#E5A83B] border-[#E5A83B]/30' },
+    EMERGENCY: { label: '🚨 Emergency SOS', variant: 'bg-[#D95C5C]/20 text-[#D95C5C] border-[#D95C5C]/50' },
   };
 
-  const config = configs[normalized] || { label: status || 'Unknown', variant: 'bg-slate-800 text-slate-300 border-slate-700' };
+  const config = configs[normalized] || { label: status || 'Unknown', variant: 'bg-[#202020] text-[#A7A7A2] border-[#343434]' };
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold border ${config.variant} ${className}`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${config.variant} ${className}`}
     >
       {config.label}
     </span>

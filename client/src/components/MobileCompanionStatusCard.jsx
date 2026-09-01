@@ -7,7 +7,7 @@ import { Smartphone, Wifi, WifiOff, MapPin, Activity, ShieldCheck, BatteryChargi
 
 export function MobileCompanionStatusCard({ isOnline = true, isConnected = true, lastHeartbeat = null }) {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
+    <div className="bg-[#202020] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30">
@@ -33,7 +33,7 @@ export function MobileCompanionStatusCard({ isOnline = true, isConnected = true,
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-        <div className="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+        <div className="p-3.5 bg-[#D8B24C] rounded-2xl border border-slate-800 space-y-1">
           <div className="flex items-center space-x-1.5 text-indigo-400 font-bold">
             <MapPin className="w-4 h-4" />
             <span>GPS Location</span>
@@ -43,7 +43,7 @@ export function MobileCompanionStatusCard({ isOnline = true, isConnected = true,
           </span>
         </div>
 
-        <div className="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+        <div className="p-3.5 bg-[#D8B24C] rounded-2xl border border-slate-800 space-y-1">
           <div className="flex items-center space-x-1.5 text-emerald-400 font-bold">
             <Activity className="w-4 h-4" />
             <span>Fall Detection</span>
@@ -53,7 +53,7 @@ export function MobileCompanionStatusCard({ isOnline = true, isConnected = true,
           </span>
         </div>
 
-        <div className="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+        <div className="p-3.5 bg-[#D8B24C] rounded-2xl border border-slate-800 space-y-1">
           <div className="flex items-center space-x-1.5 text-teal-400 font-bold">
             <ShieldCheck className="w-4 h-4" />
             <span>Background Sync</span>

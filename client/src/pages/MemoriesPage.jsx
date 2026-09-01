@@ -4,8 +4,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  BookOpen, Plus, Search, Filter, RefreshCw, AlertTriangle, ChevronLeft, ChevronRight,
-  Users, Sparkles, SlidersHorizontal
+  BookOpen, Plus, Search, RefreshCw, AlertTriangle, ChevronLeft, ChevronRight,
+  Users, SlidersHorizontal
 } from 'lucide-react';
 import { MemoryCard } from '../components/MemoryCard.jsx';
 import { MemoryDetailModal } from '../components/MemoryDetailModal.jsx';
@@ -134,16 +134,16 @@ export function MemoriesPage({ patientId }) {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* Header */}
-      <div className="bg-[#252525] border border-[#343434] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-[#DDBB55] mb-1">
+          <div className="flex items-center space-x-2 text-[#D8B24C] mb-1">
             <BookOpen className="w-5 h-5" />
-            <span className="text-xs font-semibold uppercase tracking-wider">Memory Journal</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Memory Vault</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#E8E8E8] tracking-tight">Memories</h1>
-          <p className="text-sm text-[#A0A0A0] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#F5F5F0] tracking-tight">Memories</h1>
+          <p className="text-sm text-[#A7A7A2] mt-1">
             Revisit your family photographs, stories, places, and personal moments.
           </p>
         </div>
@@ -151,9 +151,9 @@ export function MemoriesPage({ patientId }) {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setFamilyDirOpen(true)}
-            className="px-4 py-2.5 bg-transparent hover:bg-[#2A2A2A] text-[#E8E8E8] font-medium text-sm rounded-lg border border-[#343434] flex items-center space-x-2 transition-colors"
+            className="px-4 py-2.5 bg-transparent hover:bg-[#242424] text-[#F5F5F0] font-medium text-sm rounded-lg border border-[#343434] flex items-center space-x-2 transition-colors touch-target"
           >
-            <Users className="w-4 h-4 text-[#DDBB55]" />
+            <Users className="w-4 h-4 text-[#D8B24C]" />
             <span>Family Directory</span>
           </button>
 
@@ -162,7 +162,7 @@ export function MemoriesPage({ patientId }) {
               setMemoryToEdit(null);
               setCreateEditModalOpen(true);
             }}
-            className="px-4 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg flex items-center space-x-2 transition-colors shadow-sm"
+            className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-sm rounded-lg flex items-center space-x-2 transition-colors shadow-xs touch-target"
           >
             <Plus className="w-4 h-4" />
             <span>Add Memory</span>
@@ -171,20 +171,20 @@ export function MemoriesPage({ patientId }) {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-[#252525] border border-[#343434] rounded-xl p-4 space-y-4">
+      <div className="bg-[#202020] border border-[#343434] rounded-xl p-4 space-y-4">
         <div className="relative">
-          <Search className="w-4 h-4 text-[#747474] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#74746F] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search memories by title, description, or place..."
-            className="w-full pl-10 pr-10 py-2.5 bg-[#1E1E1E] border border-[#383838] rounded-lg text-[#E8E8E8] font-normal text-sm focus:outline-none focus:border-[#DDBB55] transition-colors placeholder:text-[#747474]"
+            className="w-full pl-10 pr-10 py-2.5 bg-[#151515] border border-[#343434] rounded-lg text-[#F5F5F0] font-normal text-sm focus:outline-none focus:border-[#D8B24C] transition-colors placeholder:text-[#74746F]"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A0A0A0] hover:text-[#E8E8E8] font-medium text-xs bg-[#252525] px-2 py-0.5 rounded"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A7A7A2] hover:text-[#F5F5F0] font-medium text-xs bg-[#242424] px-2 py-0.5 rounded"
             >
               Clear
             </button>
@@ -202,8 +202,8 @@ export function MemoriesPage({ patientId }) {
                 }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
                   selectedCategory === cat.id
-                    ? 'bg-[#DDBB55] text-[#1E1E1E] font-semibold'
-                    : 'bg-[#1E1E1E] border border-[#343434] text-[#A0A0A0] hover:text-[#E8E8E8] hover:bg-[#2A2A2A]'
+                    ? 'bg-[#D8B24C] text-[#151515] font-semibold'
+                    : 'bg-[#151515] border border-[#343434] text-[#A7A7A2] hover:text-[#F5F5F0] hover:bg-[#242424]'
                 }`}
               >
                 {cat.label}
@@ -212,11 +212,11 @@ export function MemoriesPage({ patientId }) {
           </div>
 
           <div className="flex items-center space-x-2 shrink-0">
-            <SlidersHorizontal className="w-4 h-4 text-[#747474]" />
+            <SlidersHorizontal className="w-4 h-4 text-[#74746F]" />
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="bg-[#1E1E1E] border border-[#343434] text-[#E8E8E8] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#DDBB55]"
+              className="bg-[#151515] border border-[#343434] text-[#F5F5F0] text-xs font-medium rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#D8B24C]"
             >
               <option value="-createdAt">Newest First</option>
               <option value="createdAt">Oldest First</option>
@@ -227,36 +227,36 @@ export function MemoriesPage({ patientId }) {
       </div>
 
       {loading ? (
-        <div className="bg-[#252525] border border-[#343434] rounded-xl p-12 text-center">
-          <RefreshCw className="w-8 h-8 text-[#DDBB55] animate-spin mx-auto mb-3" />
-          <p className="text-[#A0A0A0] text-sm">Loading your memories...</p>
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center">
+          <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin mx-auto mb-3" />
+          <p className="text-[#A7A7A2] text-sm">Loading your memories...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-[#252525] border border-[#C95C5C]/30 rounded-xl p-8 text-center space-y-4">
-          <AlertTriangle className="w-10 h-10 text-[#C95C5C] mx-auto" />
+        <div className="bg-[#202020] border border-[#D95C5C]/30 rounded-xl p-8 text-center space-y-4">
+          <AlertTriangle className="w-10 h-10 text-[#D95C5C] mx-auto" />
           <div>
-            <h3 className="text-lg font-semibold text-[#E8E8E8] mb-1">Could Not Load Memories</h3>
-            <p className="text-sm text-[#A0A0A0]">{errorMsg}</p>
+            <h3 className="text-lg font-semibold text-[#F5F5F0] mb-1">Could Not Load Memories</h3>
+            <p className="text-sm text-[#A7A7A2]">{errorMsg}</p>
           </div>
           <button
             onClick={fetchMemories}
-            className="px-4 py-2 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-[#E8E8E8] font-medium text-sm rounded-lg border border-[#343434] transition-colors inline-flex items-center space-x-2"
+            className="px-4 py-2 bg-[#151515] hover:bg-[#242424] text-[#F5F5F0] font-medium text-sm rounded-lg border border-[#343434] transition-colors inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
           </button>
         </div>
       ) : memories.length === 0 ? (
-        <div className="bg-[#252525] border border-[#343434] rounded-xl p-12 text-center space-y-4">
-          <div className="w-16 h-16 bg-[#DDBB55]/10 border border-[#DDBB55]/20 rounded-full flex items-center justify-center mx-auto text-[#DDBB55]">
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center space-y-4">
+          <div className="w-16 h-16 bg-[#D8B24C]/10 border border-[#D8B24C]/20 rounded-full flex items-center justify-center mx-auto text-[#D8B24C]">
             <BookOpen className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-[#E8E8E8] mb-2">No Memories Found</h3>
-            <p className="text-[#A0A0A0] max-w-md mx-auto text-sm leading-relaxed">
+            <h3 className="text-xl font-semibold text-[#F5F5F0] mb-2">No Memories Found</h3>
+            <p className="text-[#A7A7A2] max-w-md mx-auto text-sm leading-relaxed">
               {debouncedSearch || selectedCategory
                 ? 'No memories match your current search or category filter. Try clearing filters or adding a new memory.'
-                : 'Add a photo or personal memory to your collection to keep it preserved in Memora.'}
+                : 'Start building your Memory Vault by adding your first photograph or story.'}
             </p>
           </div>
           <button
@@ -264,7 +264,7 @@ export function MemoriesPage({ patientId }) {
               setMemoryToEdit(null);
               setCreateEditModalOpen(true);
             }}
-            className="px-5 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg inline-flex items-center space-x-2 transition-colors shadow-sm"
+            className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-sm rounded-lg inline-flex items-center space-x-2 transition-colors shadow-xs"
           >
             <Plus className="w-4 h-4" />
             <span>Add Your First Memory</span>
@@ -283,22 +283,22 @@ export function MemoriesPage({ patientId }) {
           </div>
 
           {pagination.pages > 1 && (
-            <div className="bg-[#252525] border border-[#343434] rounded-xl p-4 flex items-center justify-between text-sm">
-              <span className="text-[#A0A0A0] text-xs font-medium">
+            <div className="bg-[#202020] border border-[#343434] rounded-xl p-4 flex items-center justify-between text-sm">
+              <span className="text-[#A7A7A2] text-xs font-medium">
                 Page {pagination.page} of {pagination.pages} ({pagination.total} total)
               </span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page <= 1}
-                  className="p-2 bg-[#1E1E1E] border border-[#343434] disabled:opacity-40 rounded-lg text-[#E8E8E8]"
+                  className="p-2 bg-[#151515] border border-[#343434] disabled:opacity-40 rounded-lg text-[#F5F5F0]"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
                   disabled={page >= pagination.pages}
-                  className="p-2 bg-[#1E1E1E] border border-[#343434] disabled:opacity-40 rounded-lg text-[#E8E8E8]"
+                  className="p-2 bg-[#151515] border border-[#343434] disabled:opacity-40 rounded-lg text-[#F5F5F0]"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -353,4 +353,3 @@ export function MemoriesPage({ patientId }) {
     </div>
   );
 }
-
