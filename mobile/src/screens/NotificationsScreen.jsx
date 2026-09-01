@@ -106,14 +106,14 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Top Header Card */}
-      <div className="bg-gradient-to-r from-amber-600 via-indigo-700 to-blue-800 rounded-3xl p-6 md:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-[#0F172A] border border-[#27324A] rounded-3xl p-6 md:p-8 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center space-x-2 text-amber-200 mb-2">
+          <div className="flex items-center space-x-2 text-[#F4C542] mb-2">
             <Bell className="w-6 h-6" />
             <span className="text-xs font-black uppercase tracking-wider">Activity & Notifications</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight">Notification Center</h1>
-          <p className="text-blue-100 text-base mt-1">
+          <h1 className="text-3xl md:text-4xl font-black text-[#F8FAFC] tracking-tight">Notification Center</h1>
+          <p className="text-[#CBD5E1] text-base mt-1">
             View important updates, reminders, and community alerts.
           </p>
         </div>
@@ -121,7 +121,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setPrefModalOpen(true)}
-            className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl border border-white/20 backdrop-blur-md transition-all shadow-sm"
+            className="p-3 bg-[#151B2B] hover:bg-[#242D40] text-[#CBD5E1] hover:text-[#F8FAFC] rounded-2xl border border-[#27324A] transition-all shadow-sm"
             title="Notification Settings"
           >
             <Settings className="w-5 h-5" />
@@ -130,23 +130,23 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
           <button
             onClick={handleMarkAllRead}
             disabled={markingAll || unreadCount === 0}
-            className="px-5 py-3 bg-white/10 hover:bg-white/20 active:bg-white/30 disabled:opacity-40 text-white font-bold text-sm rounded-2xl border border-white/20 backdrop-blur-md flex items-center space-x-2 transition-all shadow-sm"
+            className="px-5 py-3 bg-[#F4C542] hover:bg-[#FFD75A] disabled:opacity-40 text-[#0F172A] font-extrabold text-sm rounded-2xl shadow-lg shadow-[#F4C542]/20 flex items-center space-x-2 transition-all"
           >
-            <CheckCheck className="w-4 h-4 text-emerald-300" />
+            <CheckCheck className="w-4 h-4" />
             <span>Mark All Read</span>
           </button>
         </div>
       </div>
 
       {/* Filter Tabs Bar */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-4 shadow-sm flex items-center justify-between">
+      <div className="bg-[#0F172A] border border-[#27324A] rounded-3xl p-3 shadow-lg flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setFilterUnread(false)}
-            className={`py-2 px-5 rounded-2xl text-sm font-extrabold transition-all ${
+            className={`py-2.5 px-5 rounded-2xl text-xs font-extrabold transition-all ${
               !filterUnread
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                ? 'bg-[#F4C542] text-[#0F172A] shadow-md'
+                : 'bg-[#151B2B] text-[#94A3B8] hover:text-[#F8FAFC] border border-[#27324A]'
             }`}
           >
             All Notifications
@@ -154,15 +154,15 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
 
           <button
             onClick={() => setFilterUnread(true)}
-            className={`py-2 px-5 rounded-2xl text-sm font-extrabold flex items-center space-x-2 transition-all ${
+            className={`py-2.5 px-5 rounded-2xl text-xs font-extrabold flex items-center space-x-2 transition-all ${
               filterUnread
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                ? 'bg-[#F4C542] text-[#0F172A] shadow-md'
+                : 'bg-[#151B2B] text-[#94A3B8] hover:text-[#F8FAFC] border border-[#27324A]'
             }`}
           >
             <span>Unread</span>
             {unreadCount > 0 && (
-              <span className="px-2 py-0.5 bg-rose-500 text-white font-black text-xs rounded-full">
+              <span className="px-2 py-0.5 bg-[#EF4444] text-white font-black text-xs rounded-full">
                 {unreadCount}
               </span>
             )}
@@ -171,7 +171,7 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
 
         <button
           onClick={fetchNotifications}
-          className="p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-2xl text-slate-700 transition-colors"
+          className="p-2.5 bg-[#151B2B] hover:bg-[#242D40] border border-[#27324A] rounded-2xl text-[#94A3B8] hover:text-[#F8FAFC] transition-colors"
           title="Refresh notifications"
         >
           <RefreshCw className="w-5 h-5" />
@@ -180,32 +180,32 @@ export function NotificationsScreen({ onNavigate, onUnreadCountChange }) {
 
       {/* Main Notification List */}
       {loading ? (
-        <div className="bg-white rounded-3xl p-12 border-2 border-slate-200 text-center shadow-sm">
-          <RefreshCw className="w-10 h-10 text-blue-600 animate-spin mx-auto mb-3" />
-          <p className="text-slate-700 font-bold text-lg">Loading notifications...</p>
+        <div className="bg-[#0F172A] rounded-3xl p-12 border border-[#27324A] text-center shadow-lg">
+          <RefreshCw className="w-10 h-10 text-[#F4C542] animate-spin mx-auto mb-3" />
+          <p className="text-[#CBD5E1] font-bold text-lg">Loading notifications...</p>
         </div>
       ) : errorMsg ? (
-        <div className="bg-white rounded-3xl p-8 border-2 border-red-200 text-center shadow-sm space-y-4">
-          <AlertTriangle className="w-12 h-12 text-red-500 mx-auto" />
+        <div className="bg-[#0F172A] rounded-3xl p-8 border border-red-500/30 text-center shadow-lg space-y-4">
+          <AlertTriangle className="w-12 h-12 text-[#EF4444] mx-auto" />
           <div>
-            <h3 className="text-xl font-bold text-slate-900 mb-1">We Couldn't Load Notifications</h3>
-            <p className="text-sm text-slate-600">{errorMsg}</p>
+            <h3 className="text-xl font-bold text-[#F8FAFC] mb-1">We Couldn't Load Notifications</h3>
+            <p className="text-sm text-[#94A3B8]">{errorMsg}</p>
           </div>
           <button
             onClick={fetchNotifications}
-            className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-2xl shadow-md transition-all inline-flex items-center space-x-2"
+            className="px-6 py-3 bg-[#151B2B] hover:bg-[#242D40] text-[#F8FAFC] font-bold text-sm rounded-2xl border border-[#27324A] transition-all inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
           </button>
         </div>
       ) : notifications.length === 0 ? (
-        <div className="bg-white rounded-3xl p-12 border-2 border-slate-200 text-center shadow-sm space-y-4">
-          <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto text-blue-600">
+        <div className="bg-[#0F172A] rounded-3xl p-12 border border-[#27324A] text-center shadow-lg space-y-4">
+          <div className="w-16 h-16 bg-[#F4C542]/10 border border-[#F4C542]/30 rounded-full flex items-center justify-center mx-auto text-[#F4C542]">
             <Bell className="w-8 h-8" />
           </div>
-          <h3 className="text-2xl font-bold text-slate-900">You're All Caught Up</h3>
-          <p className="text-slate-600 text-base max-w-md mx-auto">
+          <h3 className="text-2xl font-black text-[#F8FAFC]">You're All Caught Up</h3>
+          <p className="text-[#94A3B8] text-base max-w-md mx-auto">
             {filterUnread
               ? 'You have no unread notifications right now.'
               : 'No new activity or notifications at this time.'}
