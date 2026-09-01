@@ -105,7 +105,7 @@ export async function resolveSafetyEvent(req, res, next) {
   try {
     const { eventId } = req.params;
     validateObjectId(eventId, 'eventId');
-    const reason = req.body?.reason || null;
+    const reason = req.body?.reason || req.body?.notes || req.body?.note || null;
     const event = await safetyService.resolveSafetyEvent(eventId, req.user.id, reason);
     res.status(200).json({ success: true, data: event });
   } catch (err) {

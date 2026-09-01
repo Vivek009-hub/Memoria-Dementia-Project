@@ -32,7 +32,8 @@ const ERROR_MESSAGE_MAP = {
 
 export class ApiClient {
   constructor(options = {}) {
-    this.baseUrl = options.baseUrl || 'http://localhost:5000/api/v1';
+    const envUrl = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_API_BASE_URL : null;
+    this.baseUrl = options.baseUrl || envUrl || 'http://localhost:5000/api/v1';
     this.timeoutMs = options.timeoutMs || 10000;
     this.authToken = null;
     this.onUnauthenticated = options.onUnauthenticated || null;

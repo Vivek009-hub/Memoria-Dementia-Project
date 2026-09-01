@@ -101,6 +101,20 @@ describe('Safety, Emergency & Location Backend (B12)', () => {
     expect(sosRes2.body.data._id).toBe(firstEventId);
   });
 
+  it('allows patient to trigger SOS when location is unavailable (location: null)', async () => {
+    const patient = await registerAndLogin('patient_nolocation', 'PATIENT');
+
+    const sosRes = await request(app)
+      .post('/api/v1/safety/sos')
+      .set('Cookie', patient.cookie)
+      .send({ location: null });
+
+    expect(sosRes.status).toBe(201);
+    expect(sosRes.body.success).toBe(true);
+    expect(sosRes.body.data.type).toBe('SOS');
+    expect(sosRes.body.data.location).toBeNull();
+  });
+
   it('validates location coordinates during ingestion', async () => {
     const patient = await registerAndLogin('patient2', 'PATIENT');
 
