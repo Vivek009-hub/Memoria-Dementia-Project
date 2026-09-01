@@ -5,10 +5,13 @@
  * If not, reads ADMIN_EMAIL and ADMIN_PASSWORD from .env and creates an ADMIN user.
  */
 
+import dns from 'node:dns';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { env } from '../config/env.js';
 import User from '../modules/users/user.model.js';
+
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 async function seedAdmin() {
   const adminEmail = (env.adminEmail || 'admin@memora.com').trim().toLowerCase();
