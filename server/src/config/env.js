@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
 const required = ['MONGO_URI', 'SESSION_SECRET'];
+// GEMINI_API_KEY is optional — system falls back to MockAIProvider when absent
 
 for (const key of required) {
   if (!process.env[key]) {
@@ -23,4 +24,7 @@ export const env = {
   // Default Admin Credentials (Seed)
   adminEmail: process.env.ADMIN_EMAIL || 'admin@memora.com',
   adminPassword: process.env.ADMIN_PASSWORD || 'Admin@123456',
+
+  // AI — Gemini API key (optional; falls back to mock provider if absent)
+  geminiApiKey: process.env.GEMINI_API_KEY || null,
 };
