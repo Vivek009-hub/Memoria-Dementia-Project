@@ -30,13 +30,13 @@ describe('CaregiverRelationship Model', () => {
     it('has correct permission defaults', async () => {
       const rel = await CaregiverRelationship.create(validRelationshipData());
       expect(rel.permissions.viewProfile).toBe(true);
-      expect(rel.permissions.manageMemories).toBe(false);
-      expect(rel.permissions.manageReminders).toBe(false);
-      expect(rel.permissions.viewCognitiveActivity).toBe(false);
-      expect(rel.permissions.viewLocation).toBe(false);
-      expect(rel.permissions.manageGeofences).toBe(false);
-      expect(rel.permissions.receiveSafetyAlerts).toBe(false);
-      expect(rel.permissions.manageCommunityRegistration).toBe(false);
+      expect(rel.permissions.manageMemories).toBe(true);
+      expect(rel.permissions.manageReminders).toBe(true);
+      expect(rel.permissions.viewCognitiveActivity).toBe(true);
+      expect(rel.permissions.viewLocation).toBe(true);
+      expect(rel.permissions.manageGeofences).toBe(true);
+      expect(rel.permissions.receiveSafetyAlerts).toBe(true);
+      expect(rel.permissions.manageCommunityRegistration).toBe(true);
     });
 
     it('defaults status to PENDING', async () => {
