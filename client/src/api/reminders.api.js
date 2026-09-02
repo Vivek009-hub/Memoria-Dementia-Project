@@ -24,11 +24,14 @@ export async function createReminder(data, client = defaultApiClient) {
 }
 
 export async function updateReminder(id, data, client = defaultApiClient) {
-  return await client.patch(`/reminders/${id}`, data);
+  const patientId = data?.patientId;
+  const query = patientId ? `?patientId=${encodeURIComponent(patientId)}` : '';
+  return await client.patch(`/reminders/${id}${query}`, data);
 }
 
-export async function deleteReminder(id, client = defaultApiClient) {
-  return await client.delete(`/reminders/${id}`);
+export async function deleteReminder(id, patientId = null, client = defaultApiClient) {
+  const query = patientId ? `?patientId=${encodeURIComponent(patientId)}` : '';
+  return await client.delete(`/reminders/${id}${query}`);
 }
 
 export async function completeReminder(id, completionData = {}, client = defaultApiClient) {

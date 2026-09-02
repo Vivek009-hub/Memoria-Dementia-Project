@@ -53,16 +53,33 @@ export function validateListQuery(query) {
     sanitized.limit = limit;
   }
 
-  // isRead
-  if (query.isRead !== undefined) {
+<<<<<<< HEAD
+  // isRead & unreadOnly
+  if (query.isRead !== undefined && query.isRead !== '' && query.isRead !== 'undefined') {
     if (query.isRead !== 'true' && query.isRead !== 'false') {
       throw new AppError('isRead must be "true" or "false"', 400, 'INVALID_INPUT');
     }
     sanitized.isRead = query.isRead;
+  } else if (query.unreadOnly !== undefined && query.unreadOnly !== '' && query.unreadOnly !== 'undefined') {
+    if (query.unreadOnly === 'true' || query.unreadOnly === true) {
+      sanitized.isRead = 'false';
+    }
+=======
+  // isRead / unreadOnly
+  const rawIsRead = query.isRead !== undefined && query.isRead !== '' && query.isRead !== 'undefined' && query.isRead !== 'null'
+    ? query.isRead
+    : (query.unreadOnly === 'true' ? 'false' : undefined);
+
+  if (rawIsRead !== undefined) {
+    if (rawIsRead !== 'true' && rawIsRead !== 'false') {
+      throw new AppError('isRead must be "true" or "false"', 400, 'INVALID_INPUT');
+    }
+    sanitized.isRead = rawIsRead;
+>>>>>>> 8f89331061b3870126831291985392f62d3f7d5f
   }
 
   // type
-  if (query.type !== undefined) {
+  if (query.type !== undefined && query.type !== '' && query.type !== 'undefined' && query.type !== 'null') {
     if (!Object.values(NOTIFICATION_TYPES).includes(query.type)) {
       throw new AppError(
         `type must be one of: ${Object.values(NOTIFICATION_TYPES).join(', ')}`,
