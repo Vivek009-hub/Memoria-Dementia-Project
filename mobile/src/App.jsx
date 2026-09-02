@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck, ShieldAlert, BarChart3 } from 'lucide-react';
+import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck, ShieldAlert, BarChart3, LogOut, User } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
@@ -23,7 +23,7 @@ import * as notificationsApi from './api/notifications.api.js';
 import { defaultApiClient } from './api/client.js';
 
 function Dashboard() {
-  const { user, login } = useAuth();
+  const { user, login, logout } = useAuth();
   const { isOnline, pendingQueueCount, refreshSafetyData } = useSafety();
 
   const isCaregiver = user?.role === 'CAREGIVER';
@@ -109,7 +109,7 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Online / Offline Status Badge */}
+          {/* Online / Offline Status Badge & User Controls */}
           <div className="flex items-center space-x-2">
             {isOnline ? (
               <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-full border border-emerald-500/40 flex items-center space-x-1">
@@ -130,6 +130,17 @@ function Dashboard() {
             >
               <RefreshCw className="w-4 h-4" />
             </button>
+
+            {user && (
+              <button
+                onClick={logout}
+                className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 hover:border-red-500/50 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 active:scale-95 cursor-pointer shadow-sm ml-2"
+                title="Sign Out of Memora"
+              >
+                <LogOut className="w-3.5 h-3.5 text-red-400" />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+            )}
           </div>
         </div>
 
