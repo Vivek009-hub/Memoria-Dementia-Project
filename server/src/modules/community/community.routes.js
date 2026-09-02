@@ -31,7 +31,10 @@ communityRouter.delete(
 
 // Schedule endpoints
 communityRouter.get('/sessions/schedule', controller.getSchedule);
+communityRouter.get('/sessions/scheduled', controller.getSchedule);
+communityRouter.get('/sessions', controller.getSchedule);
 communityRouter.get('/sessions/registrations/me', controller.getMyRegistrations);
+communityRouter.get('/sessions/scheduled/:sessionId', controller.getSessionById);
 communityRouter.get('/sessions/:sessionId', controller.getSessionById);
 
 // Pre-registration endpoints
@@ -40,8 +43,18 @@ communityRouter.post(
   requireRole('PATIENT'),
   controller.registerForSession
 );
+communityRouter.post(
+  '/sessions/scheduled/:sessionId/register',
+  requireRole('PATIENT'),
+  controller.registerForSession
+);
 communityRouter.delete(
   '/sessions/:sessionId/register',
+  requireRole('PATIENT'),
+  controller.cancelRegistration
+);
+communityRouter.delete(
+  '/sessions/scheduled/:sessionId/register',
   requireRole('PATIENT'),
   controller.cancelRegistration
 );

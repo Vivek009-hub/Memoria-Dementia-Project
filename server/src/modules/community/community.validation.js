@@ -155,6 +155,36 @@ export function validateScheduleSession(body) {
     throw new AppError('Request body is required', 400, 'INVALID_REQUEST');
   }
 
+  // Normalize fallback field mappings from different modal forms
+  if (!body.date) {
+    if (body.scheduledDate) {
+      body.date = body.scheduledDate;
+    } else if (body.scheduledAt) {
+      body.date = body.scheduledAt.split(' ')[0] || body.scheduledAt;
+    }
+  }
+
+  if (!body.startTime) {
+    if (body.scheduledTime) {
+      body.startTime = body.scheduledTime;
+    } else if (body.scheduledAt && body.scheduledAt.includes(' ')) {
+      body.startTime = body.scheduledAt.split(' ').slice(1).join(' ');
+    } else {
+      body.startTime = '10:00 AM';
+    }
+  }
+
+  if (body.maximumParticipants === undefined && body.maxCapacity !== undefined) {
+    body.maximumParticipants = Number(body.maxCapacity);
+  }
+
+  if (!body.featuredPerson && body.hostName) {
+    body.featuredPerson = {
+      name: body.hostName,
+      role: body.hostRole || 'Host',
+    };
+  }
+
   const {
     title,
     description,

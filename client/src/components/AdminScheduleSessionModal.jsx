@@ -31,12 +31,21 @@ export function AdminScheduleSessionModal({ isOpen, onClose, proposal, onSubmit,
 
     setSubmitting(true);
     try {
+      const dateVal = scheduledDate || new Date().toISOString().split('T')[0];
+      const timeVal = scheduledTime || '10:00 AM';
       await submitFn({
         ideaId: proposal?._id,
         title,
-        scheduledAt: `${scheduledDate} ${scheduledTime}`,
+        date: dateVal,
+        startTime: timeVal,
+        scheduledAt: `${dateVal} ${timeVal}`,
         hostName,
         hostRole,
+        featuredPerson: {
+          name: hostName,
+          role: hostRole,
+        },
+        maximumParticipants: Number(maxCapacity),
         maxCapacity: Number(maxCapacity),
         meetingType: 'MEETING_CIRCLE',
       });
