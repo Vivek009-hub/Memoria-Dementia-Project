@@ -53,16 +53,20 @@ export function validateListQuery(query) {
     sanitized.limit = limit;
   }
 
-  // isRead
-  if (query.isRead !== undefined) {
-    if (query.isRead !== 'true' && query.isRead !== 'false') {
+  // isRead / unreadOnly
+  const rawIsRead = query.isRead !== undefined && query.isRead !== '' && query.isRead !== 'undefined' && query.isRead !== 'null'
+    ? query.isRead
+    : (query.unreadOnly === 'true' ? 'false' : undefined);
+
+  if (rawIsRead !== undefined) {
+    if (rawIsRead !== 'true' && rawIsRead !== 'false') {
       throw new AppError('isRead must be "true" or "false"', 400, 'INVALID_INPUT');
     }
-    sanitized.isRead = query.isRead;
+    sanitized.isRead = rawIsRead;
   }
 
   // type
-  if (query.type !== undefined) {
+  if (query.type !== undefined && query.type !== '' && query.type !== 'undefined' && query.type !== 'null') {
     if (!Object.values(NOTIFICATION_TYPES).includes(query.type)) {
       throw new AppError(
         `type must be one of: ${Object.values(NOTIFICATION_TYPES).join(', ')}`,
