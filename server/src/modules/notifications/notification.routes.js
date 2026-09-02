@@ -48,8 +48,9 @@ const mutateLimiter = rateLimit({
 // GET /api/v1/notifications/unread-count
 router.get('/unread-count', requireAuth, controller.getUnreadCount);
 
-// POST /api/v1/notifications/read-all
+// POST /api/v1/notifications/read-all & /mark-all-read
 router.post('/read-all', requireAuth, mutateLimiter, controller.markAllAsRead);
+router.post('/mark-all-read', requireAuth, mutateLimiter, controller.markAllAsRead);
 
 // GET  /api/v1/notifications/preferences
 router.get('/preferences', requireAuth, controller.getPreferences);
@@ -65,7 +66,8 @@ router.get('/', requireAuth, controller.listNotifications);
 // GET /api/v1/notifications/:notificationId
 router.get('/:notificationId', requireAuth, controller.getNotification);
 
-// POST /api/v1/notifications/:notificationId/read
+// POST / PATCH /api/v1/notifications/:notificationId/read
 router.post('/:notificationId/read', requireAuth, mutateLimiter, controller.markAsRead);
+router.patch('/:notificationId/read', requireAuth, mutateLimiter, controller.markAsRead);
 
 export default router;

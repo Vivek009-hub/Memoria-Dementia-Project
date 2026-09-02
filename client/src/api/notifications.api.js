@@ -4,7 +4,13 @@
 import { defaultApiClient } from './client.js';
 
 export async function getNotifications(params = {}, client = defaultApiClient) {
-  const query = new URLSearchParams(params).toString();
+  const cleanParams = {};
+  Object.keys(params).forEach((key) => {
+    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+      cleanParams[key] = params[key];
+    }
+  });
+  const query = new URLSearchParams(cleanParams).toString();
   return await client.get(`/notifications${query ? `?${query}` : ''}`);
 }
 
@@ -13,11 +19,11 @@ export async function getUnreadCount(client = defaultApiClient) {
 }
 
 export async function markAsRead(id, client = defaultApiClient) {
-  return await client.patch(`/notifications/${id}/read`);
+  return await client.post(`/notifications/${id}/read`);
 }
 
 export async function markAllAsRead(client = defaultApiClient) {
-  return await client.post('/notifications/mark-all-read');
+  return await client.post('/notifications/read-all');
 }
 
 export async function getNotificationPreferences(client = defaultApiClient) {

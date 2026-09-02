@@ -35,13 +35,15 @@ export function NotificationsPage({ onNavigate, onUnreadCountChange }) {
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
     setErrorMsg('');
-    try {
-      const res = await notificationsApi.getNotifications({
-        type: selectedType || undefined,
-        unreadOnly: unreadOnly ? true : undefined,
-        page,
-        limit: 10,
-      });
+      const params = { page, limit: 10 };
+      if (selectedType) {
+        params.type = selectedType;
+      }
+      if (unreadOnly) {
+        params.isRead = 'false';
+      }
+
+      const res = await notificationsApi.getNotifications(params);
 
       if (res.data) {
         setNotifications(res.data);
