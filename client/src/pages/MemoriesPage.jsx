@@ -5,14 +5,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   BookOpen, Plus, Search, RefreshCw, AlertTriangle, ChevronLeft, ChevronRight,
-  Users, SlidersHorizontal
+  Users, SlidersHorizontal, Key
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import { MemoryCard } from '../components/MemoryCard.jsx';
 import { MemoryDetailModal } from '../components/MemoryDetailModal.jsx';
 import { CreateEditMemoryModal } from '../components/CreateEditMemoryModal.jsx';
 import { DeleteMemoryDialog } from '../components/DeleteMemoryDialog.jsx';
 import { FamilyDirectoryModal } from '../components/FamilyDirectoryModal.jsx';
+import { PatientSelector } from '../components/PatientSelector.jsx';
 import * as memoriesApi from '../api/memories.api.js';
+import * as caregiverApi from '../api/caregiver.api.js';
 
 const CATEGORY_FILTERS = [
   { id: '', label: 'All' },
@@ -24,7 +28,14 @@ const CATEGORY_FILTERS = [
   { id: 'OBJECT', label: 'Objects' },
 ];
 
-export function MemoriesPage({ patientId }) {
+export function MemoriesPage({ patientId: propPatientId }) {
+  const { user, role } = useAuth();
+  const navigate = useNavigate();
+
+  const [relationships, setRelationships] = useState([]);
+  const [loadingRelationships, setLoadingRelationships] = useState(role === 'CAREGIVER');
+  const [selectedPatientId, setSelectedPatientId] = useState('');
+
   const [memories, setMemories] = useState([]);
   const [familyMembers, setFamilyMembers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,6 +55,47 @@ export function MemoriesPage({ patientId }) {
   const [memoryToDelete, setMemoryToDelete] = useState(null);
   const [familyDirOpen, setFamilyDirOpen] = useState(false);
 
+  // Determine active target patient ID
+  const isCaregiver = role === 'CAREGIVER';
+  const activePatientId = isCaregiver
+    ? selectedPatientId || (propPatientId && propPatientId !== user?.id && propPatientId !== user?._id ? propPatientId : '')
+    : user?.id || user?._id;
+
+  // Load caregiver patient relationships if logged in as caregiver
+  useEffect(() => {
+    if (!isCaregiver) {
+      setLoadingRelationships(false);
+      return;
+    }
+    let isMounted = true;
+    const fetchRelationships = async () => {
+      setLoadingRelationships(true);
+      try {
+        const res = await caregiverApi.getCaregiverRelationships();
+        const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
+        if (isMounted) {
+          if (rels && rels.length > 0) {
+            setRelationships(rels);
+            const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
+            const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
+            setSelectedPatientId((prev) => prev || firstId);
+          } else {
+            setRelationships([]);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load caregiver relationships:', err);
+      } finally {
+        if (isMounted) setLoadingRelationships(false);
+      }
+    };
+
+    fetchRelationships();
+    return () => {
+      isMounted = false;
+    };
+  }, [isCaregiver]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
@@ -53,6 +105,12 @@ export function MemoriesPage({ patientId }) {
   }, [searchQuery]);
 
   const fetchMemories = useCallback(async () => {
+    if (isCaregiver && !activePatientId) {
+      setLoading(false);
+      setMemories([]);
+      return;
+    }
+
     setLoading(true);
     setErrorMsg('');
     try {
@@ -62,7 +120,7 @@ export function MemoriesPage({ patientId }) {
         sort: sortOrder,
         page,
         limit: 10,
-        patientId,
+        patientId: activePatientId,
       });
 
       if (res.data) {
@@ -79,43 +137,48 @@ export function MemoriesPage({ patientId }) {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, selectedCategory, sortOrder, page, patientId]);
+  }, [debouncedSearch, selectedCategory, sortOrder, page, activePatientId, isCaregiver]);
 
   const fetchFamilyMembers = useCallback(async () => {
+    if (isCaregiver && !activePatientId) return;
     try {
-      const res = await memoriesApi.listFamilyMembers({ patientId });
+      const res = await memoriesApi.listFamilyMembers({ patientId: activePatientId });
       if (res.data) {
         setFamilyMembers(res.data);
       }
     } catch {
       // Non-blocking error
     }
-  }, [patientId]);
+  }, [activePatientId, isCaregiver]);
 
   useEffect(() => {
-    fetchMemories();
-  }, [fetchMemories]);
+    if (!loadingRelationships) {
+      fetchMemories();
+    }
+  }, [fetchMemories, loadingRelationships]);
 
   useEffect(() => {
-    fetchFamilyMembers();
-  }, [fetchFamilyMembers]);
+    if (!loadingRelationships) {
+      fetchFamilyMembers();
+    }
+  }, [fetchFamilyMembers, loadingRelationships]);
 
   const handleSaveMemory = async (formDataOrPayload, memoryId) => {
     let res;
     if (formDataOrPayload instanceof FormData) {
-      if (patientId) formDataOrPayload.append('patientId', patientId);
+      if (activePatientId) formDataOrPayload.append('patientId', activePatientId);
       if (memoryId) {
-        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload, patientId);
+        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload, activePatientId);
       } else {
-        res = await memoriesApi.createMemory(formDataOrPayload, patientId);
+        res = await memoriesApi.createMemory(formDataOrPayload, activePatientId);
       }
     } else {
       const payload = { ...formDataOrPayload };
-      if (patientId) payload.patientId = patientId;
+      if (activePatientId) payload.patientId = activePatientId;
       if (memoryId) {
-        res = await memoriesApi.updateMemory(memoryId, payload, patientId);
+        res = await memoriesApi.updateMemory(memoryId, payload, activePatientId);
       } else {
-        res = await memoriesApi.createMemory(payload, patientId);
+        res = await memoriesApi.createMemory(payload, activePatientId);
       }
     }
 
@@ -130,7 +193,7 @@ export function MemoriesPage({ patientId }) {
   };
 
   const handleDeleteMemory = async (memoryId) => {
-    await memoriesApi.deleteMemory(memoryId, patientId);
+    await memoriesApi.deleteMemory(memoryId, activePatientId);
     if (selectedMemory && selectedMemory._id === memoryId) {
       setSelectedMemory(null);
     }
@@ -138,7 +201,7 @@ export function MemoriesPage({ patientId }) {
   };
 
   const handleAddFamilyMember = async (memberData) => {
-    await memoriesApi.createFamilyMember({ ...memberData, patientId });
+    await memoriesApi.createFamilyMember({ ...memberData, patientId: activePatientId });
     fetchFamilyMembers();
   };
 
@@ -157,10 +220,19 @@ export function MemoriesPage({ patientId }) {
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+          {isCaregiver && relationships.length > 0 && (
+            <PatientSelector
+              patients={relationships}
+              selectedPatientId={selectedPatientId}
+              onSelectPatient={(id) => setSelectedPatientId(id)}
+            />
+          )}
+
           <button
             onClick={() => setFamilyDirOpen(true)}
-            className="px-4 py-2.5 bg-transparent hover:bg-[#242424] text-[#F5F5F0] font-medium text-sm rounded-lg border border-[#343434] flex items-center space-x-2 transition-colors touch-target"
+            disabled={isCaregiver && !activePatientId}
+            className="px-4 py-2.5 bg-transparent hover:bg-[#242424] disabled:opacity-50 text-[#F5F5F0] font-medium text-sm rounded-lg border border-[#343434] flex items-center space-x-2 transition-colors touch-target"
           >
             <Users className="w-4 h-4 text-[#D8B24C]" />
             <span>Family Directory</span>
@@ -171,7 +243,8 @@ export function MemoriesPage({ patientId }) {
               setMemoryToEdit(null);
               setCreateEditModalOpen(true);
             }}
-            className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-sm rounded-lg flex items-center space-x-2 transition-colors shadow-xs touch-target"
+            disabled={isCaregiver && !activePatientId}
+            className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] font-semibold text-sm rounded-lg flex items-center space-x-2 transition-colors shadow-xs touch-target"
           >
             <Plus className="w-4 h-4" />
             <span>Add Memory</span>
@@ -237,10 +310,27 @@ export function MemoriesPage({ patientId }) {
         </div>
       </div>
 
-      {loading ? (
+      {loading || loadingRelationships ? (
         <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center">
           <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin mx-auto mb-3" />
           <p className="text-[#A7A7A2] text-sm">Loading your memories...</p>
+        </div>
+      ) : isCaregiver && relationships.length === 0 ? (
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center space-y-4">
+          <Users className="w-12 h-12 text-[#D8B24C] mx-auto opacity-60" />
+          <div>
+            <h3 className="text-xl font-semibold text-[#F5F5F0] mb-2">No Connected Patient Accounts</h3>
+            <p className="text-[#A7A7A2] max-w-md mx-auto text-sm leading-relaxed">
+              You do not currently have an active patient connected. Ask your patient to generate a pairing code on their profile, then pair on the Caregiver Dashboard to view or manage their Memory Vault.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/app/caregiver')}
+            className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-sm rounded-lg inline-flex items-center space-x-2 transition-colors shadow-xs"
+          >
+            <Key className="w-4 h-4" />
+            <span>Go to Caregiver Dashboard</span>
+          </button>
         </div>
       ) : errorMsg ? (
         <div className="bg-[#202020] border border-[#D95C5C]/30 rounded-xl p-8 text-center space-y-4">

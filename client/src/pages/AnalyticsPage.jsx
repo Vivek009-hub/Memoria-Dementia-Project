@@ -3,21 +3,77 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { BarChart3, Clock, Gamepad2, BookOpen, Users, RefreshCw, AlertTriangle, TrendingUp } from 'lucide-react';
+import { BarChart3, Clock, Gamepad2, BookOpen, Users, RefreshCw, AlertTriangle, TrendingUp, Key } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import { ActivityProgressCard } from '../components/ActivityProgressCard.jsx';
+import { PatientSelector } from '../components/PatientSelector.jsx';
 import * as analyticsApi from '../api/analytics.api.js';
+import * as caregiverApi from '../api/caregiver.api.js';
 
-export function AnalyticsPage({ patientId }) {
+export function AnalyticsPage({ patientId: propPatientId }) {
+  const { user, role } = useAuth();
+  const navigate = useNavigate();
+
+  const [relationships, setRelationships] = useState([]);
+  const [loadingRelationships, setLoadingRelationships] = useState(role === 'CAREGIVER');
+  const [selectedPatientId, setSelectedPatientId] = useState('');
+
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
   const [rangeDays, setRangeDays] = useState(7);
 
+  const isCaregiver = role === 'CAREGIVER';
+  const activePatientId = isCaregiver
+    ? selectedPatientId || (propPatientId && propPatientId !== user?.id && propPatientId !== user?._id ? propPatientId : '')
+    : user?.id || user?._id;
+
+  useEffect(() => {
+    if (!isCaregiver) {
+      setLoadingRelationships(false);
+      return;
+    }
+    let isMounted = true;
+    const fetchRelationships = async () => {
+      setLoadingRelationships(true);
+      try {
+        const res = await caregiverApi.getCaregiverRelationships();
+        const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
+        if (isMounted) {
+          if (rels && rels.length > 0) {
+            setRelationships(rels);
+            const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
+            const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
+            setSelectedPatientId((prev) => prev || firstId);
+          } else {
+            setRelationships([]);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load caregiver relationships:', err);
+      } finally {
+        if (isMounted) setLoadingRelationships(false);
+      }
+    };
+
+    fetchRelationships();
+    return () => {
+      isMounted = false;
+    };
+  }, [isCaregiver]);
+
   const fetchAnalytics = useCallback(async () => {
+    if (isCaregiver && !activePatientId) {
+      setLoading(false);
+      setOverview(null);
+      return;
+    }
+
     setLoading(true);
     setErrorMsg('');
     try {
-      const res = await analyticsApi.getAnalyticsOverview({ days: rangeDays, patientId });
+      const res = await analyticsApi.getAnalyticsOverview({ days: rangeDays, patientId: activePatientId });
       if (res.data) {
         setOverview(res.data);
       } else {
@@ -29,11 +85,13 @@ export function AnalyticsPage({ patientId }) {
     } finally {
       setLoading(false);
     }
-  }, [rangeDays, patientId]);
+  }, [rangeDays, activePatientId, isCaregiver]);
 
   useEffect(() => {
-    fetchAnalytics();
-  }, [fetchAnalytics]);
+    if (!loadingRelationships) {
+      fetchAnalytics();
+    }
+  }, [fetchAnalytics, loadingRelationships]);
 
   const totalReminders = overview?.remindersTotal ?? overview?.reminders?.total ?? 0;
   const completedReminders = overview?.remindersCompleted ?? overview?.reminders?.completed ?? 0;
@@ -62,31 +120,58 @@ export function AnalyticsPage({ patientId }) {
           </p>
         </div>
 
-        <div className="flex items-center space-x-1.5 bg-[#151515] border border-[#343434] p-1 rounded-lg self-start md:self-auto">
-          {[
-            { days: 7, label: '7 Days' },
-            { days: 30, label: '30 Days' },
-            { days: 90, label: '90 Days' },
-          ].map((item) => (
-            <button
-              key={item.days}
-              onClick={() => setRangeDays(item.days)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                rangeDays === item.days
-                  ? 'bg-[#D8B24C] text-[#151515] shadow-xs'
-                  : 'text-[#A7A7A2] hover:text-[#F5F5F0]'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+          {isCaregiver && relationships.length > 0 && (
+            <PatientSelector
+              patients={relationships}
+              selectedPatientId={selectedPatientId}
+              onSelectPatient={(id) => setSelectedPatientId(id)}
+            />
+          )}
+
+          <div className="flex items-center space-x-1.5 bg-[#151515] border border-[#343434] p-1 rounded-lg">
+            {[
+              { days: 7, label: '7 Days' },
+              { days: 30, label: '30 Days' },
+              { days: 90, label: '90 Days' },
+            ].map((item) => (
+              <button
+                key={item.days}
+                onClick={() => setRangeDays(item.days)}
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                  rangeDays === item.days
+                    ? 'bg-[#D8B24C] text-[#151515] shadow-xs'
+                    : 'text-[#A7A7A2] hover:text-[#F5F5F0]'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {loading ? (
+      {loading || loadingRelationships ? (
         <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center shadow-xs">
           <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin mx-auto mb-3" />
           <p className="text-[#A7A7A2] font-medium text-sm">Computing progress statistics...</p>
+        </div>
+      ) : isCaregiver && relationships.length === 0 ? (
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center space-y-4">
+          <Users className="w-12 h-12 text-[#D8B24C] mx-auto opacity-60" />
+          <div>
+            <h3 className="text-xl font-semibold text-[#F5F5F0] mb-2">No Connected Patient Accounts</h3>
+            <p className="text-[#A7A7A2] max-w-md mx-auto text-sm leading-relaxed">
+              You do not currently have an active patient connected. Ask your patient to generate a pairing code on their profile, then pair on the Caregiver Dashboard to view their analytics.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/app/caregiver')}
+            className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-sm rounded-lg inline-flex items-center space-x-2 transition-colors shadow-xs"
+          >
+            <Key className="w-4 h-4" />
+            <span>Go to Caregiver Dashboard</span>
+          </button>
         </div>
       ) : errorMsg ? (
         <div className="bg-[#202020] border border-[#D95C5C]/30 rounded-xl p-8 text-center shadow-xs space-y-4">

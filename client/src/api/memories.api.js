@@ -88,12 +88,29 @@ export async function searchMemories(queryStr, client = defaultApiClient) {
   return await client.get(`/memories?search=${encodeURIComponent(queryStr)}`);
 }
 
-export async function getFamilyDirectory(client = defaultApiClient) {
-  return await client.get('/memories/family-directory');
+export async function getFamilyDirectory(paramsOrClient = {}, client = defaultApiClient) {
+  let params = {};
+  let apiClient = client;
+  if (paramsOrClient && typeof paramsOrClient.get === 'function') {
+    apiClient = paramsOrClient;
+  } else if (typeof paramsOrClient === 'object') {
+    params = paramsOrClient;
+  }
+
+  const cleanParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, val]) => {
+    if (val !== undefined && val !== null && val !== '' && val !== 'undefined') {
+      cleanParams.append(key, val);
+    }
+  });
+  const query = cleanParams.toString();
+  return await apiClient.get(`/memories/family-directory${query ? `?${query}` : ''}`);
 }
 
 export const listFamilyMembers = getFamilyDirectory;
 
 export async function createFamilyMember(memberData, client = defaultApiClient) {
-  return await client.post('/memories/family-directory', memberData);
+  const patientId = memberData?.patientId;
+  const query = patientId ? `?patientId=${encodeURIComponent(patientId)}` : '';
+  return await client.post(`/memories/family-directory${query}`, memberData);
 }
