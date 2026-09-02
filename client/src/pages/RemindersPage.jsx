@@ -4,14 +4,18 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Clock, Plus, RefreshCw, AlertTriangle, Calendar
+  Clock, Plus, RefreshCw, AlertTriangle, Calendar, Users, Key
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import { ReminderCard } from '../components/ReminderCard.jsx';
 import { CreateEditReminderModal } from '../components/CreateEditReminderModal.jsx';
 import { ReminderDetailModal } from '../components/ReminderDetailModal.jsx';
 import { DeleteReminderDialog } from '../components/DeleteReminderDialog.jsx';
 import { SnoozeSkipModal } from '../components/SnoozeSkipModal.jsx';
+import { PatientSelector } from '../components/PatientSelector.jsx';
 import * as remindersApi from '../api/reminders.api.js';
+import * as caregiverApi from '../api/caregiver.api.js';
 
 const TYPE_FILTERS = [
   { id: '', label: 'All Routines' },
@@ -23,7 +27,14 @@ const TYPE_FILTERS = [
   { id: 'IMPORTANT_EVENT', label: 'Events' },
 ];
 
-export function RemindersPage({ patientId }) {
+export function RemindersPage({ patientId: propPatientId }) {
+  const { user, role } = useAuth();
+  const navigate = useNavigate();
+
+  const [relationships, setRelationships] = useState([]);
+  const [loadingRelationships, setLoadingRelationships] = useState(role === 'CAREGIVER');
+  const [selectedPatientId, setSelectedPatientId] = useState('');
+
   const [reminders, setReminders] = useState([]);
   const [occurrences, setOccurrences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,14 +51,62 @@ export function RemindersPage({ patientId }) {
   const [skipModalOpen, setSkipModalOpen] = useState(false);
   const [reminderToSkip, setReminderToSkip] = useState(null);
 
+  // Determine active target patient ID
+  const isCaregiver = role === 'CAREGIVER';
+  const activePatientId = isCaregiver
+    ? selectedPatientId || (propPatientId && propPatientId !== user?.id && propPatientId !== user?._id ? propPatientId : '')
+    : user?.id || user?._id;
+
+  // Load caregiver patient relationships if logged in as caregiver
+  useEffect(() => {
+    if (!isCaregiver) {
+      setLoadingRelationships(false);
+      return;
+    }
+    let isMounted = true;
+    const fetchRelationships = async () => {
+      setLoadingRelationships(true);
+      try {
+        const res = await caregiverApi.getCaregiverRelationships();
+        const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
+        if (isMounted) {
+          if (rels && rels.length > 0) {
+            setRelationships(rels);
+            const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
+            const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
+            setSelectedPatientId((prev) => prev || firstId);
+          } else {
+            setRelationships([]);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load caregiver relationships:', err);
+      } finally {
+        if (isMounted) setLoadingRelationships(false);
+      }
+    };
+
+    fetchRelationships();
+    return () => {
+      isMounted = false;
+    };
+  }, [isCaregiver]);
+
   const fetchReminders = useCallback(async () => {
+    if (isCaregiver && !activePatientId) {
+      setLoading(false);
+      setReminders([]);
+      setOccurrences([]);
+      return;
+    }
+
     setLoading(true);
     setErrorMsg('');
     try {
       const params = {};
       if (selectedType) params.type = selectedType;
       if (selectedDate) params.date = selectedDate;
-      if (patientId) params.patientId = patientId;
+      if (activePatientId) params.patientId = activePatientId;
 
       const res = await remindersApi.getReminders(params);
 
@@ -67,25 +126,27 @@ export function RemindersPage({ patientId }) {
     } finally {
       setLoading(false);
     }
-  }, [selectedType, selectedDate, patientId]);
+  }, [selectedType, selectedDate, activePatientId, isCaregiver]);
 
   useEffect(() => {
-    fetchReminders();
-  }, [fetchReminders]);
+    if (!loadingRelationships) {
+      fetchReminders();
+    }
+  }, [fetchReminders, loadingRelationships]);
 
   const handleSaveReminder = async (formData, reminderId) => {
     if (reminderId) {
-      await remindersApi.updateReminder(reminderId, formData);
+      await remindersApi.updateReminder(reminderId, { ...formData, patientId: activePatientId });
     } else {
       const payload = { ...formData };
-      if (patientId) payload.patientId = patientId;
+      if (activePatientId) payload.patientId = activePatientId;
       await remindersApi.createReminder(payload);
     }
     fetchReminders();
   };
 
   const handleDeleteReminder = async (reminderId) => {
-    await remindersApi.deleteReminder(reminderId);
+    await remindersApi.deleteReminder(reminderId, activePatientId);
     if (selectedReminder && selectedReminder._id === reminderId) {
       setSelectedReminder(null);
     }
@@ -93,17 +154,23 @@ export function RemindersPage({ patientId }) {
   };
 
   const handleCompleteReminder = async (reminder) => {
-    await remindersApi.completeReminder(reminder._id, { date: selectedDate });
+    const remId = reminder?._id || reminder?.id || reminder;
+    await remindersApi.completeReminder(remId, { date: selectedDate, patientId: activePatientId });
     fetchReminders();
   };
 
-  const handleSkipReminder = async (reminderId, data) => {
-    await remindersApi.skipReminder(reminderId, data?.note || '');
+  const handleSkipReminder = async (reminderOrId, data) => {
+    const remId = typeof reminderOrId === 'object' ? (reminderOrId._id || reminderOrId.id) : reminderOrId;
+    await remindersApi.skipReminder(remId, { note: data?.note || '', date: selectedDate, patientId: activePatientId });
     fetchReminders();
   };
 
   const getReminderStatus = (reminderId) => {
-    const occ = occurrences.find((o) => o.reminderId === reminderId);
+    if (!reminderId) return 'PENDING';
+    const occ = occurrences.find((o) => {
+      const oRemId = o.reminderId || (typeof o.reminder === 'object' ? o.reminder?.id || o.reminder?._id : o.reminder);
+      return String(oRemId) === String(reminderId);
+    });
     return occ ? occ.status : 'PENDING';
   };
 
@@ -122,16 +189,27 @@ export function RemindersPage({ patientId }) {
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setReminderToEdit(null);
-            setCreateEditModalOpen(true);
-          }}
-          className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-sm rounded-lg shadow-xs flex items-center space-x-2 transition-colors self-start md:self-auto touch-target"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Reminder</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+          {isCaregiver && relationships.length > 0 && (
+            <PatientSelector
+              patients={relationships}
+              selectedPatientId={selectedPatientId}
+              onSelectPatient={(id) => setSelectedPatientId(id)}
+            />
+          )}
+
+          <button
+            onClick={() => {
+              setReminderToEdit(null);
+              setCreateEditModalOpen(true);
+            }}
+            disabled={isCaregiver && !activePatientId}
+            className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] font-semibold text-sm rounded-lg shadow-xs flex items-center space-x-2 transition-colors touch-target"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Reminder</span>
+          </button>
+        </div>
       </div>
 
       {/* Type Filters & Date Selector */}
@@ -163,10 +241,27 @@ export function RemindersPage({ patientId }) {
         </div>
       </div>
 
-      {loading ? (
+      {loading || loadingRelationships ? (
         <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center">
           <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin mx-auto mb-3" />
           <p className="text-[#A7A7A2] text-sm">Loading routine schedule...</p>
+        </div>
+      ) : isCaregiver && relationships.length === 0 ? (
+        <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center space-y-4">
+          <Users className="w-12 h-12 text-[#D8B24C] mx-auto opacity-60" />
+          <div>
+            <h3 className="text-xl font-semibold text-[#F5F5F0] mb-2">No Connected Patient Accounts</h3>
+            <p className="text-[#A7A7A2] max-w-md mx-auto text-sm leading-relaxed">
+              You do not currently have an active patient connected. Ask your patient to generate a pairing code on their profile, then pair on the Caregiver Dashboard to manage their routine schedule.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/app/caregiver')}
+            className="px-5 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] font-semibold text-sm rounded-lg inline-flex items-center space-x-2 transition-colors shadow-xs"
+          >
+            <Key className="w-4 h-4" />
+            <span>Go to Caregiver Dashboard</span>
+          </button>
         </div>
       ) : errorMsg ? (
         <div className="bg-[#202020] border border-[#D95C5C]/30 rounded-xl p-8 text-center space-y-4">
@@ -207,19 +302,22 @@ export function RemindersPage({ patientId }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {reminders.map((rem) => (
-            <ReminderCard
-              key={rem._id}
-              reminder={rem}
-              status={getReminderStatus(rem._id)}
-              onComplete={handleCompleteReminder}
-              onSkip={(r) => {
-                setReminderToSkip(r);
-                setSkipModalOpen(true);
-              }}
-              onSelect={(r) => setSelectedReminder(r)}
-            />
-          ))}
+          {reminders.map((rem) => {
+            const targetId = rem._id || rem.id;
+            return (
+              <ReminderCard
+                key={targetId}
+                reminder={rem}
+                status={getReminderStatus(targetId)}
+                onComplete={handleCompleteReminder}
+                onSkip={(r) => {
+                  setReminderToSkip(r);
+                  setSkipModalOpen(true);
+                }}
+                onSelect={(r) => setSelectedReminder(r)}
+              />
+            );
+          })}
         </div>
       )}
 

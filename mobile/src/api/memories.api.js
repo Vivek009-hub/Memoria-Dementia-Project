@@ -56,8 +56,29 @@ export async function createMemory(data, client = defaultApiClient) {
  * @param {Object} data - Partial memory updates
  * @param {Object} [client=defaultApiClient]
  */
-export async function updateMemory(memoryId, data, client = defaultApiClient) {
-  return await client.patch(`/memories/${memoryId}`, data);
+export async function updateMemory(memoryId, data, patientIdOrClient = defaultApiClient, maybeClient = defaultApiClient) {
+  let client = defaultApiClient;
+  let patientId = null;
+
+  if (patientIdOrClient && typeof patientIdOrClient.patch === 'function') {
+    client = patientIdOrClient;
+  } else if (typeof patientIdOrClient === 'string') {
+    patientId = patientIdOrClient;
+    if (maybeClient && typeof maybeClient.patch === 'function') {
+      client = maybeClient;
+    }
+  }
+
+  if (!patientId && data) {
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      patientId = data.get('patientId');
+    } else if (typeof data === 'object' && data.patientId) {
+      patientId = data.patientId;
+    }
+  }
+
+  const query = patientId ? `?patientId=${encodeURIComponent(patientId)}` : '';
+  return await client.patch(`/memories/${memoryId}${query}`, data);
 }
 
 /**

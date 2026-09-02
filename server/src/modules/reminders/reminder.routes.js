@@ -52,7 +52,15 @@ async function caregiverPatientScope(req, _res, next) {
     }
 
     if (req.user.role === 'CAREGIVER') {
-      const patientId = req.query.patientId ?? req.body?.patientId;
+      let patientId = req.query?.patientId ?? req.body?.patientId;
+
+      if (!patientId && req.params?.reminderId) {
+        const Reminder = (await import('./reminder.model.js')).default;
+        const reminder = await Reminder.findById(req.params.reminderId).lean();
+        if (reminder) {
+          patientId = reminder.patientId?.toString();
+        }
+      }
 
       if (!patientId) {
         throw new AppError(
@@ -69,8 +77,9 @@ async function caregiverPatientScope(req, _res, next) {
       // Verify ACTIVE relationship + manageReminders permission via B3 utils
       await canAccessPatient(req.user, patientId, 'manageReminders');
 
-      // Attach for controllers to read via req.params.patientId
+      // Attach for controllers to read
       req.params.patientId = patientId;
+      req.targetPatientId = patientId;
       return next();
     }
 

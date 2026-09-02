@@ -1,11 +1,5 @@
-/**
- * MemoryCard.jsx — Elder-Friendly Memory Card Component
- *
- * High contrast, large touch targets, responsive image container with fallback icon.
- */
-
 import React, { useState } from 'react';
-import { Image, Heart, MapPin, Calendar, User, BookOpen, Camera, Sparkles, ChevronRight } from 'lucide-react';
+import { Image, Heart, MapPin, Calendar, User, BookOpen, Camera, Sparkles, ChevronRight, Mic } from 'lucide-react';
 
 const TYPE_ICONS = {
   PHOTO: Camera,
@@ -30,6 +24,7 @@ export function MemoryCard({ memory, onSelect }) {
 
   const TypeIcon = TYPE_ICONS[memory.type] || Sparkles;
   const badgeStyle = TYPE_COLOR_MAP[memory.type] || 'bg-slate-800 text-slate-300 border-slate-700';
+  const hasAudioNote = Boolean(memory.voiceNote?.audioUrl || memory.audioUrl);
 
   // Format date display
   let formattedDate = null;
@@ -85,6 +80,13 @@ export function MemoryCard({ memory, onSelect }) {
             <div className="flex flex-col items-center justify-center text-memora-text-muted p-4">
               <TypeIcon className="w-12 h-12 stroke-1 text-memora-text-subtle mb-1" />
               <span className="text-xs uppercase font-bold tracking-wider text-memora-text-subtle">{memory.type}</span>
+            </div>
+          )}
+
+          {hasAudioNote && (
+            <div className="absolute top-2 right-2 px-2.5 py-1 rounded-lg text-[10px] font-black bg-[#8B5CF6]/90 text-white border border-[#8B5CF6]/40 flex items-center space-x-1 backdrop-blur-xs shadow-md">
+              <Mic className="w-3 h-3" />
+              <span>Voice Note</span>
             </div>
           )}
 

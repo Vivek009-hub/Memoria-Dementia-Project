@@ -115,13 +115,14 @@ export function RemindersScreen({ patientId }) {
   };
 
   const handleCompleteReminder = async (rem) => {
-    await remindersApi.completeReminder(rem._id, {}, patientId);
-    setCompletedMap((prev) => ({ ...prev, [rem._id]: true }));
+    const remId = rem?._id || rem?.id || rem;
+    await remindersApi.completeReminder(remId, { patientId }, patientId);
+    setCompletedMap((prev) => ({ ...prev, [remId]: true }));
     fetchHistory();
   };
 
   const handleConfirmSkip = async (reminderId, options) => {
-    await remindersApi.skipReminder(reminderId, options, patientId);
+    await remindersApi.skipReminder(reminderId, { ...options, patientId }, patientId);
     setSkippedMap((prev) => ({ ...prev, [reminderId]: true }));
     fetchHistory();
   };
@@ -336,19 +337,22 @@ export function RemindersScreen({ patientId }) {
                 <h2 className="text-lg font-black text-memora-text uppercase tracking-wider">Morning Routine</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {morning.map((r) => (
-                  <ReminderCard
-                    key={r._id}
-                    reminder={r}
-                    status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
-                    onComplete={handleCompleteReminder}
-                    onSkip={(rem) => {
-                      setReminderToSkip(rem);
-                      setSkipModalOpen(true);
-                    }}
-                    onSelect={(rem) => setSelectedReminder(rem)}
-                  />
-                ))}
+                {morning.map((r) => {
+                  const targetId = r._id || r.id;
+                  return (
+                    <ReminderCard
+                      key={targetId}
+                      reminder={r}
+                      status={completedMap[targetId] ? 'COMPLETED' : skippedMap[targetId] ? 'SKIPPED' : 'PENDING'}
+                      onComplete={handleCompleteReminder}
+                      onSkip={(rem) => {
+                        setReminderToSkip(rem);
+                        setSkipModalOpen(true);
+                      }}
+                      onSelect={(rem) => setSelectedReminder(rem)}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
@@ -361,19 +365,22 @@ export function RemindersScreen({ patientId }) {
                 <h2 className="text-lg font-black text-memora-text uppercase tracking-wider">Afternoon Routine</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {afternoon.map((r) => (
-                  <ReminderCard
-                    key={r._id}
-                    reminder={r}
-                    status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
-                    onComplete={handleCompleteReminder}
-                    onSkip={(rem) => {
-                      setReminderToSkip(rem);
-                      setSkipModalOpen(true);
-                    }}
-                    onSelect={(rem) => setSelectedReminder(rem)}
-                  />
-                ))}
+                {afternoon.map((r) => {
+                  const targetId = r._id || r.id;
+                  return (
+                    <ReminderCard
+                      key={targetId}
+                      reminder={r}
+                      status={completedMap[targetId] ? 'COMPLETED' : skippedMap[targetId] ? 'SKIPPED' : 'PENDING'}
+                      onComplete={handleCompleteReminder}
+                      onSkip={(rem) => {
+                        setReminderToSkip(rem);
+                        setSkipModalOpen(true);
+                      }}
+                      onSelect={(rem) => setSelectedReminder(rem)}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
@@ -386,19 +393,22 @@ export function RemindersScreen({ patientId }) {
                 <h2 className="text-lg font-black text-memora-text uppercase tracking-wider">Evening Routine</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {evening.map((r) => (
-                  <ReminderCard
-                    key={r._id}
-                    reminder={r}
-                    status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
-                    onComplete={handleCompleteReminder}
-                    onSkip={(rem) => {
-                      setReminderToSkip(rem);
-                      setSkipModalOpen(true);
-                    }}
-                    onSelect={(rem) => setSelectedReminder(rem)}
-                  />
-                ))}
+                {evening.map((r) => {
+                  const targetId = r._id || r.id;
+                  return (
+                    <ReminderCard
+                      key={targetId}
+                      reminder={r}
+                      status={completedMap[targetId] ? 'COMPLETED' : skippedMap[targetId] ? 'SKIPPED' : 'PENDING'}
+                      onComplete={handleCompleteReminder}
+                      onSkip={(rem) => {
+                        setReminderToSkip(rem);
+                        setSkipModalOpen(true);
+                      }}
+                      onSelect={(rem) => setSelectedReminder(rem)}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
@@ -406,19 +416,22 @@ export function RemindersScreen({ patientId }) {
       ) : (
         /* All Reminders Grid View */
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {reminders.map((r) => (
-            <ReminderCard
-              key={r._id}
-              reminder={r}
-              status={completedMap[r._id] ? 'COMPLETED' : skippedMap[r._id] ? 'SKIPPED' : 'PENDING'}
-              onComplete={handleCompleteReminder}
-              onSkip={(rem) => {
-                setReminderToSkip(rem);
-                setSkipModalOpen(true);
-              }}
-              onSelect={(rem) => setSelectedReminder(rem)}
-            />
-          ))}
+          {reminders.map((r) => {
+            const targetId = r._id || r.id;
+            return (
+              <ReminderCard
+                key={targetId}
+                reminder={r}
+                status={completedMap[targetId] ? 'COMPLETED' : skippedMap[targetId] ? 'SKIPPED' : 'PENDING'}
+                onComplete={handleCompleteReminder}
+                onSkip={(rem) => {
+                  setReminderToSkip(rem);
+                  setSkipModalOpen(true);
+                }}
+                onSelect={(rem) => setSelectedReminder(rem)}
+              />
+            );
+          })}
         </div>
       )}
 

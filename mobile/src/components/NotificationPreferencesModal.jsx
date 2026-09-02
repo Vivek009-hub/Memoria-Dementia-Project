@@ -88,101 +88,101 @@ export function NotificationPreferencesModal({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-[#121212]/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="pref-modal-title"
     >
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl my-8">
+      <div className="bg-[#181818] rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-[#2A2A2A] my-8">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-950/80">
-          <div className="flex items-center space-x-2 text-indigo-400">
+        <div className="flex items-center justify-between p-6 border-b border-[#2A2A2A] bg-[#202020]">
+          <div className="flex items-center space-x-2 text-[#F4C542]">
             <Bell className="w-6 h-6" />
-            <h2 id="pref-modal-title" className="text-xl font-extrabold text-white">
+            <h2 id="pref-modal-title" className="text-2xl font-black text-[#F8FAFC]">
               Notification Settings
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/50 hover:bg-slate-800 transition-colors"
+            className="p-2 text-[#94A3B8] hover:text-[#F8FAFC] rounded-full hover:bg-[#262626] transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Content Body */}
         {loading ? (
-          <div className="p-12 text-center text-slate-400">
-            <Bell className="w-8 h-8 animate-bounce mx-auto mb-2 text-indigo-400" />
-            <p className="font-bold">Loading settings...</p>
+          <div className="p-12 text-center text-[#94A3B8]">
+            <Bell className="w-10 h-10 animate-bounce mx-auto mb-3 text-[#F4C542]" />
+            <p className="font-bold text-base">Loading settings...</p>
           </div>
         ) : (
           <form onSubmit={handleSave} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
             {errorMsg && (
-              <div className="p-3 bg-red-950/80 border border-red-500/50 rounded-xl text-red-300 text-xs font-bold flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
+              <div className="p-4 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-2xl text-[#EF4444] text-sm font-bold flex items-center space-x-2">
+                <AlertCircle className="w-5 h-5 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
 
             {successMsg && (
-              <div className="p-3 bg-emerald-950/80 border border-emerald-500/50 rounded-xl text-emerald-300 text-xs font-bold">
+              <div className="p-4 bg-[#10B981]/10 border border-[#10B981]/30 rounded-2xl text-[#10B981] text-sm font-bold">
                 {successMsg}
               </div>
             )}
 
             {/* Notification Channels */}
             <div className="space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+              <h3 className="text-xs font-black uppercase tracking-wider text-[#F4C542]">
                 Delivery Channels
               </h3>
 
               <div className="space-y-2">
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-[#202020] rounded-2xl border border-[#2A2A2A] cursor-pointer hover:bg-[#262626] transition-colors">
                   <div className="flex items-center space-x-3">
-                    <Bell className="w-5 h-5 text-indigo-400" />
+                    <Bell className="w-5 h-5 text-[#F4C542]" />
                     <div>
-                      <span className="text-sm font-bold text-white block">In-App Notifications</span>
-                      <span className="text-xs text-slate-400 block">Show alerts inside Memora</span>
+                      <span className="text-sm font-bold text-[#F8FAFC] block">In-App Notifications</span>
+                      <span className="text-xs text-[#94A3B8] block">Show alerts inside Memora</span>
                     </div>
                   </div>
                   <input
                     type="checkbox"
                     checked={inApp}
                     onChange={(e) => setInApp(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-5 h-5 rounded text-[#F4C542] focus:ring-[#F4C542] bg-[#181818] border-[#2A2A2A]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-[#202020] rounded-2xl border border-[#2A2A2A] cursor-pointer hover:bg-[#262626] transition-colors">
                   <div className="flex items-center space-x-3">
-                    <Smartphone className="w-5 h-5 text-emerald-400" />
+                    <Smartphone className="w-5 h-5 text-[#10B981]" />
                     <div>
-                      <span className="text-sm font-bold text-white block">Mobile Push Notifications</span>
-                      <span className="text-xs text-slate-400 block">Receive alerts on companion device</span>
+                      <span className="text-sm font-bold text-[#F8FAFC] block">Mobile Push Notifications</span>
+                      <span className="text-xs text-[#94A3B8] block">Receive alerts on companion device</span>
                     </div>
                   </div>
                   <input
                     type="checkbox"
                     checked={push}
                     onChange={(e) => setPush(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-5 h-5 rounded text-[#F4C542] focus:ring-[#F4C542] bg-[#181818] border-[#2A2A2A]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-[#202020] rounded-2xl border border-[#2A2A2A] cursor-pointer hover:bg-[#262626] transition-colors">
                   <div className="flex items-center space-x-3">
-                    <Mail className="w-5 h-5 text-amber-400" />
+                    <Mail className="w-5 h-5 text-[#F59E0B]" />
                     <div>
-                      <span className="text-sm font-bold text-white block">Email Notifications</span>
-                      <span className="text-xs text-slate-400 block">Receive summary emails</span>
+                      <span className="text-sm font-bold text-[#F8FAFC] block">Email Notifications</span>
+                      <span className="text-xs text-[#94A3B8] block">Receive summary emails</span>
                     </div>
                   </div>
                   <input
                     type="checkbox"
                     checked={email}
                     onChange={(e) => setEmail(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-5 h-5 rounded text-[#F4C542] focus:ring-[#F4C542] bg-[#181818] border-[#2A2A2A]"
                   />
                 </label>
               </div>
@@ -190,57 +190,57 @@ export function NotificationPreferencesModal({ isOpen, onClose }) {
 
             {/* Notification Categories */}
             <div className="space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+              <h3 className="text-xs font-black uppercase tracking-wider text-[#F4C542]">
                 Notification Categories
               </h3>
 
               <div className="space-y-2">
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
-                  <span className="text-sm font-bold text-white">Daily Routine & Reminder Alerts</span>
+                <label className="flex items-center justify-between p-4 bg-[#202020] rounded-2xl border border-[#2A2A2A] cursor-pointer hover:bg-[#262626] transition-colors">
+                  <span className="text-sm font-bold text-[#F8FAFC]">Daily Routine & Reminder Alerts</span>
                   <input
                     type="checkbox"
                     checked={reminders}
                     onChange={(e) => setReminders(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-5 h-5 rounded text-[#F4C542] focus:ring-[#F4C542] bg-[#181818] border-[#2A2A2A]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
-                  <span className="text-sm font-bold text-white">Community Session Alerts</span>
+                <label className="flex items-center justify-between p-4 bg-[#202020] rounded-2xl border border-[#2A2A2A] cursor-pointer hover:bg-[#262626] transition-colors">
+                  <span className="text-sm font-bold text-[#F8FAFC]">Community Session Alerts</span>
                   <input
                     type="checkbox"
                     checked={community}
                     onChange={(e) => setCommunity(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-5 h-5 rounded text-[#F4C542] focus:ring-[#F4C542] bg-[#181818] border-[#2A2A2A]"
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3.5 bg-slate-950 rounded-2xl border border-slate-800 cursor-pointer">
-                  <span className="text-sm font-bold text-white">Meeting Circle Room Alerts</span>
+                <label className="flex items-center justify-between p-4 bg-[#202020] rounded-2xl border border-[#2A2A2A] cursor-pointer hover:bg-[#262626] transition-colors">
+                  <span className="text-sm font-bold text-[#F8FAFC]">Meeting Circle Room Alerts</span>
                   <input
                     type="checkbox"
                     checked={meetings}
                     onChange={(e) => setMeetings(e.target.checked)}
-                    className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 bg-slate-900 border-slate-700"
+                    className="w-5 h-5 rounded text-[#F4C542] focus:ring-[#F4C542] bg-[#181818] border-[#2A2A2A]"
                   />
                 </label>
               </div>
             </div>
 
             {/* Footer Buttons */}
-            <div className="pt-4 border-t border-slate-800 flex items-center justify-end space-x-3">
+            <div className="pt-4 border-t border-[#2A2A2A] flex items-center justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={saving}
-                className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-bold rounded-2xl transition-colors"
+                className="px-5 py-3 bg-[#202020] hover:bg-[#262626] text-[#CBD5E1] text-sm font-bold rounded-2xl border border-[#2A2A2A] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm rounded-2xl shadow-lg flex items-center space-x-2 transition-all touch-target-xl"
+                className="px-6 py-3 bg-[#F4C542] hover:bg-[#FFD75A] text-[#121212] font-extrabold text-sm rounded-2xl shadow-lg shadow-[#F4C542]/20 flex items-center space-x-2 transition-all"
               >
                 <Save className="w-4 h-4" />
                 <span>{saving ? 'Saving...' : 'Save Settings'}</span>

@@ -17,7 +17,8 @@ export function SnoozeSkipModal({ reminder, isOpen, onClose, onConfirmSkip }) {
     setSubmitting(true);
     setErrorMsg('');
     try {
-      await onConfirmSkip(reminder._id, { note: note.trim() || undefined });
+      const remId = reminder._id || reminder.id;
+      await onConfirmSkip(remId, { note: note.trim() || undefined });
       setNote('');
       onClose();
     } catch (err) {

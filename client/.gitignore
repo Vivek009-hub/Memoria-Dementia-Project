@@ -1,0 +1,32 @@
+# ==========================================
+# Memora Web Client — Frontend .gitignore
+# ==========================================
+
+# Dependencies
+node_modules/
+
+# Environment Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Production Build & Vite Caches
+dist/
+build/
+.vite/
+
+# Runtime Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Testing & Coverage
+coverage/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

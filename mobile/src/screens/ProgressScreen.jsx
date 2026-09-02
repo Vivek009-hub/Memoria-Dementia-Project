@@ -27,18 +27,9 @@ export function ProgressScreen({ patientId }) {
         res = await analyticsApi.getMeOverview();
       }
       setOverview(res.data || null);
-    } catch {
-      // Fallback progress state if API response differs
-      setOverview({
-        gamesCompleted: 8,
-        gamesPlayed: 10,
-        gameAccuracy: 86,
-        remindersCompleted: 17,
-        remindersTotal: 20,
-        reminderAdherenceRate: 85,
-        memoriesAdded: 4,
-        communitySessionsAttended: 2,
-      });
+    } catch (err) {
+      setErrorMsg(err.message || 'Could not load activity progress statistics.');
+      setOverview(null);
     } finally {
       setLoading(false);
     }
@@ -48,11 +39,18 @@ export function ProgressScreen({ patientId }) {
     fetchProgressData();
   }, [fetchProgressData]);
 
-  const reminderPercentage = overview?.reminderAdherenceRate || (
-    overview?.remindersTotal > 0
-      ? Math.round((overview.remindersCompleted / overview.remindersTotal) * 100)
-      : 85
+  const totalReminders = overview?.remindersTotal ?? overview?.reminders?.total ?? 0;
+  const completedReminders = overview?.remindersCompleted ?? overview?.reminders?.completed ?? 0;
+  const reminderPercentage = overview?.reminderAdherenceRate ?? (
+    totalReminders > 0
+      ? Math.round((completedReminders / totalReminders) * 100)
+      : 0
   );
+
+  const gamesCompleted = overview?.gamesCompleted ?? overview?.games?.completed ?? 0;
+  const gameAccuracy = overview?.gameAccuracy ?? overview?.games?.avgAccuracy ?? 0;
+  const memoriesAdded = overview?.memoriesAdded ?? overview?.memories?.activeCount ?? 0;
+  const communitySessionsAttended = overview?.communitySessionsAttended ?? overview?.community?.attendances ?? 0;
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
@@ -106,6 +104,21 @@ export function ProgressScreen({ patientId }) {
           <RefreshCw className="w-10 h-10 text-memora-accent animate-spin mx-auto mb-3" />
           <p className="text-memora-text font-bold text-lg">Calculating activity progress...</p>
         </div>
+      ) : errorMsg ? (
+        <div className="bg-memora-surface border border-red-500/30 rounded-3xl p-8 text-center shadow-lg space-y-4">
+          <AlertCircle className="w-12 h-12 text-red-400 mx-auto" />
+          <div>
+            <h3 className="text-xl font-bold text-memora-text mb-1">Could Not Load Progress</h3>
+            <p className="text-sm text-memora-text-muted">{errorMsg}</p>
+          </div>
+          <button
+            onClick={fetchProgressData}
+            className="px-6 py-3 bg-memora-surface-secondary hover:bg-memora-surface-hover text-memora-text font-bold text-sm rounded-2xl border border-memora-border transition-all inline-flex items-center space-x-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Try Again</span>
+          </button>
+        </div>
       ) : (
         <div className="space-y-6">
           {/* Key Activity Summary Grid — Responsive 1-col (mobile), 2-col (tablet), 4-col (desktop) */}
@@ -113,7 +126,7 @@ export function ProgressScreen({ patientId }) {
             <ActivityProgressCard
               title="Routine Reminders"
               value={`${reminderPercentage}%`}
-              subtext={`${overview?.remindersCompleted || 17} of ${overview?.remindersTotal || 20} completed`}
+              subtext={`${completedReminders} of ${totalReminders} completed`}
               icon={Clock}
               color="amber"
               percentage={reminderPercentage}
@@ -121,16 +134,16 @@ export function ProgressScreen({ patientId }) {
 
             <ActivityProgressCard
               title="Cognitive Games"
-              value={`${overview?.gamesCompleted || 8} Played`}
-              subtext={`${overview?.gameAccuracy || 86}% accuracy rate`}
+              value={`${gamesCompleted} Played`}
+              subtext={`${gameAccuracy}% accuracy rate`}
               icon={Gamepad2}
               color="indigo"
-              percentage={overview?.gameAccuracy || 86}
+              percentage={gameAccuracy}
             />
 
             <ActivityProgressCard
               title="Memory Vault"
-              value={`${overview?.memoriesAdded || 4} Items`}
+              value={`${memoriesAdded} Items`}
               subtext="Added to family vault"
               icon={BookOpen}
               color="emerald"
@@ -139,7 +152,7 @@ export function ProgressScreen({ patientId }) {
 
             <ActivityProgressCard
               title="Community"
-              value={`${overview?.communitySessionsAttended || 2} Sessions`}
+              value={`${communitySessionsAttended} Sessions`}
               subtext="Attended this period"
               icon={Users}
               color="purple"
@@ -158,12 +171,12 @@ export function ProgressScreen({ patientId }) {
 
             <div className="p-5 bg-memora-surface-secondary border border-memora-border rounded-2xl space-y-2">
               <p className="text-sm text-memora-text leading-relaxed">
-                Activity participation increased during this period. Routine completion rate is currently at{' '}
+                Activity participation metrics: Routine completion rate is currently at{' '}
                 <strong className="text-amber-400">{reminderPercentage}%</strong> with{' '}
-                <strong className="text-memora-accent">{overview?.gamesCompleted || 8} cognitive game sessions</strong> completed.
+                <strong className="text-memora-accent">{gamesCompleted} cognitive game sessions</strong> completed.
               </p>
               <p className="text-xs text-memora-text-subtle italic">
-                * Activity trends reflect engagement levels and routine adherence.
+                * Activity trends reflect engagement levels and routine adherence based on database logs.
               </p>
             </div>
           </div>

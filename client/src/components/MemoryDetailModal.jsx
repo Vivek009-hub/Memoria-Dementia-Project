@@ -1,14 +1,14 @@
-/**
- * MemoryDetailModal.jsx — Memora Detailed View Modal for a Memory
- */
-
 import React, { useState } from 'react';
-import { X, Calendar, MapPin, Tag, Edit3, Trash2, User, Image } from 'lucide-react';
+import { X, Calendar, MapPin, Tag, Edit3, Trash2, User, Image, Mic } from 'lucide-react';
+import { VoiceNotePlayer } from './VoiceNotePlayer.jsx';
 
 export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
   const [imageError, setImageError] = useState(false);
 
   if (!memory) return null;
+
+  const audioTargetUrl = memory.voiceNote?.audioUrl || memory.audioUrl;
+  const audioDurationVal = memory.voiceNote?.duration || memory.audioDuration || 0;
 
   let formattedDate = 'Not specified';
   if (memory.importantDate) {
@@ -41,6 +41,12 @@ export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
             <span className="px-2.5 py-0.5 bg-[#D8B24C]/10 text-[#D8B24C] text-xs font-semibold rounded-md border border-[#D8B24C]/30 uppercase">
               {memory.type}
             </span>
+            {audioTargetUrl && (
+              <span className="px-2 py-0.5 bg-[#8B5CF6]/10 text-[#8B5CF6] text-xs font-semibold rounded-md border border-[#8B5CF6]/30 flex items-center space-x-1">
+                <Mic className="w-3 h-3" />
+                <span>Voice Note</span>
+              </span>
+            )}
           </div>
           <button
             onClick={onClose}
@@ -80,6 +86,11 @@ export function MemoryDetailModal({ memory, onClose, onEdit, onDelete }) {
             </div>
           ) : (
             <p className="text-xs text-[#74746F] italic">No detailed description provided.</p>
+          )}
+
+          {/* Voice Note Player */}
+          {audioTargetUrl && (
+            <VoiceNotePlayer audioUrl={audioTargetUrl} duration={audioDurationVal} />
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">

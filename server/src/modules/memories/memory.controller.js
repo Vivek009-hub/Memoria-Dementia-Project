@@ -30,7 +30,7 @@ function resolvePatientId(req) {
   if (req.user.role === 'PATIENT') {
     return req.user.id;
   }
-  return req.query?.patientId ?? req.body?.patientId ?? req.params?.patientId;
+  return req.query?.patientId ?? req.body?.patientId ?? req.targetPatientId ?? req.params?.patientId;
 }
 
 // ── Memory handlers ───────────────────────────────────────────────────────────
@@ -43,6 +43,16 @@ export async function createMemory(req, res, next) {
     if (req.file) {
       req.body.mediaUrl = `/uploads/memories/${req.file.filename}`;
     }
+    if (req.audioFile) {
+      const audioUrl = `/uploads/memories/${req.audioFile.filename}`;
+      req.body.audioUrl = audioUrl;
+      req.body.voiceNote = {
+        audioUrl,
+        path: audioUrl,
+        mimeType: req.audioFile.mimetype,
+        duration: Number(req.body.audioDuration || 0),
+      };
+    }
     const data = validateCreateMemory(req.body);
     const patientId = resolvePatientId(req);
     const memory = await memoryService.createMemory(patientId, req.user.id, data);
@@ -51,6 +61,13 @@ export async function createMemory(req, res, next) {
     if (req.file && req.file.path) {
       try {
         fs.unlinkSync(req.file.path);
+      } catch {
+        // Cleanup error ignore
+      }
+    }
+    if (req.audioFile && req.audioFile.path) {
+      try {
+        fs.unlinkSync(req.audioFile.path);
       } catch {
         // Cleanup error ignore
       }
@@ -94,6 +111,16 @@ export async function updateMemory(req, res, next) {
     if (req.file) {
       req.body.mediaUrl = `/uploads/memories/${req.file.filename}`;
     }
+    if (req.audioFile) {
+      const audioUrl = `/uploads/memories/${req.audioFile.filename}`;
+      req.body.audioUrl = audioUrl;
+      req.body.voiceNote = {
+        audioUrl,
+        path: audioUrl,
+        mimeType: req.audioFile.mimetype,
+        duration: Number(req.body.audioDuration || 0),
+      };
+    }
     const updates = validateUpdateMemory(req.body);
     const patientId = resolvePatientId(req);
     const memory = await memoryService.updateMemory(
@@ -107,6 +134,13 @@ export async function updateMemory(req, res, next) {
     if (req.file && req.file.path) {
       try {
         fs.unlinkSync(req.file.path);
+      } catch {
+        // Cleanup error ignore
+      }
+    }
+    if (req.audioFile && req.audioFile.path) {
+      try {
+        fs.unlinkSync(req.audioFile.path);
       } catch {
         // Cleanup error ignore
       }

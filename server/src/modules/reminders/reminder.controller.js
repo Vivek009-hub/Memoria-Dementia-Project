@@ -74,6 +74,7 @@ export async function listReminders(req, res, next) {
     res.status(200).json({
       success: true,
       data: result.reminders,
+      occurrences: result.occurrences,
       pagination: result.pagination,
     });
   } catch (err) {

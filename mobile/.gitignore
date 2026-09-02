@@ -1,0 +1,39 @@
+# ==========================================
+# Memora Mobile Companion — React Native / Expo .gitignore
+# ==========================================
+
+# Dependencies
+node_modules/
+
+# Environment Files
+.env
+.env.local
+.env.development.local
+.env.production.local
+
+# Expo / Bundler Cache Output
+.expo/
+dist/
+build/
+.vite/
+
+# Native Mobile Build Folders (if ejected/prebuilt)
+android/.gradle/
+android/app/build/
+android/build/
+ios/Pods/
+ios/build/
+
+# Runtime Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Testing & Coverage
+coverage/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -57,6 +57,34 @@ const memorySchema = new mongoose.Schema(
       default: null,
     },
 
+    audioUrl: {
+      type: String,
+      trim: true,
+      maxlength: [2048, 'audioUrl must be at most 2048 characters'],
+      default: null,
+    },
+
+    audioDuration: {
+      type: Number,
+      default: 0,
+    },
+
+    audioMimeType: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
+    voiceNote: {
+      type: {
+        audioUrl: { type: String, trim: true, default: null },
+        path: { type: String, trim: true, default: null },
+        mimeType: { type: String, trim: true, default: null },
+        duration: { type: Number, default: 0 },
+      },
+      default: null,
+    },
+
     relatedPersonId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'FamilyMember',

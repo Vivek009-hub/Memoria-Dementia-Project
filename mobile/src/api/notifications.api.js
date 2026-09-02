@@ -14,10 +14,24 @@ import { defaultApiClient } from './client.js';
  */
 export async function listNotifications(params = {}, client = defaultApiClient) {
   const query = new URLSearchParams();
-  if (params.isRead !== undefined) query.append('isRead', params.isRead);
-  if (params.type) query.append('type', params.type);
-  if (params.page) query.append('page', params.page);
-  if (params.limit) query.append('limit', params.limit);
+
+  if (params.unreadOnly) {
+    query.append('isRead', 'false');
+  } else if (
+    params.isRead !== undefined &&
+    params.isRead !== null &&
+    params.isRead !== '' &&
+    params.isRead !== 'undefined'
+  ) {
+    query.append('isRead', String(params.isRead));
+  }
+
+  if (params.type && params.type !== 'undefined' && params.type !== 'null') {
+    query.append('type', params.type);
+  }
+
+  if (params.page) query.append('page', String(params.page));
+  if (params.limit) query.append('limit', String(params.limit));
 
   const queryString = query.toString();
   return await client.get(`/notifications${queryString ? `?${queryString}` : ''}`);

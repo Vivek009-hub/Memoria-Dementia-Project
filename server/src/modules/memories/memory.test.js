@@ -358,6 +358,30 @@ describe('GET /api/v1/memories', () => {
     expect(res.body.data[0].isActive).toBe(false);
   });
 
+  it('supports sorting by oldest first (createdAt) and newest first (-createdAt)', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    await createMemoryViaApi(patient.cookie, { title: 'First Memory' });
+    await createMemoryViaApi(patient.cookie, { title: 'Second Memory' });
+
+    // Oldest First
+    const resOldest = await request(app)
+      .get('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .query({ sort: 'createdAt' });
+    expect(resOldest.status).toBe(200);
+    expect(resOldest.body.data[0].title).toBe('First Memory');
+    expect(resOldest.body.data[1].title).toBe('Second Memory');
+
+    // Newest First
+    const resNewest = await request(app)
+      .get('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .query({ sort: '-createdAt' });
+    expect(resNewest.status).toBe(200);
+    expect(resNewest.body.data[0].title).toBe('Second Memory');
+    expect(resNewest.body.data[1].title).toBe('First Memory');
+  });
+
   it('rejects limit greater than 100 (422)', async () => {
     const patient = await registerAndLogin('patient', 'PATIENT');
     const res = await request(app)
@@ -496,6 +520,130 @@ describe('PATCH /api/v1/memories/:memoryId', () => {
       .send({ tags: ['updated', 'tags'] });
     expect(res.status).toBe(200);
     expect(res.body.data.tags).toEqual(['updated', 'tags']);
+  });
+
+  it('updates tags sent as comma-separated string or single string (from FormData)', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const createRes = await createMemoryViaApi(patient.cookie);
+    const memId = createRes.body.data._id;
+
+    const res = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ tags: 'family, childhood, school' });
+    expect(res.status).toBe(200);
+    expect(res.body.data.tags).toEqual(['family', 'childhood', 'school']);
+  });
+
+  it('updates every field individually: title, description, date, datePrecision, location, tags, familyMember', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const fmRes = await request(app)
+      .post('/api/v1/memories/family-members')
+      .set('Cookie', patient.cookie)
+      .send({ name: 'Uncle Bob' });
+    const fmId = fmRes.body.data._id;
+
+    const createRes = await createMemoryViaApi(patient.cookie, {
+      title: 'Old Title',
+      description: 'Old Description',
+      importantDate: '2020-01-01',
+      datePrecision: 'exact',
+      relatedPlace: 'Old Location',
+      tags: ['oldtag'],
+    });
+    const memId = createRes.body.data._id;
+
+    // 1. Title only
+    let patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ title: 'New Title' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.title).toBe('New Title');
+
+    // 2. Description only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ description: 'New Description' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.description).toBe('New Description');
+
+    // 3. Date only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ importantDate: '2025-12-25' });
+    expect(patchRes.status).toBe(200);
+    expect(new Date(patchRes.body.data.importantDate).getFullYear()).toBe(2025);
+
+    // 4. Date Precision only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ datePrecision: 'year' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.datePrecision).toBe('year');
+
+    // 5. Location only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ relatedPlace: 'Mumbai' });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.relatedPlace).toBe('Mumbai');
+
+    // 6. Tags only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ tags: ['mumbai', 'vacation'] });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.tags).toEqual(['mumbai', 'vacation']);
+
+    // 7. Related Person ID only
+    patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({ relatedPersonId: fmId });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.relatedPersonId).toBe(fmId);
+
+    // Verify DB persistence directly
+    const Memory = (await import('./memory.model.js')).default;
+    const dbMem = await Memory.findById(memId);
+    expect(dbMem.title).toBe('New Title');
+    expect(dbMem.description).toBe('New Description');
+    expect(dbMem.relatedPlace).toBe('Mumbai');
+    expect(dbMem.datePrecision).toBe('year');
+  });
+
+  it('handles clearing optional fields (sending empty string "") without erroring', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const createRes = await createMemoryViaApi(patient.cookie, {
+      title: 'Memory To Clear',
+      description: 'Has description',
+      importantDate: '2020-01-01',
+      relatedPlace: 'Has Location',
+    });
+    const memId = createRes.body.data._id;
+
+    const patchRes = await request(app)
+      .patch(`/api/v1/memories/${memId}`)
+      .set('Cookie', patient.cookie)
+      .send({
+        description: '',
+        importantDate: '',
+        relatedPlace: '',
+        relatedPersonId: '',
+        tags: '',
+      });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.data.description).toBeNull();
+    expect(patchRes.body.data.importantDate).toBeNull();
+    expect(patchRes.body.data.relatedPlace).toBeNull();
+    expect(patchRes.body.data.relatedPersonId).toBeNull();
+    expect(patchRes.body.data.tags).toEqual([]);
   });
 
   it('can deactivate memory via isActive false', async () => {
@@ -937,5 +1085,49 @@ describe('POST /api/v1/memories (Local Photo Upload)', () => {
       .attach('photo', mockFile, { filename: 'script.exe', contentType: 'application/x-msdownload' });
 
     expect(res.status).toBe(422);
+  });
+});
+
+// ── Voice Note Memory Upload & Playback ────────────────────────────────────────
+
+describe('POST /api/v1/memories (Voice Note Upload & Playback)', () => {
+  it('allows Patient to upload a voice note audio file along with memory details', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+    const mockAudioBuffer = Buffer.from('fake-webm-audio-bytes');
+
+    const res = await request(app)
+      .post('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .field('title', 'Voice Note Memory Test')
+      .field('type', 'STORY')
+      .field('description', 'Grandpa telling a story about the summer farm.')
+      .field('audioDuration', 25)
+      .attach('voiceNote', mockAudioBuffer, { filename: 'voice-note.webm', contentType: 'audio/webm' });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.title).toBe('Voice Note Memory Test');
+    expect(res.body.data.voiceNote).toBeDefined();
+    expect(res.body.data.voiceNote.audioUrl).toMatch(/^\/uploads\/memories\//);
+    expect(res.body.data.voiceNote.duration).toBe(25);
+
+    // Verify static audio file serving endpoint
+    const staticAudioRes = await request(app).get(res.body.data.voiceNote.audioUrl);
+    expect(staticAudioRes.status).toBe(200);
+  });
+
+  it('renders old memories without voiceNote (voiceNote = null / audioUrl = null) cleanly', async () => {
+    const patient = await registerAndLogin('patient', 'PATIENT');
+
+    const res = await request(app)
+      .post('/api/v1/memories')
+      .set('Cookie', patient.cookie)
+      .send({
+        title: 'Old Legacy Memory',
+        type: 'PHOTO',
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.voiceNote).toBeNull();
+    expect(res.body.data.audioUrl).toBeNull();
   });
 });

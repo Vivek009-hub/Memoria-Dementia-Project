@@ -26,11 +26,16 @@ function photoUploadMiddleware(req, res, next) {
     { name: 'photo', maxCount: 1 },
     { name: 'image', maxCount: 1 },
     { name: 'file', maxCount: 1 },
+    { name: 'voiceNote', maxCount: 1 },
+    { name: 'audio', maxCount: 1 },
   ])(req, res, (err) => {
     if (err) return next(err);
     if (req.files) {
-      const file = req.files.photo?.[0] || req.files.image?.[0] || req.files.file?.[0];
-      if (file) req.file = file;
+      const photoFile = req.files.photo?.[0] || req.files.image?.[0] || req.files.file?.[0];
+      if (photoFile) req.file = photoFile;
+
+      const audioFile = req.files.voiceNote?.[0] || req.files.audio?.[0];
+      if (audioFile) req.audioFile = audioFile;
     }
     next();
   });
@@ -52,7 +57,14 @@ async function caregiverMemoryScope(req, _res, next) {
     }
 
     if (req.user.role === 'CAREGIVER') {
-      const patientId = req.query?.patientId ?? req.body?.patientId;
+      let patientId = req.query?.patientId ?? req.body?.patientId;
+      if (!patientId && req.params?.memoryId) {
+        const Memory = (await import('./memory.model.js')).default;
+        const memory = await Memory.findById(req.params.memoryId).lean();
+        if (memory) {
+          patientId = memory.patientId?.toString();
+        }
+      }
       if (!patientId) {
         throw new AppError(
           'patientId query parameter is required for caregiver access',
@@ -61,6 +73,7 @@ async function caregiverMemoryScope(req, _res, next) {
         );
       }
       await canAccessPatient(req.user, patientId, 'manageMemories');
+      req.targetPatientId = patientId;
       return next();
     }
 

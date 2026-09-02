@@ -237,6 +237,7 @@ export function computeNextOccurrence(reminder, after) {
 function formatReminder(doc) {
   return {
     id: doc._id.toString(),
+    _id: doc._id.toString(),
     patientId: doc.patientId.toString(),
     createdBy: doc.createdBy.toString(),
     title: doc.title,
@@ -264,13 +265,16 @@ function formatLog(doc) {
     doc.reminderId && typeof doc.reminderId === 'object' && doc.reminderId.title
       ? {
           id: doc.reminderId._id.toString(),
+          _id: doc.reminderId._id.toString(),
           title: doc.reminderId.title,
           type: doc.reminderId.type,
         }
-      : { id: doc.reminderId?.toString() ?? null };
+      : { id: doc.reminderId?.toString() ?? null, _id: doc.reminderId?.toString() ?? null };
 
   return {
     id: doc._id.toString(),
+    _id: doc._id.toString(),
+    reminderId: doc.reminderId?._id?.toString() ?? doc.reminderId?.toString() ?? null,
     reminder: reminderInfo,
     patientId: doc.patientId.toString(),
     scheduledAt: doc.scheduledAt,
@@ -371,8 +375,28 @@ export async function listReminders(patientId, filters) {
     Reminder.countDocuments(query),
   ]);
 
+  const targetDateStr = filters.date || new Date().toISOString().split('T')[0];
+  const startOfDay = new Date(targetDateStr);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+  const endOfDay = new Date(targetDateStr);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+
+  const logs = await ReminderLog.find({
+    patientId: new mongoose.Types.ObjectId(patientId),
+    scheduledAt: { $gte: startOfDay, $lte: endOfDay },
+  }).lean();
+
+  const occurrences = logs.map((l) => ({
+    id: l._id.toString(),
+    reminderId: l.reminderId.toString(),
+    status: l.status,
+    scheduledAt: l.scheduledAt,
+    completedAt: l.completedAt,
+  }));
+
   return {
     reminders: reminders.map(formatReminder),
+    occurrences,
     pagination: { page, limit, total },
   };
 }
@@ -499,7 +523,7 @@ export async function completeReminder(reminderId, patientId, completedById, opt
   }
 
   // Atomic update — prevents two concurrent requests from both completing
-  const log = await ReminderLog.findOneAndUpdate(
+  let log = await ReminderLog.findOneAndUpdate(
     logQuery,
     {
       $set: {
@@ -513,42 +537,76 @@ export async function completeReminder(reminderId, patientId, completedById, opt
   ).lean();
 
   if (!log) {
-    // Check if reminder is inactive or already completed
     const existingLog = options.logId
       ? await ReminderLog.findById(options.logId).lean()
-      : await ReminderLog.findOne({
-          reminderId: new mongoose.Types.ObjectId(reminderId),
-        })
-          .sort({ scheduledAt: -1 })
-          .lean();
+      : null;
 
-    if (!existingLog) {
+    if (existingLog) {
+      if (existingLog.status === 'COMPLETED') {
+        throw new AppError(
+          'This reminder occurrence has already been completed',
+          409,
+          'ALREADY_COMPLETED'
+        );
+      }
+      if (existingLog.status === 'CANCELLED') {
+        throw new AppError(
+          'This reminder occurrence was cancelled and cannot be completed',
+          409,
+          'INVALID_STATE'
+        );
+      }
+    }
+
+    if (options.logId || !options.date) {
       throw new AppError('No pending reminder occurrence found', 404, 'NOT_FOUND');
     }
-    if (existingLog.status === 'COMPLETED') {
-      throw new AppError(
-        'This reminder occurrence has already been completed',
-        409,
-        'ALREADY_COMPLETED'
-      );
+
+    // If options.date was provided from UI, compute scheduledAt and create/update log to COMPLETED
+    let scheduledAt = new Date();
+    if (options.date && typeof options.date === 'string') {
+      const timeStr = reminder.schedule?.time || '09:00';
+      const [h, m] = timeStr.split(':').map(Number);
+      const d = new Date(options.date);
+      if (!isNaN(d.getTime())) {
+        d.setHours(h || 9, m || 0, 0, 0);
+        scheduledAt = d;
+      }
+    } else if (reminder.schedule?.startAt) {
+      scheduledAt = new Date(reminder.schedule.startAt);
     }
-    if (existingLog.status === 'CANCELLED') {
-      throw new AppError(
-        'This reminder occurrence was cancelled and cannot be completed',
-        409,
-        'INVALID_STATE'
-      );
+
+    try {
+      log = (
+        await ReminderLog.create({
+          reminderId: reminder._id,
+          patientId: reminder.patientId,
+          scheduledAt,
+          status: 'COMPLETED',
+          completedAt: new Date(),
+          completedBy: new mongoose.Types.ObjectId(completedById),
+          ...(options.note !== undefined ? { note: options.note } : {}),
+        })
+      ).toObject();
+    } catch (createErr) {
+      log = await ReminderLog.findOneAndUpdate(
+        { reminderId: reminder._id, scheduledAt },
+        {
+          $set: {
+            status: 'COMPLETED',
+            completedAt: new Date(),
+            completedBy: new mongoose.Types.ObjectId(completedById),
+            ...(options.note !== undefined ? { note: options.note } : {}),
+          },
+        },
+        { returnDocument: 'after', upsert: true }
+      ).lean();
     }
-    throw new AppError(
-      `Reminder occurrence cannot be completed — current status is ${existingLog.status}`,
-      409,
-      'INVALID_STATE'
-    );
   }
 
   // Schedule the next occurrence for recurring reminders
   if (reminder.recurrence && reminder.isActive) {
-    const nextOcc = computeNextOccurrence(reminder, log.scheduledAt);
+    const nextOcc = computeNextOccurrence(reminder, log.scheduledAt || new Date());
     if (nextOcc) {
       try {
         await ReminderLog.create({
@@ -597,7 +655,7 @@ export async function skipReminder(reminderId, patientId, skippedById, options =
     logQuery._id = new mongoose.Types.ObjectId(options.logId);
   }
 
-  const log = await ReminderLog.findOneAndUpdate(
+  let log = await ReminderLog.findOneAndUpdate(
     logQuery,
     {
       $set: {
@@ -611,12 +669,62 @@ export async function skipReminder(reminderId, patientId, skippedById, options =
   ).lean();
 
   if (!log) {
-    throw new AppError('No pending reminder occurrence found to skip', 404, 'NOT_FOUND');
+    const existingLog = options.logId
+      ? await ReminderLog.findById(options.logId).lean()
+      : null;
+
+    if (existingLog && existingLog.status === 'CANCELLED') {
+      throw new AppError('This reminder occurrence has already been skipped', 409, 'ALREADY_SKIPPED');
+    }
+
+    if (options.logId || !options.date) {
+      throw new AppError('No pending reminder occurrence found to skip', 404, 'NOT_FOUND');
+    }
+
+    let scheduledAt = new Date();
+    if (options.date && typeof options.date === 'string') {
+      const timeStr = reminder.schedule?.time || '09:00';
+      const [h, m] = timeStr.split(':').map(Number);
+      const d = new Date(options.date);
+      if (!isNaN(d.getTime())) {
+        d.setHours(h || 9, m || 0, 0, 0);
+        scheduledAt = d;
+      }
+    } else if (reminder.schedule?.startAt) {
+      scheduledAt = new Date(reminder.schedule.startAt);
+    }
+
+    try {
+      log = (
+        await ReminderLog.create({
+          reminderId: reminder._id,
+          patientId: reminder.patientId,
+          scheduledAt,
+          status: 'CANCELLED',
+          completedAt: new Date(),
+          completedBy: new mongoose.Types.ObjectId(skippedById),
+          ...(options.note !== undefined ? { note: options.note } : {}),
+        })
+      ).toObject();
+    } catch (createErr) {
+      log = await ReminderLog.findOneAndUpdate(
+        { reminderId: reminder._id, scheduledAt },
+        {
+          $set: {
+            status: 'CANCELLED',
+            completedAt: new Date(),
+            completedBy: new mongoose.Types.ObjectId(skippedById),
+            ...(options.note !== undefined ? { note: options.note } : {}),
+          },
+        },
+        { returnDocument: 'after', upsert: true }
+      ).lean();
+    }
   }
 
   // Schedule the next occurrence for recurring reminders after a skip
   if (reminder.recurrence && reminder.isActive) {
-    const nextOcc = computeNextOccurrence(reminder, log.scheduledAt);
+    const nextOcc = computeNextOccurrence(reminder, log.scheduledAt || new Date());
     if (nextOcc) {
       try {
         await ReminderLog.create({

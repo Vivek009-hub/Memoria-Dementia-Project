@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck, ShieldAlert, BarChart3 } from 'lucide-react';
+import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck, ShieldAlert, BarChart3, LogOut, User } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
@@ -23,7 +23,7 @@ import * as notificationsApi from './api/notifications.api.js';
 import { defaultApiClient } from './api/client.js';
 
 function Dashboard() {
-  const { user, login } = useAuth();
+  const { user, login, logout } = useAuth();
   const { isOnline, pendingQueueCount, refreshSafetyData } = useSafety();
 
   const isCaregiver = user?.role === 'CAREGIVER';
@@ -109,7 +109,7 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Online / Offline Status Badge */}
+          {/* Online / Offline Status Badge & User Controls */}
           <div className="flex items-center space-x-2">
             {isOnline ? (
               <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-full border border-emerald-500/40 flex items-center space-x-1">
@@ -130,22 +130,33 @@ function Dashboard() {
             >
               <RefreshCw className="w-4 h-4" />
             </button>
+
+            {user && (
+              <button
+                onClick={logout}
+                className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 hover:border-red-500/50 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 active:scale-95 cursor-pointer shadow-sm ml-2"
+                title="Sign Out of Memora"
+              >
+                <LogOut className="w-3.5 h-3.5 text-red-400" />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+            )}
           </div>
         </div>
 
         {/* Responsive Header Navigation Tabs */}
         {user && (
-          <nav className="w-full sm:w-auto flex items-center bg-memora-surface border border-memora-border p-1.5 rounded-2xl space-x-1 overflow-x-auto no-scrollbar scroll-smooth">
+          <nav className="w-full sm:w-auto flex items-center bg-[#181818] border border-[#2A2A2A] p-1.5 rounded-2xl space-x-1 overflow-x-auto no-scrollbar scroll-smooth shadow-lg">
             {isAdmin && (
               <button
                 onClick={() => setActiveTab('admin')}
                 className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                   activeTab === 'admin'
-                    ? 'bg-purple-600 text-white shadow-lg'
-                    : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                    ? 'bg-[#8B5CF6] text-white shadow-md'
+                    : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
                 }`}
               >
-                <ShieldAlert className="w-4 h-4 text-purple-400" />
+                <ShieldAlert className="w-4 h-4 text-[#A78BFA]" />
                 <span>Admin</span>
               </button>
             )}
@@ -155,11 +166,11 @@ function Dashboard() {
                 onClick={() => setActiveTab('caregiver')}
                 className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                   activeTab === 'caregiver'
-                    ? 'bg-indigo-600 text-white shadow-lg'
-                    : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                    ? 'bg-[#6366F1] text-white shadow-md'
+                    : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
                 }`}
               >
-                <UserCheck className="w-4 h-4 text-emerald-400" />
+                <UserCheck className="w-4 h-4 text-[#10B981]" />
                 <span>Caregiver</span>
               </button>
             )}
@@ -168,11 +179,11 @@ function Dashboard() {
               onClick={() => setActiveTab('assistant')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'assistant'
-                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
-                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                  ? 'bg-[#F4C542] text-[#121212] shadow-md font-black'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
               }`}
             >
-              <Bot className="w-4 h-4 text-emerald-400" />
+              <Bot className="w-4 h-4 text-[#8B5CF6]" />
               <span>AI Assistant</span>
             </button>
 
@@ -180,11 +191,11 @@ function Dashboard() {
               onClick={() => setActiveTab('progress')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'progress'
-                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
-                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                  ? 'bg-[#F4C542] text-[#121212] shadow-md font-black'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
               }`}
             >
-              <BarChart3 className="w-4 h-4 text-indigo-400" />
+              <BarChart3 className="w-4 h-4 text-[#60A5FA]" />
               <span>Progress</span>
             </button>
 
@@ -192,11 +203,11 @@ function Dashboard() {
               onClick={() => setActiveTab('reminders')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'reminders'
-                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
-                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                  ? 'bg-[#F4C542] text-[#121212] shadow-md font-black'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
               }`}
             >
-              <Clock className="w-4 h-4 text-amber-400" />
+              <Clock className="w-4 h-4 text-[#F59E0B]" />
               <span>Reminders</span>
             </button>
 
@@ -204,11 +215,11 @@ function Dashboard() {
               onClick={() => setActiveTab('memories')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'memories'
-                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
-                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                  ? 'bg-[#F4C542] text-[#121212] shadow-md font-black'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
               }`}
             >
-              <BookOpen className="w-4 h-4 text-indigo-400" />
+              <BookOpen className="w-4 h-4 text-[#14B8A6]" />
               <span>Memories</span>
             </button>
 
@@ -216,11 +227,11 @@ function Dashboard() {
               onClick={() => setActiveTab('community')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'community'
-                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
-                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                  ? 'bg-[#F4C542] text-[#121212] shadow-md font-black'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
               }`}
             >
-              <Users className="w-4 h-4 text-purple-400" />
+              <Users className="w-4 h-4 text-[#A78BFA]" />
               <span>Community</span>
             </button>
 
@@ -228,14 +239,14 @@ function Dashboard() {
               onClick={() => setActiveTab('notifications')}
               className={`relative px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'notifications'
-                  ? 'bg-memora-accent text-memora-bg shadow-lg font-black'
-                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                  ? 'bg-[#F4C542] text-[#121212] shadow-md font-black'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
               }`}
             >
-              <Bell className="w-4 h-4 text-indigo-400" />
+              <Bell className="w-4 h-4 text-[#6366F1]" />
               <span>Notifications</span>
               {unreadCount > 0 && (
-                <span className="px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full ml-1">
+                <span className="px-1.5 py-0.5 bg-[#EF4444] text-white text-[10px] font-black rounded-full ml-1">
                   {unreadCount}
                 </span>
               )}
@@ -245,11 +256,11 @@ function Dashboard() {
               onClick={() => setActiveTab('safety')}
               className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
                 activeTab === 'safety'
-                  ? 'bg-red-600 text-white shadow-lg'
-                  : 'text-memora-text-muted hover:text-memora-text hover:bg-memora-surface-hover'
+                  ? 'bg-[#EF4444] text-white shadow-md'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
               }`}
             >
-              <Shield className="w-4 h-4 text-red-400" />
+              <Shield className="w-4 h-4 text-[#EF4444]" />
               <span>Safety</span>
             </button>
           </nav>

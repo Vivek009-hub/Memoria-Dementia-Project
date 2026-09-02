@@ -20,13 +20,13 @@ const TYPE_ICONS = {
 };
 
 const TYPE_STYLES = {
-  REMINDER: 'bg-[#D8B24C]/10 text-[#D8B24C] border-[#D8B24C]/30',
-  COMMUNITY_SESSION: 'bg-[#9B6B9E]/10 text-[#9B6B9E] border-[#9B6B9E]/30',
-  MEETING: 'bg-[#45B982]/10 text-[#45B982] border-[#45B982]/30',
-  SOS: 'bg-[#D95C5C]/10 text-[#D95C5C] border-[#D95C5C]/30',
-  POSSIBLE_FALL: 'bg-[#D95C5C]/10 text-[#D95C5C] border-[#D95C5C]/30',
-  GEOFENCE: 'bg-[#E5A83B]/10 text-[#E5A83B] border-[#E5A83B]/30',
-  SYSTEM: 'bg-[#D8B24C]/10 text-[#D8B24C] border-[#D8B24C]/30',
+  REMINDER: 'bg-purple-100 text-purple-800 border-purple-300',
+  COMMUNITY_SESSION: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+  MEETING: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+  SOS: 'bg-rose-100 text-rose-800 border-rose-300',
+  POSSIBLE_FALL: 'bg-rose-100 text-rose-800 border-rose-300',
+  GEOFENCE: 'bg-amber-100 text-amber-800 border-amber-300',
+  SYSTEM: 'bg-blue-100 text-blue-800 border-blue-300',
 };
 
 export function NotificationItem({ notification, onMarkRead, onClick }) {
@@ -69,10 +69,10 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
   return (
     <div
       onClick={() => onClick && onClick(notification)}
-      className={`group relative bg-[#202020] border rounded-xl p-4 shadow-xs transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+      className={`group relative bg-white border-2 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
         !notification.isRead
-          ? 'border-[#D8B24C]/50 bg-[#242424]'
-          : 'border-[#343434] opacity-80 hover:opacity-100 hover:border-[#343434]/80'
+          ? 'border-blue-500 bg-blue-50/30'
+          : 'border-slate-200 hover:border-slate-300 opacity-90 hover:opacity-100'
       }`}
       role="button"
       tabIndex={0}
@@ -81,52 +81,52 @@ export function NotificationItem({ notification, onMarkRead, onClick }) {
       <div>
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex items-center space-x-3">
-            <div className={`p-2 rounded-lg border ${typeStyle}`}>
-              <TypeIcon className="w-4 h-4" />
+            <div className={`p-2.5 rounded-2xl border font-bold ${typeStyle}`}>
+              <TypeIcon className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#A7A7A2]">
+              <div className="flex items-center space-x-2 mb-0.5">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-500">
                   {notification.type?.replace('_', ' ')}
                 </span>
                 {notification.priority === 'CRITICAL' && (
-                  <span className="px-2 py-0.5 bg-[#D95C5C]/10 text-[#D95C5C] text-[10px] font-semibold rounded border border-[#D95C5C]/30">
-                    CRITICAL
+                  <span className="px-2 py-0.5 bg-rose-100 text-rose-800 text-xs font-black rounded-lg border border-rose-300 uppercase">
+                    Critical
                   </span>
                 )}
               </div>
-              <h3 className="text-base font-semibold text-[#F5F5F0] leading-snug group-hover:text-[#D8B24C] transition-colors">
+              <h3 className="text-lg font-extrabold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors">
                 {notification.title}
               </h3>
             </div>
           </div>
 
           {!notification.isRead && (
-            <span className="w-2.5 h-2.5 bg-[#D8B24C] rounded-full shrink-0 animate-pulse mt-1" />
+            <span className="w-3 h-3 bg-blue-600 rounded-full shrink-0 animate-pulse mt-2" />
           )}
         </div>
 
-        <p className="text-xs text-[#A7A7A2] leading-relaxed pl-11">
+        <p className="text-sm font-semibold text-slate-600 leading-relaxed pl-12">
           {notification.message}
         </p>
       </div>
 
-      <div className="pt-2.5 border-t border-[#343434] flex items-center justify-between text-xs text-[#74746F]">
-        <span className="font-mono">{formatTimestamp(notification.createdAt)}</span>
+      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span className="font-mono font-bold text-slate-500">{formatTimestamp(notification.createdAt)}</span>
 
         <div className="flex items-center space-x-2">
           {!notification.isRead && onMarkRead && (
             <button
               onClick={handleMarkReadClick}
               disabled={marking}
-              className="px-2.5 py-1 bg-[#151515] hover:bg-[#242424] text-[#A7A7A2] hover:text-[#F5F5F0] text-[11px] font-medium rounded-md border border-[#343434] flex items-center space-x-1 transition-colors"
+              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold rounded-xl border border-slate-300 flex items-center space-x-1.5 transition-colors"
             >
-              <Check className="w-3 h-3 text-[#45B982]" />
+              <Check className="w-3.5 h-3.5 text-emerald-600" />
               <span>Mark Read</span>
             </button>
           )}
 
-          <ChevronRight className="w-3.5 h-3.5 text-[#74746F] group-hover:text-[#D8B24C] group-hover:translate-x-1 transition-transform" />
+          <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
     </div>

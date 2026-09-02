@@ -106,14 +106,33 @@ export function MemoriesScreen({ patientId }) {
     fetchFamilyMembers();
   }, [fetchFamilyMembers]);
 
-  // Handlers
-  const handleSaveMemory = async (formData, memoryId) => {
-    if (memoryId) {
-      await memoriesApi.updateMemory(memoryId, formData);
+  const handleSaveMemory = async (formDataOrPayload, memoryId) => {
+    let res;
+    if (typeof FormData !== 'undefined' && formDataOrPayload instanceof FormData) {
+      if (patientId) formDataOrPayload.append('patientId', patientId);
+      if (memoryId) {
+        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload, patientId);
+      } else {
+        res = await memoriesApi.createMemory(formDataOrPayload, patientId);
+      }
     } else {
-      await memoriesApi.createMemory({ ...formData, patientId });
+      const payload = { ...formDataOrPayload };
+      if (patientId) payload.patientId = patientId;
+      if (memoryId) {
+        res = await memoriesApi.updateMemory(memoryId, payload, patientId);
+      } else {
+        res = await memoriesApi.createMemory(payload, patientId);
+      }
     }
-    fetchMemories();
+
+    if (memoryId && res?.data) {
+      if (selectedMemory && selectedMemory._id === memoryId) {
+        setSelectedMemory(res.data);
+      }
+    }
+    setCreateEditModalOpen(false);
+    setMemoryToEdit(null);
+    await fetchMemories();
   };
 
   const handleDeleteMemory = async (memoryId) => {
@@ -217,8 +236,10 @@ export function MemoriesScreen({ patientId }) {
               onChange={(e) => setSortOrder(e.target.value)}
               className="bg-memora-surface-secondary border border-memora-border text-memora-text text-xs font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-memora-accent"
             >
-              <option value="-createdAt">Newest First</option>
-              <option value="createdAt">Oldest First</option>
+              <option value="-createdAt">Newest Added First</option>
+              <option value="createdAt">Oldest Added First</option>
+              <option value="-importantDate">Memory Date (Newest)</option>
+              <option value="importantDate">Memory Date (Oldest)</option>
               <option value="title">Title (A-Z)</option>
             </select>
           </div>

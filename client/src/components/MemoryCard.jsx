@@ -1,9 +1,5 @@
-/**
- * MemoryCard.jsx — Memory Card Component with Photo Journal Aesthetic
- */
-
 import React, { useState } from 'react';
-import { Image, Heart, MapPin, Calendar, User, BookOpen, Camera, Sparkles, ChevronRight } from 'lucide-react';
+import { Image, Heart, MapPin, Calendar, User, BookOpen, Camera, Sparkles, ChevronRight, Mic } from 'lucide-react';
 
 const TYPE_ICONS = {
   PHOTO: Camera,
@@ -18,6 +14,7 @@ export function MemoryCard({ memory, onSelect }) {
   const [imageError, setImageError] = useState(false);
 
   const TypeIcon = TYPE_ICONS[memory.type] || Sparkles;
+  const hasAudioNote = Boolean(memory.voiceNote?.audioUrl || memory.audioUrl);
 
   let formattedDate = null;
   if (memory.importantDate) {
@@ -79,6 +76,13 @@ export function MemoryCard({ memory, onSelect }) {
             <TypeIcon className="w-3 h-3 text-[#D8B24C]" />
             <span className="capitalize">{memory.type?.toLowerCase()}</span>
           </div>
+
+          {hasAudioNote && (
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-[#8B5CF6]/90 text-white border border-[#8B5CF6]/40 flex items-center space-x-1 backdrop-blur-xs shadow-xs">
+              <Mic className="w-3 h-3" />
+              <span>Voice Note</span>
+            </div>
+          )}
         </div>
 
         {/* Memory Info */}

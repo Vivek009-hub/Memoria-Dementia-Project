@@ -23,8 +23,9 @@ export async function updateMemory(memoryId, memoryData) {
   });
 }
 
-export async function deleteMemory(memoryId) {
-  return await request(`/memories/${memoryId}`, {
+export async function deleteMemory(memoryId, patientId = null) {
+  const query = patientId ? `?patientId=${patientId}` : '';
+  return await request(`/memories/${memoryId}${query}`, {
     method: 'DELETE',
   });
 }

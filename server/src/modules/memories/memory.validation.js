@@ -87,9 +87,44 @@ export function validateCreateMemory(body) {
     data.thumbnailUrl = body.thumbnailUrl.trim();
   }
 
-  if (body.relatedPersonId !== undefined && body.relatedPersonId !== null) {
+  if (body.audioUrl !== undefined && body.audioUrl !== null && body.audioUrl !== '') {
+    if (!isValidUrl(body.audioUrl)) {
+      throw new AppError('audioUrl must be a valid http/https URL or local path', 422, 'VALIDATION_ERROR');
+    }
+    data.audioUrl = body.audioUrl.trim();
+  }
+
+  if (body.audioDuration !== undefined && body.audioDuration !== null) {
+    data.audioDuration = Number(body.audioDuration) || 0;
+  }
+
+  if (body.audioMimeType !== undefined && body.audioMimeType !== null) {
+    data.audioMimeType = String(body.audioMimeType).trim();
+  }
+
+  if (body.voiceNote !== undefined && body.voiceNote !== null) {
+    if (typeof body.voiceNote === 'object') {
+      data.voiceNote = {
+        audioUrl: body.voiceNote.audioUrl ? String(body.voiceNote.audioUrl).trim() : data.audioUrl || null,
+        path: body.voiceNote.path ? String(body.voiceNote.path).trim() : data.audioUrl || null,
+        mimeType: body.voiceNote.mimeType ? String(body.voiceNote.mimeType).trim() : data.audioMimeType || null,
+        duration: Number(body.voiceNote.duration || data.audioDuration || 0),
+      };
+    }
+  } else if (data.audioUrl) {
+    data.voiceNote = {
+      audioUrl: data.audioUrl,
+      path: data.audioUrl,
+      mimeType: data.audioMimeType || null,
+      duration: data.audioDuration || 0,
+    };
+  }
+
+  if (body.relatedPersonId !== undefined && body.relatedPersonId !== null && body.relatedPersonId !== '' && body.relatedPersonId !== 'null') {
     validateObjectId(body.relatedPersonId, 'relatedPersonId');
     data.relatedPersonId = body.relatedPersonId;
+  } else if (body.relatedPersonId === '' || body.relatedPersonId === 'null') {
+    data.relatedPersonId = null;
   }
 
   if (body.relatedPlace !== undefined && body.relatedPlace !== null) {
@@ -99,10 +134,10 @@ export function validateCreateMemory(body) {
     if (body.relatedPlace.length > 300) {
       throw new AppError('relatedPlace must be at most 300 characters', 422, 'VALIDATION_ERROR');
     }
-    data.relatedPlace = body.relatedPlace.trim();
+    data.relatedPlace = body.relatedPlace.trim() || null;
   }
 
-  if (body.importantDate !== undefined && body.importantDate !== null) {
+  if (body.importantDate !== undefined && body.importantDate !== null && body.importantDate !== '' && body.importantDate !== 'null') {
     const d = new Date(body.importantDate);
     if (isNaN(d.getTime())) {
       throw new AppError('importantDate must be a valid ISO date', 422, 'VALIDATION_ERROR');
@@ -129,13 +164,17 @@ export function validateCreateMemory(body) {
   }
 
   if (body.tags !== undefined && body.tags !== null) {
-    if (!Array.isArray(body.tags) || body.tags.some((t) => typeof t !== 'string')) {
+    let parsedTags = body.tags;
+    if (typeof parsedTags === 'string') {
+      parsedTags = parsedTags.split(',').map((t) => t.trim()).filter(Boolean);
+    }
+    if (!Array.isArray(parsedTags) || parsedTags.some((t) => typeof t !== 'string')) {
       throw new AppError('tags must be an array of strings', 422, 'VALIDATION_ERROR');
     }
-    if (body.tags.length > 20) {
+    if (parsedTags.length > 20) {
       throw new AppError('tags must contain at most 20 items', 422, 'VALIDATION_ERROR');
     }
-    data.tags = body.tags;
+    data.tags = parsedTags;
   }
 
   return data;
@@ -165,7 +204,7 @@ export function validateUpdateMemory(body) {
     if (body.description && body.description.length > 5000) {
       throw new AppError('description must be at most 5000 characters', 422, 'VALIDATION_ERROR');
     }
-    data.description = body.description ? body.description.trim() : null;
+    data.description = body.description && body.description.trim() ? body.description.trim() : null;
   }
 
   if (body.type !== undefined) {
@@ -207,8 +246,49 @@ export function validateUpdateMemory(body) {
     }
   }
 
+  if (body.audioUrl !== undefined) {
+    if (body.audioUrl !== null && body.audioUrl !== '') {
+      if (!isValidUrl(body.audioUrl)) {
+        throw new AppError('audioUrl must be a valid http/https URL or local path', 422, 'VALIDATION_ERROR');
+      }
+      data.audioUrl = body.audioUrl.trim();
+    } else {
+      data.audioUrl = null;
+      data.voiceNote = null;
+    }
+  }
+
+  if (body.audioDuration !== undefined) {
+    data.audioDuration = Number(body.audioDuration) || 0;
+  }
+
+  if (body.audioMimeType !== undefined) {
+    data.audioMimeType = body.audioMimeType ? String(body.audioMimeType).trim() : null;
+  }
+
+  if (body.voiceNote !== undefined) {
+    if (body.voiceNote && typeof body.voiceNote === 'object') {
+      data.voiceNote = {
+        audioUrl: body.voiceNote.audioUrl ? String(body.voiceNote.audioUrl).trim() : data.audioUrl || null,
+        path: body.voiceNote.path ? String(body.voiceNote.path).trim() : data.audioUrl || null,
+        mimeType: body.voiceNote.mimeType ? String(body.voiceNote.mimeType).trim() : data.audioMimeType || null,
+        duration: Number(body.voiceNote.duration || data.audioDuration || 0),
+      };
+    } else {
+      data.voiceNote = null;
+      data.audioUrl = null;
+    }
+  } else if (data.audioUrl) {
+    data.voiceNote = {
+      audioUrl: data.audioUrl,
+      path: data.audioUrl,
+      mimeType: data.audioMimeType || null,
+      duration: data.audioDuration || 0,
+    };
+  }
+
   if (body.relatedPersonId !== undefined) {
-    if (body.relatedPersonId !== null) {
+    if (body.relatedPersonId !== null && body.relatedPersonId !== '' && body.relatedPersonId !== 'null') {
       validateObjectId(body.relatedPersonId, 'relatedPersonId');
       data.relatedPersonId = body.relatedPersonId;
     } else {
@@ -221,14 +301,14 @@ export function validateUpdateMemory(body) {
       if (typeof body.relatedPlace !== 'string' || body.relatedPlace.length > 300) {
         throw new AppError('relatedPlace must be at most 300 characters', 422, 'VALIDATION_ERROR');
       }
-      data.relatedPlace = body.relatedPlace.trim();
+      data.relatedPlace = body.relatedPlace.trim() || null;
     } else {
       data.relatedPlace = null;
     }
   }
 
   if (body.importantDate !== undefined) {
-    if (body.importantDate !== null) {
+    if (body.importantDate !== null && body.importantDate !== '' && body.importantDate !== 'null') {
       const d = new Date(body.importantDate);
       if (isNaN(d.getTime())) {
         throw new AppError('importantDate must be a valid ISO date', 422, 'VALIDATION_ERROR');
@@ -258,13 +338,17 @@ export function validateUpdateMemory(body) {
   }
 
   if (body.tags !== undefined) {
-    if (!Array.isArray(body.tags) || body.tags.some((t) => typeof t !== 'string')) {
+    let parsedTags = body.tags;
+    if (typeof parsedTags === 'string') {
+      parsedTags = parsedTags.split(',').map((t) => t.trim()).filter(Boolean);
+    }
+    if (!Array.isArray(parsedTags) || parsedTags.some((t) => typeof t !== 'string')) {
       throw new AppError('tags must be an array of strings', 422, 'VALIDATION_ERROR');
     }
-    if (body.tags.length > 20) {
+    if (parsedTags.length > 20) {
       throw new AppError('tags must contain at most 20 items', 422, 'VALIDATION_ERROR');
     }
-    data.tags = body.tags;
+    data.tags = parsedTags;
   }
 
   if (body.isActive !== undefined) {
@@ -342,6 +426,14 @@ export function validateListMemoriesQuery(query = {}) {
       throw new AppError('limit must be an integer >= 1', 422, 'VALIDATION_ERROR');
     if (l > 100) throw new AppError('limit must be at most 100', 422, 'VALIDATION_ERROR');
     result.limit = l;
+  }
+
+  if (query.sort !== undefined && typeof query.sort === 'string' && query.sort.trim()) {
+    result.sort = query.sort.trim();
+  }
+
+  if (query.search !== undefined && typeof query.search === 'string' && query.search.trim()) {
+    result.search = query.search.trim();
   }
 
   return result;

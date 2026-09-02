@@ -390,6 +390,16 @@ export function validateReminderAction(body) {
     data.note = body.note.trim();
   }
 
+  if (body && body.reason !== undefined && data.note === undefined) {
+    if (typeof body.reason === 'string') {
+      data.note = body.reason.trim();
+    }
+  }
+
+  if (body && body.date !== undefined && body.date !== '') {
+    data.date = body.date;
+  }
+
   if (body && body.logId !== undefined) {
     validateObjectId(body.logId, 'logId');
     data.logId = body.logId;
@@ -416,6 +426,10 @@ export function validateReminderListQuery(query) {
       );
     }
     filters.type = query.type;
+  }
+
+  if (query.date !== undefined && query.date !== '' && query.date !== 'undefined') {
+    filters.date = query.date;
   }
 
   if (query.isActive !== undefined) {

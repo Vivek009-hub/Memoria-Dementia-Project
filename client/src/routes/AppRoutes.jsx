@@ -73,14 +73,14 @@ export function AppRoutes() {
         <Route path="profile" element={<PatientProfilePage />} />
         <Route path="games" element={<GameLibraryPage />} />
         <Route path="games/:gameId" element={<GamePlayPage />} />
-        <Route path="memories" element={<MemoriesPage patientId={user?.id || user?._id} />} />
-        <Route path="reminders" element={<RemindersPage patientId={user?.id || user?._id} />} />
-        <Route path="community" element={<CommunityPage patientId={user?.id || user?._id} />} />
-        <Route path="meetings" element={<MeetingsPage patientId={user?.id || user?._id} />} />
-        <Route path="assistant" element={<AIAssistantPage patientId={user?.id || user?._id} onNavigate={(path) => navigate(path)} />} />
+        <Route path="memories" element={<MemoriesPage patientId={role === 'PATIENT' ? (user?.id || user?._id) : null} />} />
+        <Route path="reminders" element={<RemindersPage patientId={role === 'PATIENT' ? (user?.id || user?._id) : null} />} />
+        <Route path="community" element={<CommunityPage patientId={role === 'PATIENT' ? (user?.id || user?._id) : null} />} />
+        <Route path="meetings" element={<MeetingsPage patientId={role === 'PATIENT' ? (user?.id || user?._id) : null} />} />
+        <Route path="assistant" element={<AIAssistantPage patientId={role === 'PATIENT' ? (user?.id || user?._id) : null} onNavigate={(path) => navigate(path)} />} />
         <Route path="notifications" element={<NotificationsPage onNavigate={(path) => navigate(path)} />} />
-        <Route path="analytics" element={<AnalyticsPage patientId={user?.id || user?._id} />} />
-        <Route path="safety" element={<SafetyPage patientId={user?.id || user?._id} />} />
+        <Route path="analytics" element={<AnalyticsPage patientId={role === 'PATIENT' ? (user?.id || user?._id) : null} />} />
+        <Route path="safety" element={<SafetyPage patientId={role === 'PATIENT' ? (user?.id || user?._id) : null} />} />
         <Route path="caregiver" element={<CaregiverDashboardPage onNavigate={(path) => navigate(path)} />} />
         <Route path="admin" element={<AdminDashboardPage />} />
       </Route>
