@@ -7,6 +7,8 @@
  * Per Prompt §16 (System Prompt) and §17 (Conversation Style).
  */
 
+import { getLanguageByCode } from '../../../config/languages.config.js';
+
 /**
  * Build the Memora companion system prompt.
  *
@@ -15,10 +17,18 @@
  * @returns {string} Complete system prompt for Gemini
  */
 export function buildCompanionSystemPrompt(patientContext = '', language = 'en') {
-  const langInstruction =
-    language === 'hi'
-      ? 'सरल और सम्मानजनक हिंदी में उत्तर दें। वाक्य छोटे रखें।'
-      : 'Always respond in simple, short, warm English that is easy for an elderly person to understand.';
+  const langMeta = getLanguageByCode(language);
+  const langName = langMeta.name;
+  const nativeName = langMeta.nativeName;
+
+  let langInstruction = '';
+  if (language === 'hi') {
+    langInstruction = `LANGUAGE INSTRUCTION: Respond primarily in clear, warm, respectful Hindi (${nativeName}) or natural Hinglish depending on how the patient communicates. Keep sentences short and simple.`;
+  } else if (language === 'en') {
+    langInstruction = `LANGUAGE INSTRUCTION: Always respond in simple, short, warm English that is easy for an elderly person to understand.`;
+  } else {
+    langInstruction = `LANGUAGE INSTRUCTION: The patient's preferred language is ${langName} (${nativeName}). Respond in friendly, simple, natural ${langName} if supported, or adapt to their conversation style. Keep responses simple and elderly-friendly.`;
+  }
 
   return `You are Memora, a kind and personalized AI companion for an elderly patient.
 

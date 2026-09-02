@@ -1,0 +1,44 @@
+{
+  "app": {
+    "name": "ਮੈਮੋਰਾ",
+    "greeting": "ਸ਼ੁਭ ਸਵੇਰ"
+  },
+  "home": {
+    "playGame": "ਖੇਡ ਖੇਡੋ",
+    "myMemories": "ਮੇਰੀਆਂ ਯਾਦਾਂ",
+    "myReminders": "ਮੇਰੇ ਰਿਮਾਈਂਡਰ",
+    "community": "ਸਮੁਦਾਏ",
+    "sos": "ਐਮਰਜੈਂਸੀ ਐਸਓਐਸ",
+    "companion": "ਏਆਈ ਸਾਥੀ",
+    "profile": "ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਸੈਟਿੰਗਾਂ"
+  },
+  "sos": {
+    "button": "SOS",
+    "title": "ਕੀ ਤੁਹਾਨੂੰ ਮਦਦ ਚਾਹੀਦੀ ਹੈ?",
+    "yesSend": "ਹਾਂ, SOS ਭੇਜੋ",
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "sentSuccess": "SOS ਭੇਜਿਆ ਗਿਆ।",
+    "sentFailed": "SOS ਨਹੀਂ ਭੇਜਿਆ ਜਾ ਸਕਿਆ।",
+    "waitingToSend": "SOS ਭੇਜਣ ਦੀ ਉਡੀਕ।"
+  },
+  "fall": {
+    "title": "ਕੀ ਤੁਸੀਂ ਠੀਕ ਹੋ?",
+    "detected": "ਡਿੱਗਣ ਦੀ ਸੰਭਾਵਨਾ ਲੱਭੀ",
+    "imOkay": "ਹਾਂ, ਮੈਂ ਠੀਕ ਹਾਂ",
+    "needHelp": "ਮੈਨੂੰ ਮਦਦ ਚਾਹੀਦੀ ਹੈ"
+  },
+  "profile": {
+    "title": "ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਪਸੰਦਾਂ",
+    "language": "ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ",
+    "selectLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ",
+    "saved": "ਭਾਸ਼ਾ ਅੱਪਡੇਟ ਹੋ ਗਈ!"
+  },
+  "contacts": {
+    "title": "ਐਮਰਜੈਂਸੀ ਸੰਪਰਕ",
+    "call": "ਕਾਲ ਕਰੋ"
+  },
+  "status": {
+    "offline": "ਇੰਟਰਨੈੱਟ ਨਹੀਂ ਹੈ",
+    "online": "ਕਨੈਕਟ ਕੀਤਾ ਗਿਆ"
+  }
+}

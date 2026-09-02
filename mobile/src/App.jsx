@@ -7,7 +7,9 @@
 import React, { useState, useEffect } from 'react';
 import { Wifi, WifiOff, Shield, RefreshCw, BookOpen, Bot, Clock, Users, Bell, UserCheck, ShieldAlert, BarChart3, LogOut, User } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
+import { LanguageProvider, useLanguage } from './context/LanguageContext.jsx';
 import { SafetyProvider, useSafety } from './context/SafetyContext.jsx';
+import { LanguageSelector } from './components/LanguageSelector.jsx';
 import { MemoriesScreen } from './screens/MemoriesScreen.jsx';
 import { RemindersScreen } from './screens/RemindersScreen.jsx';
 import { CommunityScreen } from './screens/CommunityScreen.jsx';
@@ -263,6 +265,18 @@ function Dashboard() {
               <Shield className="w-4 h-4 text-[#EF4444]" />
               <span>Safety</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-3 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-1.5 transition-all whitespace-nowrap ${
+                activeTab === 'profile'
+                  ? 'bg-[#F4C542] text-[#121212] shadow-md font-black'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#202020]'
+              }`}
+            >
+              <User className="w-4 h-4 text-[#F4C542]" />
+              <span>Settings</span>
+            </button>
           </nav>
         )}
       </header>
@@ -328,6 +342,21 @@ function Dashboard() {
           {activeTab === 'reminders' && <RemindersScreen patientId={user.id} />}
           {activeTab === 'memories' && <MemoriesScreen patientId={user.id} />}
           {activeTab === 'community' && <CommunityScreen patientId={user.id} />}
+          {activeTab === 'profile' && (
+            <div className="bg-[#1B1B1B] p-6 rounded-2xl border border-[#343434] space-y-6">
+              <div className="flex items-center space-x-3">
+                <User className="w-6 h-6 text-[#D8B24C]" />
+                <h2 className="text-xl font-bold text-[#F5F5F0]">Profile & Settings</h2>
+              </div>
+              <div className="bg-[#202020] p-4 rounded-xl border border-[#343434] space-y-2">
+                <p className="text-sm font-semibold text-[#F5F5F0]">{user.name || user.email}</p>
+                <p className="text-xs text-[#A7A7A2]">{user.role || 'PATIENT'}</p>
+              </div>
+              <div className="bg-[#202020] p-4 rounded-xl border border-[#343434]">
+                <LanguageSelector />
+              </div>
+            </div>
+          )}
         </main>
       )}
     </div>
@@ -337,9 +366,11 @@ function Dashboard() {
 export default function App({ client = defaultApiClient }) {
   return (
     <AuthProvider client={client}>
-      <SafetyProvider client={client}>
-        <Dashboard />
-      </SafetyProvider>
+      <LanguageProvider>
+        <SafetyProvider client={client}>
+          <Dashboard />
+        </SafetyProvider>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

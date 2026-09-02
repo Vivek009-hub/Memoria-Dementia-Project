@@ -31,8 +31,8 @@ describe('Localization, Voice & Theme (B13)', () => {
   });
 
   it('provides high contrast theme colors for accessibility', () => {
-    expect(colors.primary).toBe('#1E40AF');
-    expect(colors.danger).toBe('#DC2626');
-    expect(colors.textPrimary).toBe('#0F172A');
+    expect(colors.primary).toBe('#D8B24C');
+    expect(colors.danger).toBe('#D95C5C');
+    expect(colors.textPrimary).toBe('#F5F5F0');
   });
 });

@@ -4,8 +4,10 @@ import { CaregiverPatientOverviewCard } from '../components/CaregiverPatientOver
 import { PatientSelector } from '../components/PatientSelector.jsx';
 import * as caregiverApi from '../api/caregiver.api.js';
 import { pairWithCode } from '../api/caregiversApi.js';
+import { useLanguage } from '../context/LanguageContext.jsx';
 
 export function CaregiverDashboardPage({ onNavigate }) {
+  const { t } = useLanguage();
   const [relationships, setRelationships] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState('');
   const [overviewData, setOverviewData] = useState(null);
@@ -92,11 +94,11 @@ export function CaregiverDashboardPage({ onNavigate }) {
         <div>
           <div className="flex items-center space-x-2 text-[#DDBB55] mb-1">
             <HeartPulse className="w-5 h-5" />
-            <span className="text-xs font-semibold uppercase tracking-wider">Caregiver Management</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">{t('dashboard.caregiver_mgmt', 'Caregiver Management')}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#E8E8E8] tracking-tight">Caregiver Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#E8E8E8] tracking-tight">{t('dashboard.caregiver_title', 'Caregiver Dashboard')}</h1>
           <p className="text-sm text-[#A0A0A0] mt-1">
-            Monitor real-time patient adherence, safety alerts, and cognitive activity.
+            {t('dashboard.caregiver_subtitle', 'Monitor real-time patient adherence, safety alerts, and cognitive activity.')}
           </p>
         </div>
 
@@ -114,7 +116,7 @@ export function CaregiverDashboardPage({ onNavigate }) {
             className="px-4 py-2.5 bg-[#DDBB55] hover:bg-[#E8C968] text-[#1E1E1E] font-semibold text-sm rounded-lg shadow-sm flex items-center space-x-2 transition-colors"
           >
             <Key className="w-4 h-4" />
-            <span>Enter Pairing Code</span>
+            <span>{t('dashboard.enter_pairing_code', 'Enter Pairing Code')}</span>
           </button>
 
           <button

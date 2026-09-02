@@ -23,3 +23,7 @@ export async function logout(client = defaultApiClient) {
 export async function getCurrentUser(client = defaultApiClient) {
   return await client.get('/users/me');
 }
+
+export async function updateUserProfile(data, client = defaultApiClient) {
+  return await client.patch('/users/me', data);
+}

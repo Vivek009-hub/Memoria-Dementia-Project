@@ -3,6 +3,7 @@
  */
 
 import { AppError } from '../../utils/AppError.js';
+import { isLanguageSupported, VALID_LANGUAGE_CODES } from '../../config/languages.config.js';
 
 // Fields that may never be updated through the self-service profile endpoint
 const PROTECTED_FIELDS = ['role', 'isActive', 'passwordHash', 'email', '_id', 'id'];
@@ -56,7 +57,15 @@ export function validateUserUpdate(body) {
     if (typeof body.preferredLanguage !== 'string' || body.preferredLanguage.trim().length === 0) {
       throw new AppError('preferredLanguage must be a non-empty string', 422, 'VALIDATION_ERROR');
     }
-    update.preferredLanguage = body.preferredLanguage.trim();
+    const langCode = body.preferredLanguage.trim().toLowerCase();
+    if (!isLanguageSupported(langCode)) {
+      throw new AppError(
+        `Invalid language code: '${body.preferredLanguage}'. Supported codes: ${VALID_LANGUAGE_CODES.join(', ')}`,
+        422,
+        'VALIDATION_ERROR'
+      );
+    }
+    update.preferredLanguage = langCode;
   }
 
   // Reject any completely unknown fields not in ALLOWED_UPDATE_FIELDS

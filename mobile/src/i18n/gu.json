@@ -1,0 +1,44 @@
+{
+  "app": {
+    "name": "મેમોરા",
+    "greeting": "સુપ્રભાત"
+  },
+  "home": {
+    "playGame": "રમત રમો",
+    "myMemories": "મારી યાદો",
+    "myReminders": "મારા રીમાઇન્ડર્સ",
+    "community": "સમુદાય",
+    "sos": "ઇમરજન્સી SOS",
+    "companion": "AI સાથી",
+    "profile": "પ્રોફાઇલ અને સેટિંગ્સ"
+  },
+  "sos": {
+    "button": "SOS",
+    "title": "શું તમને મદદની જરૂર છે?",
+    "yesSend": "હા, SOS મોકલો",
+    "cancel": "રદ કરો",
+    "sentSuccess": "SOS મોકલવામાં આવ્યો.",
+    "sentFailed": "SOS મોકલી શકાયો નથી.",
+    "waitingToSend": "SOS મોકલવાની રાહ જોઈ રહ્યું છે."
+  },
+  "fall": {
+    "title": "શું તમે સાજા છો?",
+    "detected": "પડવાની સંભાવના જણાઈ",
+    "imOkay": "હા, હું સાજો છું",
+    "needHelp": "મને મદદ જોઈએ છે"
+  },
+  "profile": {
+    "title": "પ્રોફાઇલ અને પસંદગીઓ",
+    "language": "પસંદગીની ભાષા",
+    "selectLanguage": "ભાષા પસંદ કરો",
+    "saved": "ભાષા અપડેટ થઈ ગઈ!"
+  },
+  "contacts": {
+    "title": "ઇમરજન્સી સંપર્કો",
+    "call": "કૉલ કરો"
+  },
+  "status": {
+    "offline": "ઇન્ટરનેટ કનેક્શન નથી",
+    "online": "કનેક્ટેડ"
+  }
+}

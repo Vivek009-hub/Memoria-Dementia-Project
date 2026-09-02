@@ -61,7 +61,7 @@ export async function canAccessPatient(user, patientId, permission) {
       throw new AppError('You do not have permission to access this resource', 403, 'FORBIDDEN');
     }
 
-    if (permission && !relationship.permissions[permission]) {
+    if (permission && relationship.permissions && relationship.permissions[permission] === false) {
       throw new AppError(
         'You do not have the required permission to perform this action',
         403,

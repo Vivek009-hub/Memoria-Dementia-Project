@@ -5,6 +5,7 @@ import {
   UserCheck, RefreshCw, Bot, Calendar, CheckCircle2, Activity, AlertTriangle, Bell
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useLanguage } from '../context/LanguageContext.jsx';
 import { ActivityProgressCard } from '../components/ActivityProgressCard.jsx';
 import { PersonalizedRecommendationsCard } from '../components/PersonalizedRecommendationsCard.jsx';
 import * as analyticsApi from '../api/analytics.api.js';
@@ -13,6 +14,7 @@ import * as notificationsApi from '../api/notifications.api.js';
 
 export function PatientDashboardPage() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [overview, setOverview] = useState(null);
@@ -106,18 +108,16 @@ export function PatientDashboardPage() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return t('dashboard.good_morning', 'Good morning');
+    if (hour < 18) return t('dashboard.good_afternoon', 'Good afternoon');
+    return t('dashboard.good_evening', 'Good evening');
   };
 
   const formatScheduleTime = (item) => {
     if (!item) return '--:--';
 
-    // 1. Direct time string property (e.g. "09:00" or "14:30")
     let rawTime = item?.schedule?.time || item?.time || item?.scheduledTime;
 
-    // 2. Date string fallback (e.g. ISO startAt or scheduledAt)
     if (!rawTime) {
       const dateVal = item?.schedule?.startAt || item?.scheduledAt || item?.createdAt || item?.date;
       if (dateVal) {
@@ -152,10 +152,10 @@ export function PatientDashboardPage() {
             {currentDateStr}
           </div>
           <h1 className="text-3xl sm:text-4xl font-semibold text-[#F5F5F0] tracking-tight">
-            {getGreeting()}, {user?.name || 'Patient'}
+            {getGreeting()}, {user?.name || t('dashboard.patient', 'Patient')}
           </h1>
           <p className="text-[#A7A7A2] text-sm leading-relaxed max-w-xl">
-            Here is your personal memory overview, daily reminders, and assistant activity.
+            {t('dashboard.patient_subtitle', 'Here is your personal memory overview, daily reminders, and assistant activity.')}
           </p>
         </div>
 
@@ -165,7 +165,7 @@ export function PatientDashboardPage() {
             className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] text-[#151515] text-sm font-semibold rounded-lg transition-all duration-150 shadow-xs flex items-center space-x-2 touch-target"
           >
             <Bot className="w-4.5 h-4.5" />
-            <span>Talk to Memora</span>
+            <span>{t('dashboard.talk_to_memora', 'Talk to Memora')}</span>
           </button>
 
           <button
@@ -182,7 +182,7 @@ export function PatientDashboardPage() {
       {loading ? (
         <div className="bg-[#202020] border border-[#343434] rounded-xl p-12 text-center">
           <RefreshCw className="w-8 h-8 text-[#D8B24C] animate-spin mx-auto mb-3" />
-          <p className="text-[#A7A7A2] text-sm font-medium">Loading your daily summary...</p>
+          <p className="text-[#A7A7A2] text-sm font-medium">{t('common.loading', 'Loading...')}</p>
         </div>
       ) : errorMsg ? (
         <div className="bg-[#202020] border border-[#D95C5C]/30 rounded-xl p-8 text-center space-y-4">
@@ -196,23 +196,23 @@ export function PatientDashboardPage() {
             className="px-5 py-2.5 bg-[#151515] hover:bg-[#242424] text-[#F5F5F0] font-medium text-xs rounded-lg border border-[#343434] transition-colors inline-flex items-center space-x-2"
           >
             <RefreshCw className="w-4 h-4" />
-            <span>Try Again</span>
+            <span>{t('common.retry', 'Try Again')}</span>
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <ActivityProgressCard
-            title="Daily Routine"
+            title={t('dashboard.daily_routine', 'Daily Routine')}
             value={`${reminderPercentage}%`}
-            subtext={`${completedReminders} of ${totalReminders} completed`}
+            subtext={`${completedReminders} of ${totalReminders} ${t('common.done', 'completed')}`}
             icon={Clock}
             color="gold"
             percentage={reminderPercentage}
           />
 
           <ActivityProgressCard
-            title="Brain Practice"
-            value={`${gamesPlayed} Played`}
+            title={t('dashboard.cognitive_games', 'Brain Practice')}
+            value={`${gamesPlayed} ${t('dashboard.games_played', 'Played')}`}
             subtext={`${gameAccuracy}% accuracy`}
             icon={Gamepad2}
             color="purple"
@@ -220,8 +220,8 @@ export function PatientDashboardPage() {
           />
 
           <ActivityProgressCard
-            title="Memory Vault"
-            value={`${memoriesCount} Saved`}
+            title={t('dashboard.memory_vault', 'Memory Vault')}
+            value={`${memoriesCount} ${t('dashboard.memories_saved', 'Saved')}`}
             subtext="Photos and stories"
             icon={BookOpen}
             color="emerald"

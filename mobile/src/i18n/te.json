@@ -1,0 +1,44 @@
+{
+  "app": {
+    "name": "మెమోరా",
+    "greeting": "శుభోదయం"
+  },
+  "home": {
+    "playGame": "ఆట ఆడండి",
+    "myMemories": "నా జ్ఞాపకాలు",
+    "myReminders": "నా జ్ఞాపికలు",
+    "community": "సముదాయం",
+    "sos": "అత్యవసర SOS",
+    "companion": "AI తోడు",
+    "profile": "ప్రొఫైల్ & సెట్టింగ్‌లు"
+  },
+  "sos": {
+    "button": "SOS",
+    "title": "మీకు సహాయం కావాలా?",
+    "yesSend": "అవును, SOS పంపు",
+    "cancel": "రద్దు చేయి",
+    "sentSuccess": "SOS పంపబడింది.",
+    "sentFailed": "SOS పంపలేకపోయాము.",
+    "waitingToSend": "SOS వేచి ఉంది."
+  },
+  "fall": {
+    "title": "మీరు బాగున్నారా?",
+    "detected": "పడిపోవడం గుర్తించబడింది",
+    "imOkay": "అవును, నేను బాగున్నాను",
+    "needHelp": "నాకు సహాయం కావాలి"
+  },
+  "profile": {
+    "title": "ప్రొఫైల్ & ప్రాధాన్యతలు",
+    "language": "ఇష్టమైన భాష",
+    "selectLanguage": "భాషను ఎంచుకోండి",
+    "saved": "భాష నవీకరించబడింది!"
+  },
+  "contacts": {
+    "title": "అత్యవసర పరిచయాలు",
+    "call": "కాల్ చేయి"
+  },
+  "status": {
+    "offline": "ఇంటర్నెట్ కనెక్షన్ లేదు",
+    "online": "కనెక్ట్ చేయబడింది"
+  }
+}

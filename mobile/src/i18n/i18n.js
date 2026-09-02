@@ -1,22 +1,49 @@
 /**
- * i18n.js — Localization Translation Engine
+ * i18n.js — Mobile Localization Translation Engine & Registry
  */
 
 import en from './en.json';
 import hi from './hi.json';
+import bn from './bn.json';
+import as from './as.json';
+import ta from './ta.json';
+import ur from './ur.json';
+import mr from './mr.json';
+import te from './te.json';
+import gu from './gu.json';
+import pa from './pa.json';
+import kn from './kn.json';
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, getLanguageMeta } from './languages.js';
 
-const dictionaries = { en, hi };
+const dictionaries = {
+  en,
+  hi,
+  bn,
+  as,
+  ta,
+  ur,
+  mr,
+  te,
+  gu,
+  pa,
+  kn,
+};
 
-let currentLocale = 'en';
+let currentLocale = DEFAULT_LANGUAGE;
 
 export function setLocale(locale) {
-  if (dictionaries[locale]) {
-    currentLocale = locale;
+  if (locale && typeof locale === 'string') {
+    const norm = locale.toLowerCase();
+    currentLocale = norm;
   }
 }
 
 export function getLocale() {
   return currentLocale;
+}
+
+export function isRTL() {
+  return getLanguageMeta(currentLocale).direction === 'rtl';
 }
 
 export function t(keyPath, defaultText = '') {
@@ -42,3 +69,5 @@ export function t(keyPath, defaultText = '') {
 
   return typeof dict === 'string' ? dict : (defaultText || keyPath);
 }
+
+export { SUPPORTED_LANGUAGES, getLanguageMeta };

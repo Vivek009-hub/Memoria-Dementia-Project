@@ -10,12 +10,15 @@ import {
   BookOpen, Plus, Search, Filter, RefreshCw, AlertTriangle, Users,
   ChevronLeft, ChevronRight, SlidersHorizontal, Image
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext.jsx';
 import { MemoryCard } from '../components/MemoryCard.jsx';
 import { MemoryDetailModal } from '../components/MemoryDetailModal.jsx';
 import { CreateEditMemoryModal } from '../components/CreateEditMemoryModal.jsx';
 import { DeleteMemoryDialog } from '../components/DeleteMemoryDialog.jsx';
 import { FamilyDirectoryModal } from '../components/FamilyDirectoryModal.jsx';
+import { PatientSelector } from '../components/PatientSelector.jsx';
 import * as memoriesApi from '../api/memories.api.js';
+import * as caregiverApi from '../api/caregiver.api.js';
 
 const CATEGORY_FILTERS = [
   { id: '', label: 'All' },
@@ -27,11 +30,57 @@ const CATEGORY_FILTERS = [
   { id: 'OBJECT', label: 'Objects' },
 ];
 
-export function MemoriesScreen({ patientId }) {
+export function MemoriesScreen({ patientId: propPatientId }) {
+  const { user } = useAuth();
+  const isCaregiver = user?.role === 'CAREGIVER';
+
+  const [relationships, setRelationships] = useState([]);
+  const [loadingRelationships, setLoadingRelationships] = useState(isCaregiver);
+  const [selectedPatientId, setSelectedPatientId] = useState('');
   const [memories, setMemories] = useState([]);
   const [familyMembers, setFamilyMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Active target patient ID resolution
+  const activePatientId = isCaregiver
+    ? selectedPatientId || (propPatientId && propPatientId !== user?.id && propPatientId !== user?._id ? propPatientId : '')
+    : propPatientId || user?.id || user?._id;
+
+  // Load caregiver patient relationships if logged in as caregiver
+  useEffect(() => {
+    if (!isCaregiver) {
+      setLoadingRelationships(false);
+      return;
+    }
+    let isMounted = true;
+    const fetchRelationships = async () => {
+      setLoadingRelationships(true);
+      try {
+        const res = await caregiverApi.listRelationships();
+        const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
+        if (isMounted) {
+          if (rels && rels.length > 0) {
+            setRelationships(rels);
+            const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
+            const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
+            setSelectedPatientId((prev) => prev || firstId);
+          } else {
+            setRelationships([]);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load caregiver relationships:', err);
+      } finally {
+        if (isMounted) setLoadingRelationships(false);
+      }
+    };
+
+    fetchRelationships();
+    return () => {
+      isMounted = false;
+    };
+  }, [isCaregiver]);
 
   // Filters & Pagination
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -59,6 +108,11 @@ export function MemoriesScreen({ patientId }) {
 
   // Fetch memories list
   const fetchMemories = useCallback(async () => {
+    if (isCaregiver && !activePatientId) {
+      setLoading(false);
+      setMemories([]);
+      return;
+    }
     setLoading(true);
     setErrorMsg('');
     try {
@@ -68,7 +122,7 @@ export function MemoriesScreen({ patientId }) {
         sort: sortOrder,
         page,
         limit: 12,
-        patientId,
+        patientId: activePatientId,
       });
 
       if (res.data) {
@@ -84,44 +138,49 @@ export function MemoriesScreen({ patientId }) {
     } finally {
       setLoading(false);
     }
-  }, [selectedCategory, debouncedSearch, sortOrder, page, patientId]);
+  }, [selectedCategory, debouncedSearch, sortOrder, page, activePatientId, isCaregiver]);
 
   // Fetch family members
   const fetchFamilyMembers = useCallback(async () => {
+    if (!activePatientId) return;
     try {
-      const res = await memoriesApi.listFamilyMembers({ patientId });
+      const res = await memoriesApi.listFamilyMembers({ patientId: activePatientId });
       if (res.data) {
         setFamilyMembers(res.data);
       }
     } catch {
       // Non-blocking error
     }
-  }, [patientId]);
+  }, [activePatientId]);
 
   useEffect(() => {
-    fetchMemories();
-  }, [fetchMemories]);
+    if (!loadingRelationships) {
+      fetchMemories();
+    }
+  }, [fetchMemories, loadingRelationships]);
 
   useEffect(() => {
-    fetchFamilyMembers();
-  }, [fetchFamilyMembers]);
+    if (!loadingRelationships) {
+      fetchFamilyMembers();
+    }
+  }, [fetchFamilyMembers, loadingRelationships]);
 
   const handleSaveMemory = async (formDataOrPayload, memoryId) => {
     let res;
     if (typeof FormData !== 'undefined' && formDataOrPayload instanceof FormData) {
-      if (patientId) formDataOrPayload.append('patientId', patientId);
+      if (activePatientId) formDataOrPayload.append('patientId', activePatientId);
       if (memoryId) {
-        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload, patientId);
+        res = await memoriesApi.updateMemory(memoryId, formDataOrPayload, activePatientId);
       } else {
-        res = await memoriesApi.createMemory(formDataOrPayload, patientId);
+        res = await memoriesApi.createMemory(formDataOrPayload, activePatientId);
       }
     } else {
       const payload = { ...formDataOrPayload };
-      if (patientId) payload.patientId = patientId;
+      if (activePatientId) payload.patientId = activePatientId;
       if (memoryId) {
-        res = await memoriesApi.updateMemory(memoryId, payload, patientId);
+        res = await memoriesApi.updateMemory(memoryId, payload, activePatientId);
       } else {
-        res = await memoriesApi.createMemory(payload, patientId);
+        res = await memoriesApi.createMemory(payload, activePatientId);
       }
     }
 
@@ -136,7 +195,7 @@ export function MemoriesScreen({ patientId }) {
   };
 
   const handleDeleteMemory = async (memoryId) => {
-    await memoriesApi.deleteMemory(memoryId, patientId);
+    await memoriesApi.deleteMemory(memoryId, activePatientId);
     if (selectedMemory && selectedMemory._id === memoryId) {
       setSelectedMemory(null);
     }

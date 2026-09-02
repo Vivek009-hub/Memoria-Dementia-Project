@@ -1,0 +1,86 @@
+{
+  "app_name": "میمورا",
+  "tagline": "AI پر مبنی دیکھ بھال، یادداشت میں معاونت اور حفاظت کا پلیٹ فارم",
+  "nav": {
+    "dashboard": "ڈیش بورڈ",
+    "memories": "میری یادیں",
+    "games": "کھیل",
+    "reminders": "یاد دہانی",
+    "community": "کمیونٹی",
+    "meeting_circle": "میٹنگ سرکل",
+    "ai_companion": "AI ساتھی",
+    "safety": "حفاظت",
+    "caregiver": "کیئر گیور پورٹل",
+    "profile": "پروفائل اور ترتیبات",
+    "emergency": "ہنگامی SOS",
+    "login": "سائن ان کریں",
+    "register": "رجسٹر کریں",
+    "logout": "لاگ آؤٹ"
+  },
+  "common": {
+    "save": "محفوظ کریں",
+    "cancel": "منسوخ کریں",
+    "delete": "حذف کریں",
+    "edit": "ترمیم کریں",
+    "create": "بنائیں",
+    "loading": "لوڈ ہو رہا ہے...",
+    "search": "تلاش کریں...",
+    "close": "بند کریں",
+    "back": "واپس",
+    "confirm": "تصدیق کریں",
+    "success": "کامیابی",
+    "error": "ایک خرابی پیش آئی",
+    "retry": "دوبارہ کوشش کریں"
+  },
+  "auth": {
+    "welcome_back": "خوش آمدید",
+    "sign_in_account": "اپنے اکاؤنٹ میں سائن ان کریں",
+    "email": "ای میل ایڈریس",
+    "password": "پاس ورڈ",
+    "full_name": "مکمل نام",
+    "role": "میں ہوں...",
+    "patient": "مریض",
+    "caregiver": "کیئر گیور",
+    "no_account": "اکاؤنٹ نہیں ہے؟",
+    "already_account": "پہلے سے اکاؤنٹ موجود ہے؟",
+    "register_now": "ابھی رجسٹر کریں"
+  },
+  "profile": {
+    "title": "پروفائل اور ترجیحات",
+    "language_region": "زبان اور علاقہ",
+    "preferred_language": "ترجیحی زبان",
+    "language_help": "ایپ اور AI ساتھی کے لیے اپنی بنیادی زبان منتخب کریں۔",
+    "select_language": "زبان منتخب کریں",
+    "personal_info": "ذاتی معلومات",
+    "phone": "فون نمبر",
+    "role_label": "صارف کا کردار",
+    "saved_success": "زبان کی ترجیح کامیابی کے ساتھ اپ ڈیٹ ہو گئی!"
+  },
+  "companion": {
+    "title": "میمورا AI ساتھی",
+    "subtitle": "روزمرہ کی مدد اور بات چیت کے لیے آپ کا دوستانہ معاون",
+    "type_placeholder": "اپنی زبان میں پیغام ٹائپ کریں...",
+    "voice_input": "وائس ان پٹ",
+    "send": "بھیجیں"
+  },
+  "reminders": {
+    "title": "روزانہ کی یاد دہانی",
+    "add_new": "یاد دہانی شامل کریں",
+    "no_reminders": "آج کوئی فعال یاد دہانی نہیں ہے",
+    "medication": "دوائی",
+    "activity": "سرگرمی",
+    "appointment": "ملاقات"
+  },
+  "memories": {
+    "title": "میری یادیں",
+    "add_memory": "یاد شامل کریں",
+    "search_memories": "یادیں تلاش کریں...",
+    "no_memories": "ابھی تک کوئی یاد محفوظ نہیں کی گئی۔"
+  },
+  "emergency": {
+    "title": "ہنگامی SOS",
+    "trigger_sos": "ہنگامی SOS فعال کریں",
+    "contacts": "ہنگامی رابطے",
+    "calling_help": "ہنگامی رابطوں کو اطلاع دی جا رہی ہے..."
+  }
+}

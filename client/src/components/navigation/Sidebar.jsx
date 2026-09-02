@@ -14,36 +14,38 @@ import {
   User,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useLanguage } from '../../context/LanguageContext.jsx';
 
 export function Sidebar() {
   const { role } = useAuth();
+  const { t } = useLanguage();
 
   const patientNav = [
-    { label: 'Overview', path: '/app', icon: Home },
-    { label: 'Profile', path: '/app/profile', icon: User },
-    { label: 'Memories', path: '/app/memories', icon: Heart },
-    { label: 'Conversations', path: '/app/assistant', icon: Bot },
-    { label: 'Reminders', path: '/app/reminders', icon: Bell },
-    { label: 'Safety & SOS', path: '/app/safety', icon: ShieldAlert },
-    { label: 'Games', path: '/app/games', icon: Gamepad2 },
-    { label: 'Community', path: '/app/community', icon: Users },
-    { label: 'Meeting Circle', path: '/app/meetings', icon: Video },
+    { label: t('nav.overview', 'Overview'), path: '/app', icon: Home },
+    { label: t('nav.profile', 'Profile'), path: '/app/profile', icon: User },
+    { label: t('nav.memories', 'Memories'), path: '/app/memories', icon: Heart },
+    { label: t('nav.conversations', 'Conversations'), path: '/app/assistant', icon: Bot },
+    { label: t('nav.reminders', 'Reminders'), path: '/app/reminders', icon: Bell },
+    { label: t('nav.safety', 'Safety & SOS'), path: '/app/safety', icon: ShieldAlert },
+    { label: t('nav.games', 'Games'), path: '/app/games', icon: Gamepad2 },
+    { label: t('nav.community', 'Community'), path: '/app/community', icon: Users },
+    { label: t('nav.meeting_circle', 'Meeting Circle'), path: '/app/meetings', icon: Video },
   ];
 
   const caregiverNav = [
-    { label: 'Dashboard', path: '/app', icon: Home },
-    { label: 'Reminders', path: '/app/reminders', icon: Bell },
-    { label: 'Memories', path: '/app/memories', icon: Heart },
-    { label: 'Cognitive Analytics', path: '/app/analytics', icon: BarChart3 },
-    { label: 'Safety & Location', path: '/app/safety', icon: Activity },
-    { label: 'Notifications', path: '/app/notifications', icon: Bell },
+    { label: t('nav.dashboard', 'Dashboard'), path: '/app', icon: Home },
+    { label: t('nav.reminders', 'Reminders'), path: '/app/reminders', icon: Bell },
+    { label: t('nav.memories', 'Memories'), path: '/app/memories', icon: Heart },
+    { label: t('nav.cognitive_analytics', 'Cognitive Analytics'), path: '/app/analytics', icon: BarChart3 },
+    { label: t('nav.safety_location', 'Safety & Location'), path: '/app/safety', icon: Activity },
+    { label: t('nav.notifications', 'Notifications'), path: '/app/notifications', icon: Bell },
   ];
 
   const adminNav = [
-    { label: 'Admin Overview', path: '/app', icon: Home },
-    { label: 'Platform Analytics', path: '/app/analytics', icon: BarChart3 },
-    { label: 'Community Proposals', path: '/app/community', icon: Users },
-    { label: 'Notifications System', path: '/app/notifications', icon: Bell },
+    { label: t('nav.admin_overview', 'Admin Overview'), path: '/app', icon: Home },
+    { label: t('nav.platform_analytics', 'Platform Analytics'), path: '/app/analytics', icon: BarChart3 },
+    { label: t('nav.community_proposals', 'Community Proposals'), path: '/app/community', icon: Users },
+    { label: t('nav.notifications_system', 'Notifications System'), path: '/app/notifications', icon: Bell },
   ];
 
   const navItems = role === 'ADMIN' ? adminNav : role === 'CAREGIVER' ? caregiverNav : patientNav;
@@ -85,10 +87,10 @@ export function Sidebar() {
         <div className="p-4 bg-[#202020] border border-[#343434] rounded-xl space-y-1.5 hidden md:block">
           <div className="flex items-center space-x-2 text-[#D8B24C]">
             <Heart className="w-4 h-4 text-[#D8B24C] fill-[#D8B24C]/20" />
-            <span className="text-xs font-semibold text-[#F5F5F0]">You're doing great!</span>
+            <span className="text-xs font-semibold text-[#F5F5F0]">{t('nav.encouragement_title', "You're doing great!")}</span>
           </div>
           <p className="text-xs text-[#A7A7A2] leading-relaxed">
-            Keep engaging daily to strengthen your memories.
+            {t('nav.encouragement_text', 'Keep engaging daily to strengthen your memories.')}
           </p>
           <div className="w-6 h-0.5 bg-[#D8B24C]/40 rounded-full mt-2" />
         </div>

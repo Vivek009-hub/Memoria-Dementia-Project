@@ -8,7 +8,9 @@
     "myMemories": "My Memories",
     "myReminders": "My Reminders",
     "community": "Community",
-    "sos": "SOS Emergency"
+    "sos": "SOS Emergency",
+    "companion": "AI Companion",
+    "profile": "Profile & Settings"
   },
   "sos": {
     "button": "SOS",
@@ -24,6 +26,12 @@
     "detected": "Fall may have occurred",
     "imOkay": "YES, I'M OKAY",
     "needHelp": "I NEED HELP"
+  },
+  "profile": {
+    "title": "Profile & Preferences",
+    "language": "Preferred Language",
+    "selectLanguage": "Select Language",
+    "saved": "Language updated successfully!"
   },
   "contacts": {
     "title": "Emergency Contacts",

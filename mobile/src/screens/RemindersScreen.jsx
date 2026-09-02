@@ -11,14 +11,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Clock, Plus, Filter, RefreshCw, AlertTriangle, Sun, Sunset, Moon,
-  CheckCircle2, History, Repeat, Sparkles
+  CheckCircle2, History, Repeat, Sparkles, Users
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext.jsx';
 import { ReminderCard } from '../components/ReminderCard.jsx';
 import { ReminderDetailModal } from '../components/ReminderDetailModal.jsx';
 import { CreateEditReminderModal } from '../components/CreateEditReminderModal.jsx';
 import { DeleteReminderDialog } from '../components/DeleteReminderDialog.jsx';
 import { SnoozeSkipModal } from '../components/SnoozeSkipModal.jsx';
+import { PatientSelector } from '../components/PatientSelector.jsx';
 import * as remindersApi from '../api/reminders.api.js';
+import * as caregiverApi from '../api/caregiver.api.js';
 
 const CATEGORY_FILTERS = [
   { id: '', label: 'All' },
@@ -30,7 +33,13 @@ const CATEGORY_FILTERS = [
   { id: 'IMPORTANT_EVENT', label: 'Events' },
 ];
 
-export function RemindersScreen({ patientId }) {
+export function RemindersScreen({ patientId: propPatientId }) {
+  const { user } = useAuth();
+  const isCaregiver = user?.role === 'CAREGIVER';
+
+  const [relationships, setRelationships] = useState([]);
+  const [loadingRelationships, setLoadingRelationships] = useState(isCaregiver);
+  const [selectedPatientId, setSelectedPatientId] = useState('');
   const [reminders, setReminders] = useState([]);
   const [historyLogs, setHistoryLogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,14 +62,59 @@ export function RemindersScreen({ patientId }) {
   const [skipModalOpen, setSkipModalOpen] = useState(false);
   const [reminderToSkip, setReminderToSkip] = useState(null);
 
+  // Active target patient ID resolution
+  const activePatientId = isCaregiver
+    ? selectedPatientId || (propPatientId && propPatientId !== user?.id && propPatientId !== user?._id ? propPatientId : '')
+    : propPatientId || user?.id || user?._id;
+
+  // Load caregiver patient relationships if logged in as caregiver
+  useEffect(() => {
+    if (!isCaregiver) {
+      setLoadingRelationships(false);
+      return;
+    }
+    let isMounted = true;
+    const fetchRelationships = async () => {
+      setLoadingRelationships(true);
+      try {
+        const res = await caregiverApi.listRelationships();
+        const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
+        if (isMounted) {
+          if (rels && rels.length > 0) {
+            setRelationships(rels);
+            const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
+            const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
+            setSelectedPatientId((prev) => prev || firstId);
+          } else {
+            setRelationships([]);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load caregiver relationships:', err);
+      } finally {
+        if (isMounted) setLoadingRelationships(false);
+      }
+    };
+
+    fetchRelationships();
+    return () => {
+      isMounted = false;
+    };
+  }, [isCaregiver]);
+
   // Fetch reminders list
   const fetchReminders = useCallback(async () => {
+    if (isCaregiver && !activePatientId) {
+      setLoading(false);
+      setReminders([]);
+      return;
+    }
     setLoading(true);
     setErrorMsg('');
     try {
       const res = await remindersApi.listReminders({
         type: selectedCategory || undefined,
-        patientId,
+        patientId: activePatientId,
       });
       if (res.data) {
         setReminders(res.data);
@@ -72,42 +126,45 @@ export function RemindersScreen({ patientId }) {
     } finally {
       setLoading(false);
     }
-  }, [selectedCategory, patientId]);
+  }, [selectedCategory, activePatientId, isCaregiver]);
 
   // Fetch occurrence history logs
   const fetchHistory = useCallback(async () => {
+    if (!activePatientId) return;
     try {
-      const res = await remindersApi.getReminderHistory({ patientId, limit: 20 });
+      const res = await remindersApi.getReminderHistory({ patientId: activePatientId, limit: 20 });
       if (res.data) {
         setHistoryLogs(res.data);
       }
     } catch {
       // Non-blocking error
     }
-  }, [patientId]);
+  }, [activePatientId]);
 
   useEffect(() => {
-    fetchReminders();
-  }, [fetchReminders]);
+    if (!loadingRelationships) {
+      fetchReminders();
+    }
+  }, [fetchReminders, loadingRelationships]);
 
   useEffect(() => {
-    if (viewTab === 'history') {
+    if (viewTab === 'history' && !loadingRelationships) {
       fetchHistory();
     }
-  }, [viewTab, fetchHistory]);
+  }, [viewTab, fetchHistory, loadingRelationships]);
 
   // Actions
   const handleSaveReminder = async (formData, reminderId) => {
     if (reminderId) {
       await remindersApi.updateReminder(reminderId, formData);
     } else {
-      await remindersApi.createReminder({ ...formData, patientId });
+      await remindersApi.createReminder({ ...formData, patientId: activePatientId });
     }
     fetchReminders();
   };
 
   const handleDeleteReminder = async (reminderId) => {
-    await remindersApi.deleteReminder(reminderId, patientId);
+    await remindersApi.deleteReminder(reminderId, activePatientId);
     if (selectedReminder && selectedReminder._id === reminderId) {
       setSelectedReminder(null);
     }
@@ -116,13 +173,13 @@ export function RemindersScreen({ patientId }) {
 
   const handleCompleteReminder = async (rem) => {
     const remId = rem?._id || rem?.id || rem;
-    await remindersApi.completeReminder(remId, { patientId }, patientId);
+    await remindersApi.completeReminder(remId, { patientId: activePatientId }, activePatientId);
     setCompletedMap((prev) => ({ ...prev, [remId]: true }));
     fetchHistory();
   };
 
   const handleConfirmSkip = async (reminderId, options) => {
-    await remindersApi.skipReminder(reminderId, { ...options, patientId }, patientId);
+    await remindersApi.skipReminder(reminderId, { ...options, patientId: activePatientId }, activePatientId);
     setSkippedMap((prev) => ({ ...prev, [reminderId]: true }));
     fetchHistory();
   };
@@ -148,6 +205,32 @@ export function RemindersScreen({ patientId }) {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
+      {/* Caregiver Patient Selector */}
+      {isCaregiver && relationships.length > 0 && (
+        <div className="flex items-center justify-between bg-memora-surface border border-memora-border p-4 rounded-3xl shadow-lg">
+          <div className="flex items-center space-x-2 text-memora-text-muted text-xs font-bold uppercase tracking-wider">
+            <Users className="w-4 h-4 text-memora-accent" />
+            <span>Viewing Patient:</span>
+          </div>
+          <PatientSelector
+            patients={relationships}
+            selectedPatientId={activePatientId}
+            onSelectPatient={(id) => setSelectedPatientId(id)}
+          />
+        </div>
+      )}
+
+      {/* Caregiver with no linked patients */}
+      {isCaregiver && !loadingRelationships && relationships.length === 0 && (
+        <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 text-center space-y-2">
+          <Users className="w-8 h-8 text-memora-accent mx-auto" />
+          <h3 className="text-base font-bold text-memora-text">No Assigned Patients Found</h3>
+          <p className="text-xs text-memora-text-muted">
+            Please link with a patient account to view and manage their routine reminders.
+          </p>
+        </div>
+      )}
+
       {/* Top Header Card */}
       <div className="bg-memora-surface border border-memora-border rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

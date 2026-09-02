@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useLanguage } from '../context/LanguageContext.jsx';
 import { MemoryCard } from '../components/MemoryCard.jsx';
 import { MemoryDetailModal } from '../components/MemoryDetailModal.jsx';
 import { CreateEditMemoryModal } from '../components/CreateEditMemoryModal.jsx';
@@ -30,6 +31,7 @@ const CATEGORY_FILTERS = [
 
 export function MemoriesPage({ patientId: propPatientId }) {
   const { user, role } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [relationships, setRelationships] = useState([]);
@@ -214,7 +216,7 @@ export function MemoriesPage({ patientId: propPatientId }) {
             <BookOpen className="w-5 h-5" />
             <span className="text-xs font-semibold uppercase tracking-wider">Memory Vault</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#F5F5F0] tracking-tight">Memories</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#F5F5F0] tracking-tight">{t('memories.title', 'Memories')}</h1>
           <p className="text-sm text-[#A7A7A2] mt-1">
             Revisit your family photographs, stories, places, and personal moments.
           </p>
@@ -244,10 +246,10 @@ export function MemoriesPage({ patientId: propPatientId }) {
               setCreateEditModalOpen(true);
             }}
             disabled={isCaregiver && !activePatientId}
-            className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] font-semibold text-sm rounded-lg flex items-center space-x-2 transition-colors shadow-xs touch-target"
+            className="px-4 py-2.5 bg-[#D8B24C] hover:bg-[#F0C75E] disabled:opacity-50 text-[#151515] font-semibold text-sm rounded-lg shadow-xs flex items-center space-x-2 transition-colors touch-target"
           >
             <Plus className="w-4 h-4" />
-            <span>Add Memory</span>
+            <span>{t('memories.add_memory', 'Add Memory')}</span>
           </button>
         </div>
       </div>

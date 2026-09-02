@@ -20,6 +20,8 @@ export async function sendSOS(payload = {}, client = defaultApiClient) {
         }
       : null,
     clientEventId: payload.idempotencyKey || payload.clientEventId || null,
+    ...(payload.idempotencyKey ? { idempotencyKey: payload.idempotencyKey } : {}),
+    ...(hasCoordinates ? { latitude: Number(payload.latitude), longitude: Number(payload.longitude), accuracy: Number(payload.accuracy) } : {}),
   };
   return await client.post('/safety/sos', body);
 }

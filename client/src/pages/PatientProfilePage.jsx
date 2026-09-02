@@ -39,6 +39,7 @@ import { fetchCurrentLocation } from '../api/safetyApi.js';
 import { Card } from '../components/common/Card.jsx';
 import { Button } from '../components/common/Button.jsx';
 import { Badge } from '../components/common/Badge.jsx';
+import { LanguageSelector } from '../components/common/LanguageSelector.jsx';
 
 export function PatientProfilePage() {
   // State
@@ -373,17 +374,7 @@ export function PatientProfilePage() {
                 <label className="text-xs font-semibold text-[#A7A7A2] uppercase tracking-wider block mb-1">
                   Preferred Language
                 </label>
-                <select
-                  value={editForm.preferredLanguage}
-                  onChange={(e) => setEditForm({ ...editForm, preferredLanguage: e.target.value })}
-                  className="w-full bg-[#151515] border border-[#343434] rounded-lg px-3.5 py-2.5 text-[#F5F5F0] focus:outline-none focus:border-[#D8B24C] text-sm"
-                >
-                  <option value="en">English (en)</option>
-                  <option value="es">Spanish (es)</option>
-                  <option value="fr">French (fr)</option>
-                  <option value="de">German (de)</option>
-                  <option value="hi">Hindi (hi)</option>
-                </select>
+                <LanguageSelector variant="dropdown" className="w-full" />
               </div>
 
               <div>
