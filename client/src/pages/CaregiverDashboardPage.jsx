@@ -22,9 +22,10 @@ export function CaregiverDashboardPage({ onNavigate }) {
   const fetchRelationships = async () => {
     try {
       const res = await caregiverApi.getCaregiverRelationships();
-      if (res.data && res.data.length > 0) {
-        setRelationships(res.data);
-        const firstPatientObj = res.data[0].patientId || res.data[0].patient || res.data[0];
+      const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
+      if (rels && rels.length > 0) {
+        setRelationships(rels);
+        const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
         const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
         setSelectedPatientId(firstId);
       } else {
