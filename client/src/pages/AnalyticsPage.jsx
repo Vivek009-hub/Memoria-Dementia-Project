@@ -10,13 +10,17 @@ import { ActivityProgressCard } from '../components/ActivityProgressCard.jsx';
 import { PatientSelector } from '../components/PatientSelector.jsx';
 import * as analyticsApi from '../api/analytics.api.js';
 import * as caregiverApi from '../api/caregiver.api.js';
+import * as adminApi from '../api/admin.api.js';
 
 export function AnalyticsPage({ patientId: propPatientId }) {
   const { user, role } = useAuth();
   const navigate = useNavigate();
 
+  const isCaregiver = role === 'CAREGIVER';
+  const isAdmin = role === 'ADMIN';
+
   const [relationships, setRelationships] = useState([]);
-  const [loadingRelationships, setLoadingRelationships] = useState(role === 'CAREGIVER');
+  const [loadingRelationships, setLoadingRelationships] = useState(isCaregiver || isAdmin);
   const [selectedPatientId, setSelectedPatientId] = useState('');
 
   const [overview, setOverview] = useState(null);
@@ -24,13 +28,12 @@ export function AnalyticsPage({ patientId: propPatientId }) {
   const [errorMsg, setErrorMsg] = useState('');
   const [rangeDays, setRangeDays] = useState(7);
 
-  const isCaregiver = role === 'CAREGIVER';
-  const activePatientId = isCaregiver
+  const activePatientId = (isCaregiver || isAdmin)
     ? selectedPatientId || (propPatientId && propPatientId !== user?.id && propPatientId !== user?._id ? propPatientId : '')
     : user?.id || user?._id;
 
   useEffect(() => {
-    if (!isCaregiver) {
+    if (!isCaregiver && !isAdmin) {
       setLoadingRelationships(false);
       return;
     }
@@ -38,20 +41,35 @@ export function AnalyticsPage({ patientId: propPatientId }) {
     const fetchRelationships = async () => {
       setLoadingRelationships(true);
       try {
-        const res = await caregiverApi.getCaregiverRelationships();
-        const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
-        if (isMounted) {
-          if (rels && rels.length > 0) {
-            setRelationships(rels);
-            const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
-            const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
-            setSelectedPatientId((prev) => prev || firstId);
-          } else {
-            setRelationships([]);
+        if (isCaregiver) {
+          const res = await caregiverApi.getCaregiverRelationships();
+          const rels = res.data?.relationships || (Array.isArray(res.data) ? res.data : []);
+          if (isMounted) {
+            if (rels && rels.length > 0) {
+              setRelationships(rels);
+              const firstPatientObj = rels[0].patientId || rels[0].patient || rels[0];
+              const firstId = firstPatientObj._id || firstPatientObj.id || firstPatientObj;
+              setSelectedPatientId((prev) => prev || firstId);
+            } else {
+              setRelationships([]);
+            }
+          }
+        } else if (isAdmin) {
+          const res = await adminApi.getAdminUsers({ role: 'PATIENT', limit: 100 });
+          const patients = res.data || [];
+          if (isMounted) {
+            if (patients.length > 0) {
+              const rels = patients.map((p) => ({ patientId: p, patient: p }));
+              setRelationships(rels);
+              const firstId = patients[0]._id || patients[0].id;
+              setSelectedPatientId((prev) => prev || firstId);
+            } else {
+              setRelationships([]);
+            }
           }
         }
       } catch (err) {
-        console.error('Failed to load caregiver relationships:', err);
+        console.error('Failed to load patient relationships for analytics:', err);
       } finally {
         if (isMounted) setLoadingRelationships(false);
       }
@@ -61,10 +79,10 @@ export function AnalyticsPage({ patientId: propPatientId }) {
     return () => {
       isMounted = false;
     };
-  }, [isCaregiver]);
+  }, [isCaregiver, isAdmin]);
 
   const fetchAnalytics = useCallback(async () => {
-    if (isCaregiver && !activePatientId) {
+    if ((isCaregiver || isAdmin) && !activePatientId && relationships.length > 0) {
       setLoading(false);
       setOverview(null);
       return;
@@ -73,7 +91,10 @@ export function AnalyticsPage({ patientId: propPatientId }) {
     setLoading(true);
     setErrorMsg('');
     try {
-      const res = await analyticsApi.getAnalyticsOverview({ days: rangeDays, patientId: activePatientId });
+      const res = await analyticsApi.getAnalyticsOverview({
+        days: rangeDays,
+        patientId: activePatientId || (isAdmin ? undefined : user?.id || user?._id),
+      });
       if (res.data) {
         setOverview(res.data);
       } else {
@@ -85,7 +106,7 @@ export function AnalyticsPage({ patientId: propPatientId }) {
     } finally {
       setLoading(false);
     }
-  }, [rangeDays, activePatientId, isCaregiver]);
+  }, [rangeDays, activePatientId, isCaregiver, isAdmin, relationships.length, user]);
 
   useEffect(() => {
     if (!loadingRelationships) {
@@ -121,7 +142,7 @@ export function AnalyticsPage({ patientId: propPatientId }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
-          {isCaregiver && relationships.length > 0 && (
+          {(isCaregiver || isAdmin) && relationships.length > 0 && (
             <PatientSelector
               patients={relationships}
               selectedPatientId={selectedPatientId}

@@ -41,6 +41,11 @@ export async function canAccessPatient(user, patientId, permission) {
   const patientObjectId = new mongoose.Types.ObjectId(patientId);
   const userObjectId = new mongoose.Types.ObjectId(user.id);
 
+  // ── ADMIN: full administrative access to patient records ──────────────────
+  if (user.role === 'ADMIN' || user.role === 'SUPERADMIN' || user.role === 'SYSTEM_ADMIN') {
+    return {};
+  }
+
   // ── PATIENT: can only access their own data ──────────────────────────────
   if (user.role === 'PATIENT') {
     if (userObjectId.equals(patientObjectId)) {
