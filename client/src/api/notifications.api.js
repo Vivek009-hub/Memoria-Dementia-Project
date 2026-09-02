@@ -4,15 +4,6 @@
 import { defaultApiClient } from './client.js';
 
 export async function getNotifications(params = {}, client = defaultApiClient) {
-<<<<<<< HEAD
-  const cleanParams = {};
-  Object.keys(params).forEach((key) => {
-    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-      cleanParams[key] = params[key];
-    }
-  });
-  const query = new URLSearchParams(cleanParams).toString();
-=======
   const cleanParams = new URLSearchParams();
 
   if (params.unreadOnly !== undefined && params.unreadOnly !== null) {
@@ -41,7 +32,6 @@ export async function getNotifications(params = {}, client = defaultApiClient) {
   }
 
   const query = cleanParams.toString();
->>>>>>> 8f89331061b3870126831291985392f62d3f7d5f
   return await client.get(`/notifications${query ? `?${query}` : ''}`);
 }
 
